@@ -20,10 +20,14 @@ export default class Musician extends cc.Component {
     public trackB: cc.Node;
     @property
     public rateRank: number = 1;
+    @property(cc.Label)
+    public label: cc.Label;
     
     public timer: number = 0;
     public totalLength: number = 0;
     public rate: number = 0;
+    public accel: number = 0;
+    public accelRemaining: number = 0;
     public notesPosition=[];
     onLoad() {
         this.totalLength = this.scoredata.json.totalLength;
@@ -50,7 +54,32 @@ export default class Musician extends cc.Component {
         this.notesPosition=Array.from(new Set(this.notesPosition));
         this.notesPosition.sort();        
     }
+
+    // adjustSpeed (expectedDist, deltaDist) {
+    //     var expectedTime = expectedDist / this.rate;
+    //     var deltaTime = deltaDist / this.rate;
+    //     var targetTime = (expectedDist + deltaDist) / expectedDist * (expectedTime + deltaTime);
+    //     var expectedVel = expectedDist / (expectedTime + deltaTime);
+    //     var targetAccel = (expectedVel - this.rate) / targetTime;
+    //     this.accel = targetAccel;
+    // }
+    adjustSpeed (D, d) {
+        d *= 0.5;
+        const T_min = 0.4;
+        const A_max = 100;
+        var dV = (d / D) * this.rate;
+        var A = dV / T_min;
+        if (A > A_max) A = A_max; else if (A < -A_max) A = -A_max;
+        this.accel = A;
+        this.accelRemaining = dV / A;
+        console.log(this.accel, this.accelRemaining);
+    }
+
     update (dt) {
-        this.node.y -= dt* this.rateRank*this.rate;
+        this.node.y -= this.rateRank * dt * (this.rate + 0.5 * dt * this.accel);
+        this.rate -= dt * this.accel;
+        // TODO: Correctly handle cases where dt < accelRemaining
+        if ((this.accelRemaining -= dt) <= 0) this.accel = 0;
+        this.label.string = Math.round(this.rate);
     }
 }

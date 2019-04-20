@@ -39,7 +39,12 @@ export default class NewClass extends cc.Component {
 
     receiveDelta(delta){
         this.noteCursor += 1;
-        
+        if (this.noteCursor < 2) return;
+        var curNote = this.node.children[this.noteCursor - 1].getComponent("SingleNote");
+        var lastNote = this.node.children[this.noteCursor - 2].getComponent("SingleNote");
+        this.node.getParent().getComponent("Musician").adjustSpeed(
+            curNote.getY() - lastNote.getY(), delta);
+        console.log('delta = ', delta);
     }
 
     onKeyDown(event){

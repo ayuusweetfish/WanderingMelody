@@ -26,10 +26,13 @@ export default class SingleNote extends cc.Component {
     initSound(url){
         this.sound = url;
     }
+
+    getY() {
+        return this.node.convertToWorldSpace(cc.v2(0, 0)).y;
+    }
     
     checkPlay(){
-        var dist = 280-this.node.convertToWorldSpace(cc.v2(0,0)).y;
-        console.log(Math.abs(dist));
+        var dist = 80 - this.getY();
 
         if(Math.abs(dist) <250){
             cc.loader.loadRes(this.sound, cc.AudioClip, function(err, soundClip){
@@ -39,6 +42,7 @@ export default class SingleNote extends cc.Component {
                 cc.audioEngine.playEffect(soundClip, false);
             });
             this.node.getParent().getComponent("Track").receiveDelta(dist);
+            this.node.color = cc.color(128, 128, 255);
         }
     }
     // onLoad () {}
