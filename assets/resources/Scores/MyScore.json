@@ -1,0 +1,46 @@
+{
+    "name": "score musician A",
+    "version": "0.0.1",
+    "sounds": [
+        "Sounds/SD",
+        "Sounds/SS"
+    ],
+    "initRate": 480,
+    "totalLength": 200,
+    "tracks": {
+        "trackA": {
+            "trackname": "trackA",
+            "notes": [
+                {
+                    "position": 33,
+                    "sound": 1
+                },
+                {
+                    "position": 41,
+                    "sound": 1
+                },
+                {
+                    "position": 49,
+                    "sound": 1
+                },
+                {
+                    "position": 57,
+                    "sound": 1
+                }
+            ]
+        },
+        "trackB":{
+            "trackname":"trackB",
+            "notes":[
+                {
+                    "position": 33,
+                    "sound": 0
+                },
+                {
+                    "position": 38,
+                    "sound": 0
+                }
+            ]
+        }
+    }
+}
