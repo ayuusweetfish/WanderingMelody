@@ -7,7 +7,7 @@
 class Startup : public cocos2d::LayerColor
 {
 public:
-    virtual bool init();  
+    bool init() override;
     CREATE_FUNC(Startup);
     SCENE_FUNC(Startup);
 };

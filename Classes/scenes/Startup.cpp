@@ -1,5 +1,6 @@
 #include "Startup.h"
 #include "Global.h"
+#include "widgets/Musician.h"
 using namespace cocos2d;
 
 bool Startup::init()
@@ -14,6 +15,10 @@ bool Startup::init()
     label->setPosition(vsize / 2);
     label->setColor(Color3B(0, 0, 0));
     this->addChild(label);
+
+    auto mus = Musician::create();
+    mus->setPosition(vsize / 2);
+    this->addChild(mus);
 
     // Fade in on startup
     auto cover = LayerColor::create(Color4B::BLACK);
