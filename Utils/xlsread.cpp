@@ -1,4 +1,5 @@
 #include "OpenXLSX/OpenXLSX.h"
+#include <cerrno>
 #include <cstdio>
 
 #define ERR_INVALIDUSE  1
@@ -73,7 +74,11 @@ int main(int argc, char *argv[])
     auto sheetMeta = doc.Workbook().Worksheet("Meta");
     auto sheetSeq = doc.Workbook().Worksheet("Sequence");
 
-    FILE *f = stdout;
+    FILE *f = fopen(argv[2], "w");
+    if (!f) {
+        fprintf(stderr, "Cannot open fiile \"%s\" for writing\n", argv[2]);
+        return ERR_FILEWRITE;
+    }
 
     ////// Metadata //////
     int metaItemMaxLen = 0;
@@ -186,5 +191,9 @@ int main(int argc, char *argv[])
     }
     ////// End of sequencer data //////
 
+    if (fclose(f) != 0) {
+        fprintf(stderr, "Error during file save: errno %d\n", errno);
+        return ERR_FILEWRITE;
+    }
     return 0;
 }
