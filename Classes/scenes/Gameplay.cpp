@@ -10,7 +10,16 @@ bool Gameplay::init()
 
     Gig gig;
     Gig::FileReadResult r = gig.init("/Users/lsq/Downloads/OpenXLSX-master/exp/1.txt");
-    printf("%d\n", (int)r);
+    if (!r.succeeded) {
+        auto label = Label::createWithTTF(r.errMsg, "fonts/arial.ttf", 42);
+        label->setMaxLineWidth(WIN_W * 2 / 3);
+        label->enableWrap(true);
+        label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+        label->setPosition(WIN_SIZE / 2);
+        label->setColor(Color3B(0, 0, 0));
+        this->addChild(label);
+        return true;
+    }
 
     MusicianNode *mus[4];
     for (int i = 0; i < 4; i++) {

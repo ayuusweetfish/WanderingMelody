@@ -107,10 +107,13 @@ class Gig {
 public:
     Gig() { }
 
-    enum FileReadResult {
-        SUCCESS = 0,
-        ERR_FILEOPEN,
-        ERR_FILECONTENTS,   // TODO: Add more specific error codes
+    struct FileReadResult {
+        FileReadResult(bool succeeded, const std::string &errMsg) :
+            succeeded(succeeded), errMsg(errMsg) { }
+        FileReadResult(bool succeeded, const char *errMsg) :
+            succeeded(succeeded), errMsg(errMsg) { }
+        bool succeeded;
+        std::string errMsg;
     };
     FileReadResult init(const std::string &path);
 
