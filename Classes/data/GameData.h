@@ -54,7 +54,19 @@ protected:
 };
 
 class Musician {
+public:
+    Musician() : _keyTrack(nullptr) { }
+    inline void setKeyTrack(KeyTrack *keyTrack) { _keyTrack = keyTrack; }
+    inline void allocateMusicTrack(int idx) {
+        if (_musicTracks.size() <= idx)
+            _musicTracks.resize(idx + 1);
+    }
+    inline void addTempoChange(uint32_t time, uint16_t tempo) {
+        _tempoChanges.push_back({time, tempo});
+    }
+
 protected:
+    std::vector<std::pair<uint32_t, uint16_t>> _tempoChanges;
     KeyTrack *_keyTrack;
     std::vector<MusicTrack> _musicTracks;
 };
@@ -72,7 +84,7 @@ public:
 
 protected:
     std::unordered_map<std::string, std::string> _metadata;
-    std::vector<Musician *> _musicians;
+    std::vector<Musician> _musicians;
 
     FileReadResult initWithStdioFile(FILE *f);
 };

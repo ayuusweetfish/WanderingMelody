@@ -1,4 +1,5 @@
 #include "GameData.h"
+#include <cassert>
 #include <cctype>
 #include <cstddef>
 #include <cstring>
@@ -8,6 +9,25 @@ static inline void rtrim(char *s)
 {
     int l = strlen(s) - 1;
     while (l >= 0 && isspace(s[l])) s[l--] = '\0';
+}
+
+static inline int gridReadNum(const char *s, int len)
+{
+    int i, ret = 0;
+    for (i = 0; i < len && isspace(s[i]); i++) { }
+    for (; i < len; i++)
+        if (s[i] < '0' || s[i] > '9') return -1;
+        else ret = ret * 10 + s[i] - '0';
+    return ret;
+}
+
+static inline int gridReadNumR(const char *s, int len)
+{
+    int i, ret = 0;
+    for (i = 0; i < len && s[i] >= '0' && s[i] <= '9'; i++)
+        ret = ret * 10 + s[i] - '0';
+    for (; i < len; i++) if (!isspace(s[i])) return -1;
+    return ret;
 }
 
 KeyTrack *KeyTrack::create(const std::string &name)
@@ -28,6 +48,8 @@ Gig::FileReadResult Gig::init(const std::string &path)
 
 Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
 {
+    _musicians.resize(4);
+
     char s[256];
 
     ////// Metadata //////
@@ -45,9 +67,6 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         _metadata[s] = s + i + 1;
     }
 
-    for (auto p : _metadata)
-        printf("%s: %s\n", p.first.c_str(), p.second.c_str());
-
     ////// Track setup //////
     struct trackLayout {
         int musicianIdx, trackIdx, gridOffset;
@@ -64,7 +83,8 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         if (s[i++] != 'P') return ERR_FILECONTENTS;
         int musicianIdx = s[i++] - '0';
         int trackIdx = -1;
-        if (musicianIdx < 1 || musicianIdx > 4) return ERR_FILECONTENTS;
+        if (musicianIdx < 1 || musicianIdx > _musicians.size())
+            return ERR_FILECONTENTS;
         if (s[i] == '/') {
             i++;
             if (s[i++] != 'T') return ERR_FILECONTENTS;
@@ -77,12 +97,12 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         }
         for (; s[i] != '|'; i++) if (!isspace(s[i])) return ERR_FILECONTENTS;
         i++;    // Skip the delimiter
-        printf("%d\n", offset);
 
         if (trackIdx == -1) {
             KeyTrack *t = KeyTrack::create(s + i);
             if (t == nullptr) return ERR_FILECONTENTS;
-            tracks.push_back({musicianIdx, trackIdx, offset});
+            tracks.push_back({musicianIdx, -1, offset});
+            _musicians[musicianIdx].setKeyTrack(t);
             offset += (1 + t->getWidth());
         } else {
             std::vector<size_t> fields;
@@ -105,7 +125,41 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
                 }
             }
             tracks.push_back({musicianIdx, trackIdx, offset, fields});
+            _musicians[musicianIdx].allocateMusicTrack(trackIdx);
             offset += (5 + 2 * fields.size());
+        }
+    }
+    if (tracks.empty()) return ERR_FILECONTENTS;
+
+    ////// Sequence grid //////
+    uint32_t lastBarEnd = 0, lastTime = 0, time = 0;
+    int lastStep = 0;
+    while (fgets(s, 256, f) != NULL) {
+        int l = strlen(s);
+        if (s[l] == '\n') l--;
+        if (l < offset) return ERR_FILECONTENTS;
+
+        int bpm = gridReadNum(s, 4);
+        if (bpm == -1) return ERR_FILECONTENTS;
+        if (bpm == 0 && lastStep == 0) return ERR_FILECONTENTS;
+
+        if (s[5] == '.') {
+            if (lastStep == 0) return ERR_FILECONTENTS;
+            int tick = gridReadNum(s + 6, 3);
+            if (tick == -1) return ERR_FILECONTENTS;
+            time = lastBarEnd + (lastStep - 1) * 240 + (int)(tick * 0.240);
+            if (time <= lastTime) return ERR_FILECONTENTS;
+        } else {
+            int step = gridReadNumR(s + 5, 4);
+            if (step == -1) return ERR_FILECONTENTS;
+            if (step != 1 && step != lastStep + 1) return ERR_FILECONTENTS;
+            if (step == 1) lastBarEnd += lastStep * 240;
+            time = lastBarEnd + (step - 1) * 240;
+            lastStep = step;
+        }
+
+        if (bpm != 0) {
+            for (Musician &m : _musicians) m.addTempoChange(time, bpm);
         }
     }
 
