@@ -11,10 +11,11 @@ static inline void rtrim(char *s)
     while (l >= 0 && isspace(s[l])) s[l--] = '\0';
 }
 
-static inline int gridReadNum(const char *s, int len)
+static inline int gridReadNum(const char *s, int len, int dfault = 0)
 {
     int i, ret = 0;
     for (i = 0; i < len && isspace(s[i]); i++) { }
+    if (i == len) return dfault;
     for (; i < len; i++)
         if (s[i] < '0' || s[i] > '9') return -1;
         else ret = ret * 10 + s[i] - '0';
@@ -28,6 +29,27 @@ static inline int gridReadNumR(const char *s, int len)
         ret = ret * 10 + s[i] - '0';
     for (; i < len; i++) if (!isspace(s[i])) return -1;
     return ret;
+}
+
+static inline int gridReadNote(const char *s)
+{
+    if (s[0] == ' ' && s[1] == ' ' && s[2] == ' ') return MusicNote::NOCHANGE;
+    if (s[0] == '=' && s[1] == '=' && s[2] == '=') return MusicNote::NOTE_OFF;
+
+    char pitchClass = s[0];
+    if (pitchClass < 'A' || pitchClass > 'G') return -1;
+
+    char accidental = s[1];
+    accidental = (accidental == '-' ? 0 :
+        accidental == '#' ? +1 : accidental == 'b' ? -1 : -2);
+    if (accidental == -2) return -1;
+
+    char octave = s[2];
+    if (octave < '0' || octave > '9') return -1;
+
+    static const int semitones[7] = { 9, 11, 0, 2, 4, 5, 7 };
+    int ret = (octave - '0') * 12 + semitones[pitchClass - 'A'] + accidental;
+    return ret + 12;    // For compliance with MIDI
 }
 
 KeyTrack *KeyTrack::create(const std::string &name)
@@ -161,6 +183,32 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         if (bpm != 0) {
             for (Musician &m : _musicians) m.addTempoChange(time, bpm);
         }
+
+        for (const trackLayout &t : tracks) {
+            if (t.trackIdx == -1) {
+                // Key track
+                _musicians[t.musicianIdx].getKeyTrack()
+                    ->parseGrid(time, s + t.gridOffset);
+            } else {
+                // Music track
+                MusicNote n;
+                n.time = time;
+                n.tag = s[t.gridOffset];
+                int noteName = gridReadNote(s + t.gridOffset + 1);
+                if (noteName == -1) return ERR_FILECONTENTS;
+                n.note = noteName;
+                int gridPos = t.gridOffset + 4;
+                for (size_t memOffset : t.fields) {
+                    int val = gridReadNum(s + gridPos, 2, MusicNote::NOCHANGE);
+                    if (val == -1) return ERR_FILECONTENTS;
+                    *((char *)&n + memOffset) = val;
+                    gridPos += 2;
+                }
+                _musicians[t.musicianIdx].getMusicTrack(t.trackIdx).addNote(n);
+            }
+        }
+
+        lastTime = time;
     }
 
     return SUCCESS;
