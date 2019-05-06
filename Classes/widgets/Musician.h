@@ -7,11 +7,20 @@ class Musician : public cocos2d::Node
 {
 public:
     virtual bool init() override;
-    CREATE_FUNC(Musician);
 
-    virtual void update(float dt) override;
+    virtual void setContentSize(const cocos2d::Size &size) override;
+    virtual void update(float dt) override = 0;
 
 protected:
+    cocos2d::DrawNode *_drawNode;
+};
+
+class MusicianBasicKeys : public Musician
+{
+public:
+    CREATE_FUNC(MusicianBasicKeys);
+
+    virtual void update(float dt) override;
 };
 
 #endif
