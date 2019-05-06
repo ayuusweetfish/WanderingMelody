@@ -14,4 +14,14 @@
     || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX \
     || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 
+#if IS_ON_PC
+    #define WIN_W   960
+    #define WIN_H   540
+#else
+    #define WIN_W   640
+    #define WIN_H   360
+#endif
+
+#define WIN_SIZE cocos2d::Size(WIN_W, WIN_H)
+
 #endif

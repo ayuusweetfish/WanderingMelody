@@ -50,12 +50,14 @@ endif()
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/scenes/Startup.cpp
+     Classes/scenes/Gameplay.cpp
      Classes/widgets/Musician.cpp
      Classes/data/GameData.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/scenes/Startup.h
+     Classes/scenes/Gameplay.h
      Classes/widgets/Musician.h
      Classes/data/GameData.h
      )
