@@ -1,5 +1,6 @@
 #include "MusicianNode.h"
 #include "Global.h"
+#include "data/GameData.h"
 using namespace cocos2d;
 
 #define HIT_LINE_POS    0.25
@@ -27,6 +28,18 @@ void MusicianNode::setContentSize(const Size &size)
         2, Color4F(1, 1, 0.7, 0.9));
 }
 
+void MusicianNode::startPlay()
+{
+    _musician->startPlay();
+    auto listener = EventListenerKeyboard::create();
+    listener->onKeyPressed = [this](EventKeyboard::KeyCode key, Event *event) {
+        printf("%d\n", (int)key);
+    };
+    this->getEventDispatcher()
+        ->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
 void MusicianNodeBasicKeys::update(float dt)
 {
+    _musician->tick(dt);
 }

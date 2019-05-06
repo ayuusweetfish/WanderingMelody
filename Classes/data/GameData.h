@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
+class MusicianNode;
+
 class MusicNote {
 public:
     MusicNote() : tag(' '),
@@ -56,6 +58,7 @@ class KeyTrack {
 public:
     virtual int getWidth() = 0;
     virtual void parseGrid(uint32_t time, const char *grid) = 0;
+    virtual MusicianNode *createMusicianNode() = 0;
 
     static KeyTrack *create(const std::string &name);
 };
@@ -74,6 +77,8 @@ public:
             printf("%d %c %d\n", n.time, n.tag, n.trackIdx);
         }
     }
+
+    virtual MusicianNode *createMusicianNode() override;
 
 protected:
     class Note : public KeyNote {
@@ -97,10 +102,24 @@ public:
     inline KeyTrack *getKeyTrack() { return _keyTrack; }
     inline MusicTrack &getMusicTrack(int idx) { return _musicTracks[idx]; }
 
+    void startPlay();
+    void tick(double dt);
+    void sendEvent(int message);
+    inline const std::vector<MusicNote *> &getRecentTriggers() {
+        return _recentTriggers;
+    }
+
+    MusicianNode *createMusicianNode();
+
 protected:
     std::vector<std::pair<uint32_t, uint16_t>> _tempoChanges;
     KeyTrack *_keyTrack;
     std::vector<MusicTrack> _musicTracks;
+
+    // Fields used during playback
+    int _tempoChangePtr;
+    double _curTick;
+    std::vector<MusicNote *> _recentTriggers;
 };
 
 class Gig {
@@ -116,6 +135,9 @@ public:
         std::string errMsg;
     };
     FileReadResult init(const std::string &path);
+
+    inline int getMusicianCount() { return _musicians.size(); }
+    inline Musician &getMusician(int idx) { return _musicians[idx]; }
 
 protected:
     std::unordered_map<std::string, std::string> _metadata;

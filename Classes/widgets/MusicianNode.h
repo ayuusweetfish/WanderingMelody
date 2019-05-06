@@ -3,16 +3,23 @@
 
 #include "cocos2d.h"
 
+class Musician;
+
 class MusicianNode : public cocos2d::Node
 {
 public:
     virtual bool init() override;
 
     virtual void setContentSize(const cocos2d::Size &size) override;
+
+    inline void setMusician(Musician *musician) { _musician = musician; }
+
+    void startPlay();
     virtual void update(float dt) override = 0;
 
 protected:
     cocos2d::DrawNode *_drawNode;
+    Musician *_musician;
 };
 
 class MusicianNodeBasicKeys : public MusicianNode

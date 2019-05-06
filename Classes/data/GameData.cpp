@@ -1,9 +1,42 @@
 #include "GameData.h"
+#include "widgets/MusicianNode.h"
 #include <cassert>
 #include <cctype>
 #include <cstddef>
 #include <cstring>
 #include <tuple>
+
+KeyTrack *KeyTrack::create(const std::string &name)
+{
+    if (name == "4K") return new KeyTrackBasicKeys<4>();
+    if (name == "2K") return new KeyTrackBasicKeys<2>();
+    return nullptr;
+}
+
+template <int N> MusicianNode *KeyTrackBasicKeys<N>::createMusicianNode() {
+    return MusicianNodeBasicKeys::create();
+}
+
+void Musician::startPlay()
+{
+    assert(_keyTrack != nullptr);
+    _tempoChangePtr = 0;
+    _curTick = 0;
+}
+
+void Musician::tick(double dt)
+{
+}
+
+void Musician::sendEvent(int message)
+{
+}
+
+MusicianNode *Musician::createMusicianNode() {
+    auto ret = _keyTrack->createMusicianNode();
+    ret->setMusician(this);
+    return ret;
+}
 
 static inline void rtrim(char *s)
 {
@@ -50,13 +83,6 @@ static inline int gridReadNote(const char *s)
     static const int semitones[7] = { 9, 11, 0, 2, 4, 5, 7 };
     int ret = (octave - '0') * 12 + semitones[pitchClass - 'A'] + accidental;
     return ret + 12;    // For compliance with MIDI
-}
-
-KeyTrack *KeyTrack::create(const std::string &name)
-{
-    if (name == "4K") return new KeyTrackBasicKeys<4>();
-    if (name == "2K") return new KeyTrackBasicKeys<2>();
-    return nullptr;
 }
 
 Gig::FileReadResult Gig::init(const std::string &path)
@@ -258,6 +284,13 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
 
         lastTime = time;
     }
+
+    // Remove unused musicians
+    for (int i = 0; i < _musicians.size(); i++)
+        if (_musicians[i].getKeyTrack() == nullptr) {
+            _musicians.erase(_musicians.begin() + i);
+            i--;
+        }
 
     return FileReadResult(true, "");
 }
