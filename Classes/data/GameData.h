@@ -2,6 +2,9 @@
 #define __WanderingMelody__GameData_h__
 
 #include <cstdint>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 class MusicNote {
 public:
@@ -22,7 +25,7 @@ class MusicTrack {
 protected:
     Soundbank *_soundbank;
     int _numNotes;
-    MusicNote _notes[];
+    std::vector<MusicNote> _notes;
 };
 
 class KeyNote {
@@ -32,24 +35,46 @@ public:
 };
 
 class KeyTrack {
-    virtual ~KeyTrack() = 0;
+public:
+    virtual int getWidth() = 0;
+
+    static KeyTrack *create(const std::string &name);
 };
 
 template <int N> class KeyTrackBasicKeys : public KeyTrack {
-    KeyTrackBasicKeys() : _notes(nullptr) { }
+public:
+    KeyTrackBasicKeys() { }
+    virtual int getWidth() override { return N; }
 
 protected:
     class Note : public KeyNote {
         uint8_t trackIdx;
     };
-    Note _notes[];
+    std::vector<Note> _notes;
 };
 
 class Musician {
 protected:
     KeyTrack *_keyTrack;
-    int _numMusicTracks;
-    MusicTrack _musicTracks[];
+    std::vector<MusicTrack> _musicTracks;
+};
+
+class Gig {
+public:
+    Gig() { }
+
+    enum FileReadResult {
+        SUCCESS = 0,
+        ERR_FILEOPEN,
+        ERR_FILECONTENTS,   // TODO: Add more specific error codes
+    };
+    FileReadResult init(const std::string &path);
+
+protected:
+    std::unordered_map<std::string, std::string> _metadata;
+    std::vector<Musician *> _musicians;
+
+    FileReadResult initWithStdioFile(FILE *f);
 };
 
 #endif

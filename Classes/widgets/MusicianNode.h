@@ -1,9 +1,9 @@
-#ifndef __WanderingMelody__Musician_h__
-#define __WanderingMelody__Musician_h__
+#ifndef __WanderingMelody__MusicianNode_h__
+#define __WanderingMelody__MusicianNode_h__
 
 #include "cocos2d.h"
 
-class Musician : public cocos2d::Node
+class MusicianNode : public cocos2d::Node
 {
 public:
     virtual bool init() override;
@@ -15,10 +15,10 @@ protected:
     cocos2d::DrawNode *_drawNode;
 };
 
-class MusicianBasicKeys : public Musician
+class MusicianNodeBasicKeys : public MusicianNode
 {
 public:
-    CREATE_FUNC(MusicianBasicKeys);
+    CREATE_FUNC(MusicianNodeBasicKeys);
 
     virtual void update(float dt) override;
 };

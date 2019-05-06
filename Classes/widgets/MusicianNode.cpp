@@ -1,10 +1,10 @@
-#include "Musician.h"
+#include "MusicianNode.h"
 #include "Global.h"
 using namespace cocos2d;
 
 #define HIT_LINE_POS    0.25
 
-bool Musician::init()
+bool MusicianNode::init()
 {
     _drawNode = DrawNode::create();
     this->addChild(_drawNode);
@@ -13,7 +13,7 @@ bool Musician::init()
     return true;
 }
 
-void Musician::setContentSize(const Size &size)
+void MusicianNode::setContentSize(const Size &size)
 {
     Node::setContentSize(size);
     _drawNode->clear();
@@ -27,6 +27,6 @@ void Musician::setContentSize(const Size &size)
         2, Color4F(1, 1, 0.7, 0.9));
 }
 
-void MusicianBasicKeys::update(float dt)
+void MusicianNodeBasicKeys::update(float dt)
 {
 }

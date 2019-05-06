@@ -1,6 +1,5 @@
 #include "Startup.h"
 #include "Global.h"
-#include "widgets/Musician.h"
 using namespace cocos2d;
 
 bool Startup::init()
