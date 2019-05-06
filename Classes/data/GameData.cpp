@@ -163,6 +163,10 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
                         RET_ERRF("Col %d: Unrecognized parameter name: \"%c%c\"",
                             i + 1, s[i], s[i + 1]);
                     }
+                    for (int j = 0; j + 1 < fields.size(); j++)
+                        if (fields[j] == fields.back())
+                            RET_ERRF("Col %d: Duplicate parameter \"%c%c\"",
+                                i + 1, s[i], s[i + 1]);
                     if (s[i + 2] == '|') break;
                     if (s[i + 2] != ' ')
                         RET_ERRF("Col %d: Parameter name too long", i + 1);
