@@ -5,58 +5,51 @@
 
 class MusicNote {
 public:
-    char marker;
+    char tag;
     uint8_t note;
-    union {
-        uint8_t vel;
-        uint8_t arg;
-    };
-    union {
-        int8_t pan;
-        char flag;
-    };
+    uint8_t vel;
+    uint8_t pan;
+    uint8_t dtune;
 };
 
 class Soundbank {
 };
 
+class SoundBankAudioFile : public Soundbank {
+};
+
 class MusicTrack {
 protected:
     Soundbank *_soundbank;
-    MusicNote *_notes;
+    int _numNotes;
+    MusicNote _notes[];
 };
 
 class KeyNote {
-protected:
-    uint32_t _time; // in ticks
-    MusicNote *_musNote;
+public:
+    uint32_t time;  // in ticks
+    char tag;
 };
 
 class KeyTrack {
     virtual ~KeyTrack() = 0;
 };
 
-template <int N> class KeyTrackFixedW : public KeyTrack {
-    KeyTrackFixedW() : _row(nullptr) { }
-    void init(int rows) { _row = new Row[rows]; }
-    ~KeyTrackFixedW() { if (_row) delete[] _row; }
+template <int N> class KeyTrackBasicKeys : public KeyTrack {
+    KeyTrackBasicKeys() : _notes(nullptr) { }
 
 protected:
-    MusicTrack *_musTracks;
-
-    struct Row {
-        uint32_t time;
-        char cell[N];
+    class Note : public KeyNote {
+        uint8_t trackIdx;
     };
-    Row *_row;
-};
-
-template <int N> class KeyTrackBasicKeys : public KeyTrackFixedW<N> {
+    Note _notes[];
 };
 
 class Musician {
 protected:
     KeyTrack *_keyTrack;
+    int _numMusicTracks;
+    MusicTrack _musicTracks[];
 };
 
 #endif
