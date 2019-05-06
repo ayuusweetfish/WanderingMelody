@@ -20,6 +20,14 @@ static inline void printEncoded(FILE *f, const char *s)
     }
 }
 
+static inline void printEncodedIgnoreSpace(FILE *f, const char *s)
+{
+    for (; *s != '\0'; s++) if (!isspace(*s) || *s == '\n') {
+        if (*s == '|' || *s == '\\') fputc('\\', f);
+        fputc(*s == '\n' ? ' ' : *s, f);
+    }
+}
+
 static inline std::pair<int, int> parseTrackTag(const std::string &tag)
 {
     if (tag[0] != 'P') return {-1, -1};
@@ -132,10 +140,23 @@ int main(int argc, char *argv[])
             printEncoded(f, t.c_str());
             fputc('\n', f);
         } else {
-            trackWidths.push_back(-1);  // Note track
-            trackColPtr += 4;
             fprintf(f, "P%d/T%d|", id.first, id.second);
-            printEncoded(f, t.c_str());
+            trackColPtr += 2;
+            int w = 0;
+            while (true) {
+                const std::string &nextTrack =
+                    sheetSeq.Cell(1, trackColPtr + w).Value().AsString();
+                const std::string &argName =
+                    sheetSeq.Cell(2, trackColPtr + w).Value().AsString();
+                if (!nextTrack.empty() || argName.empty()) break;
+                if (w != 0) fputc(' ', f);
+                fprintf(f, "%2s", argName.substr(0, 2).c_str());
+                w += 1;
+            }
+            trackWidths.push_back(-w);
+            trackColPtr += w;
+            fputc('|', f);
+            printEncodedIgnoreSpace(f, t.c_str());
             fputc('\n', f);
         }
     }
@@ -153,12 +174,12 @@ int main(int argc, char *argv[])
         int seqCol = 3;
         for (int w : trackWidths) {
             fputc('|', f);
-            if (w == -1) {
+            if (w <= 0) {
+                // Music track
+                w = -w;
                 const std::string
                     &cellKey = sheetSeq.Cell(seqRow, seqCol).Value().AsString(),
-                    &cellNote = sheetSeq.Cell(seqRow, seqCol + 1).Value().AsString(),
-                    &cellVel = sheetSeq.Cell(seqRow, seqCol + 2).Value().AsString(),
-                    &cellPan = sheetSeq.Cell(seqRow, seqCol + 3).Value().AsString();
+                    &cellNote = sheetSeq.Cell(seqRow, seqCol + 1).Value().AsString();
                 fputc(cellKey.empty() ? ' ' : cellKey[0], f);
                 char ch = cellNote.empty() ? ' ' : cellNote[0];
                 fputc(ch, f);
@@ -166,19 +187,17 @@ int main(int argc, char *argv[])
                     fputc(ch, f);
                     fputc(ch, f);
                 } else {
-                    fputc(cellNote.length() == 2 ? ' ' : cellNote[1], f);
+                    fputc(cellNote.length() == 2 ? '-' : cellNote[1], f);
                     fputc(cellNote.length() == 2 ? cellNote[1] : cellNote[2], f);
                 }
-                if (cellVel.empty()) {
-                    fputc(' ', f);
-                    fputc(' ', f);
-                } else {
-                    fputc(cellVel.length() == 1 ? '0' : cellVel[0], f);
-                    fputc(cellVel.length() == 1 ? cellVel[0] : cellVel[1], f);
+                for (int j = 0; j < w; j++) {
+                    const std::string &cell =
+                        sheetSeq.Cell(seqRow, seqCol + j + 2).Value().AsString();
+                    fprintf(f, "%2s", cell.substr(0, 2).c_str());
                 }
-                fputc(cellPan.empty() ? ' ' : cellPan[0], f);
-                seqCol += 4;
+                seqCol += (w + 2);
             } else {
+                // Key track
                 for (int j = 0; j < w; j++) {
                     const std::string &cell =
                         sheetSeq.Cell(seqRow, seqCol + j).Value().AsString();
