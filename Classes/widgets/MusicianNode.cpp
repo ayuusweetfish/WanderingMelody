@@ -3,7 +3,7 @@
 #include "data/GameData.h"
 using namespace cocos2d;
 
-#define HIT_LINE_POS    0.25
+#define HIT_LINE_POS    0.333333
 
 bool MusicianNode::init()
 {
