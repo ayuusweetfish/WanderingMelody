@@ -17,6 +17,14 @@ template <int N> MusicianNode *KeyTrackBasicKeys<N>::createMusicianNode() {
     return MusicianNodeBasicKeys::create();
 }
 
+template <int N> void KeyTrackBasicKeys<N>::getNotesToDisplay(
+    uint32_t hitpos, std::vector<KeyNote *> &out)
+{
+    out.clear();
+    for (auto &n : _notes)
+        if (n.time >= hitpos) out.push_back((KeyNote *)&n);
+}
+
 void Musician::startPlay()
 {
     assert(_keyTrack != nullptr);
@@ -26,10 +34,18 @@ void Musician::startPlay()
 
 void Musician::tick(double dt)
 {
+    // XXX: Should actually be in ticks, not seconds
+    _curTick += dt;
 }
 
 void Musician::sendEvent(int message)
 {
+}
+
+uint32_t Musician::getTimePositionInTrack()
+{
+    // TODO: Take speed change into account with `_tempoChangePtr`
+    return (uint32_t)(_curTick * (_tempoChanges.front().second));
 }
 
 MusicianNode *Musician::createMusicianNode() {

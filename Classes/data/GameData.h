@@ -59,6 +59,8 @@ public:
     virtual int getWidth() = 0;
     virtual void parseGrid(uint32_t time, const char *grid) = 0;
     virtual MusicianNode *createMusicianNode() = 0;
+    // XXX: Should `_note` be moved to this base class?
+    virtual void getNotesToDisplay(uint32_t hitpos, std::vector<KeyNote *> &out) = 0;
 
     static KeyTrack *create(const std::string &name);
 };
@@ -79,12 +81,14 @@ public:
     }
 
     virtual MusicianNode *createMusicianNode() override;
+    void getNotesToDisplay(uint32_t hitpos, std::vector<KeyNote *> &out) override;
 
-protected:
     class Note : public KeyNote {
     public:
         uint8_t trackIdx;
     };
+
+protected:
     std::vector<Note> _notes;
 };
 
@@ -107,6 +111,10 @@ public:
     void sendEvent(int message);
     inline const std::vector<MusicNote *> &getRecentTriggers() {
         return _recentTriggers;
+    }
+    uint32_t getTimePositionInTrack();
+    inline void getNotesToDisplay(uint32_t hitpos, std::vector<KeyNote *> &out) {
+        _keyTrack->getNotesToDisplay(hitpos, out);
     }
 
     MusicianNode *createMusicianNode();
