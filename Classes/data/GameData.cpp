@@ -24,7 +24,29 @@ template <int N> void KeyTrackBasicKeys<N>::draw(uint32_t time, DrawNode *dn)
         dn->drawSegment(
             Vec2(posX, posY),
             Vec2(posX + size.width / 4, posY),
-            2, Color4F(0.5, 0.6, 1, 0.9));
+            2,
+            n.triggered == -1 ? Color4F(0.5, 0.6, 1, 0.9) : Color4F(1, 0.8, 0.4, 0.9));
+    }
+}
+
+template <int N> void KeyTrackBasicKeys<N>::sendEvent(uint32_t time, int message)
+{
+    printf("%d\n", message);
+}
+
+template <> void KeyTrackBasicKeys<4>::sendEvent(uint32_t time, int message)
+{
+    if (message == 149) this->triggerKey(time, 0);
+    else if (message == 147) this->triggerKey(time, 1);
+    else if (message == 126) this->triggerKey(time, 2);
+    else if (message == 145) this->triggerKey(time, 3);
+}
+
+template <int N> void KeyTrackBasicKeys<N>::triggerKey(uint32_t time, int trackIdx)
+{
+    for (KeyNote &n : _notes) if (n.track == trackIdx) {
+        if (n.time + 120 >= time && n.time <= time + 120)
+            n.triggered = time;
     }
 }
 
@@ -39,10 +61,6 @@ void Musician::tick(double dt)
 {
     // XXX: Should actually be in ticks, not seconds
     _curTick += dt;
-}
-
-void Musician::sendEvent(int message)
-{
 }
 
 uint32_t Musician::getTimePositionInTrack()

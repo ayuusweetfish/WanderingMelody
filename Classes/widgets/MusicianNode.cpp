@@ -39,7 +39,7 @@ void MusicianNode::startPlay()
     _musician->startPlay();
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode key, Event *event) {
-        printf("%d\n", (int)key);
+        _musician->sendEvent((int)key);
     };
     this->getEventDispatcher()
         ->addEventListenerWithSceneGraphPriority(listener, this);

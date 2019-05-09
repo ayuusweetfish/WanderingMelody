@@ -53,6 +53,7 @@ public:
     uint32_t time;  // in ticks
     char tag;
     uint8_t track;
+    int32_t triggered;
 };
 
 class KeyTrack {
@@ -60,6 +61,7 @@ public:
     virtual int getWidth() = 0;
     virtual void parseGrid(uint32_t time, const char *grid) = 0;
     virtual void draw(uint32_t time, cocos2d::DrawNode *dn) = 0;
+    virtual void sendEvent(uint32_t time, int message) = 0;
 
     static KeyTrack *create(const std::string &name);
 
@@ -77,14 +79,17 @@ public:
             n.time = time;
             n.tag = grid[i];
             n.track = i;
+            n.triggered = -1;
             _notes.push_back(n);
             printf("%d %c %d\n", n.time, n.tag, n.track);
         }
     }
 
     void draw(uint32_t time, cocos2d::DrawNode *dn) override;
+    void sendEvent(uint32_t time, int message) override;
 
 protected:
+    void triggerKey(uint32_t time, int trackIdx);
 };
 
 class Musician {
@@ -103,7 +108,9 @@ public:
 
     void startPlay();
     void tick(double dt);
-    void sendEvent(int message);
+    inline void sendEvent(int message) {
+        _keyTrack->sendEvent(this->getTimePositionInTrack(), message);
+    }
     inline const std::vector<MusicNote *> &getRecentTriggers() {
         return _recentTriggers;
     }
