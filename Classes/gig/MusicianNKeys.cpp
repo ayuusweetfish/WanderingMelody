@@ -15,12 +15,21 @@ template <int N> void MusicianNKeys<N>::parseGrid(int32_t time, const char *grid
     }
 }
 
+template <int N> void MusicianNKeys<N>::startPlay()
+{
+    Musician::startPlay();
+    for (int i = 0; i < N; i++) _isKeyDown[i] = false;
+}
+
 template <int N> void MusicianNKeys<N>::sendEvent(int message)
 {
-    if (message == 149) triggerNote(0);
-    else if (message == 147) triggerNote(1);
-    else if (message == 126) triggerNote(2);
-    else if (message == 145) triggerNote(3);
+    for (int i = 0; i < N; i++)
+        if (_keyMapping[i] == message) {
+            _isKeyDown[i] = true;
+            triggerNote(i);
+        } else if (_keyMapping[i] + 1024 == message) {
+            _isKeyDown[i] = false;
+        }
 }
 
 template <int N> void MusicianNKeys<N>::triggerNote(uint8_t trackIdx)

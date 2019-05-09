@@ -38,8 +38,8 @@ public:
 
     virtual Display *createDisplay() = 0;
 
-    void startPlay();
-    void tick(double dt);
+    virtual void startPlay();
+    virtual void tick(double dt);
     virtual void sendEvent(int message) = 0;
     inline const std::vector<MusicNote *> &getRecentTriggers() {
         return _recentTriggers;

@@ -1,5 +1,7 @@
 #include "Gameplay.h"
 #include "Global.h"
+#include "gig/Musician.h"
+#include "gig/MusicianNKeys.h"
 using namespace cocos2d;
 
 bool Gameplay::init()
@@ -28,6 +30,9 @@ bool Gameplay::init()
         this->addChild(mus[i]);
         _gig.getMusician(i)->startPlay();
     }
+
+    ((MusicianNKeys<4> *)_gig.getMusician(0))->setKeyMapping((int []){149, 147, 126, 145});
+    ((MusicianNKeys<2> *)_gig.getMusician(1))->setKeyMapping((int []){134, 135});
 
     return true;
 }

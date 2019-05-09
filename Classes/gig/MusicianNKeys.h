@@ -7,10 +7,15 @@ template <int N> class MusicianNKeys : public Musician {
 public:
     MusicianNKeys() { }
 
-    virtual void parseGrid(int32_t time, const char *grid);
-    virtual int getWidth() { return N; }
+    virtual void parseGrid(int32_t time, const char *grid) override;
+    virtual int getWidth() override { return N; }
 
-    virtual void sendEvent(int message);
+    void setKeyMapping(const int keyCodes[N]) {
+        for (int i = 0; i < N; i++) _keyMapping[i] = keyCodes[i];
+    }
+
+    virtual void startPlay() override;
+    virtual void sendEvent(int message) override;
 
     class Display : public Musician::Display {
     public:
@@ -32,10 +37,14 @@ public:
         MusicianNKeys *_mus;
     };
 
-    virtual Musician::Display *createDisplay() { return Display::create(this); }
+    virtual Musician::Display *createDisplay() override {
+        return Display::create(this);
+    }
 
 protected:
     void triggerNote(uint8_t trackIdx);
+    int _keyMapping[N];
+    bool _isKeyDown[N];
 };
 
 template class MusicianNKeys<2>;
