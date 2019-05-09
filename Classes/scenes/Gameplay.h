@@ -4,9 +4,7 @@
 #include "cocos2d.h"
 
 #include "Global.h"
-#include "data/GameData.h"
-
-class Gig;
+#include "gig/Gig.h"
 
 class Gameplay : public cocos2d::LayerColor
 {

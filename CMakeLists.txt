@@ -52,14 +52,14 @@ list(APPEND GAME_SOURCE
      Classes/scenes/Startup.cpp
      Classes/scenes/Gameplay.cpp
      Classes/widgets/MusicianNode.cpp
-     Classes/data/GameData.cpp
+     Classes/gig/Musician.cpp
+     Classes/gig/Gig.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/scenes/Startup.h
      Classes/scenes/Gameplay.h
      Classes/widgets/MusicianNode.h
-     Classes/data/GameData.h
      )
 
 if(ANDROID)

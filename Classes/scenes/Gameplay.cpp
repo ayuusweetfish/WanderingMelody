@@ -1,14 +1,12 @@
 #include "Gameplay.h"
 #include "Global.h"
-#include "data/GameData.h"
-#include "widgets/MusicianNode.h"
 using namespace cocos2d;
 
 bool Gameplay::init()
 {
     if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255))) return false;
 
-    Gig::FileReadResult r = _gig.init("/Users/lsq/Downloads/OpenXLSX-master/exp/1.txt");
+    /*Gig::FileReadResult r = _gig.init("/Users/lsq/Downloads/OpenXLSX-master/exp/1.txt");
     if (!r.succeeded) {
         auto label = Label::createWithTTF(r.errMsg, "fonts/arial.ttf", 42);
         label->setMaxLineWidth(WIN_W * 2 / 3);
@@ -31,7 +29,7 @@ bool Gameplay::init()
         this->addChild(mus[i]);
     }
 
-    mus[0]->startPlay();
+    mus[0]->startPlay();*/
 
     return true;
 }
