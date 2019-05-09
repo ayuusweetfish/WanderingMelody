@@ -22,11 +22,11 @@ public:
     FileReadResult init(const std::string &path);
 
     inline int getMusicianCount() { return _musicians.size(); }
-    inline Musician &getMusician(int idx) { return _musicians[idx]; }
+    inline Musician *getMusician(int idx) { return _musicians[idx]; }
 
 protected:
     std::unordered_map<std::string, std::string> _metadata;
-    std::vector<Musician> _musicians;
+    std::vector<Musician *> _musicians;
 
     FileReadResult initWithStdioFile(FILE *f);
 };

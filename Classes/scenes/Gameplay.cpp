@@ -6,7 +6,7 @@ bool Gameplay::init()
 {
     if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255))) return false;
 
-    /*Gig::FileReadResult r = _gig.init("/Users/lsq/Downloads/OpenXLSX-master/exp/1.txt");
+    Gig::FileReadResult r = _gig.init("/Users/lsq/Downloads/OpenXLSX-master/exp/1.txt");
     if (!r.succeeded) {
         auto label = Label::createWithTTF(r.errMsg, "fonts/arial.ttf", 42);
         label->setMaxLineWidth(WIN_W * 2 / 3);
@@ -18,7 +18,7 @@ bool Gameplay::init()
         return true;
     }
 
-    int numMusicians = _gig.getMusicianCount();
+    /*int numMusicians = _gig.getMusicianCount();
     MusicianNode *mus[numMusicians];
     for (int i = 0; i < numMusicians; i++) {
         mus[i] = MusicianNode::create();

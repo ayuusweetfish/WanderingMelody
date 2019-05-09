@@ -19,6 +19,9 @@ public:
     }
     inline MusicTrack &getMusicTrack(int idx) { return _musicTracks[idx]; }
 
+    void parseGrid(uint32_t time, const char *grid) { }
+    int getWidth() { return 4; }
+
     void startPlay();
     void tick(double dt);
     void sendEvent(int message);
