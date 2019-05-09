@@ -1,12 +1,12 @@
 #ifndef __WanderingMelody__GameData_h__
 #define __WanderingMelody__GameData_h__
 
+#include "cocos2d.h"
+
 #include <cstdint>
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-class MusicianNode;
 
 class MusicNote {
 public:
@@ -52,17 +52,19 @@ class KeyNote {
 public:
     uint32_t time;  // in ticks
     char tag;
+    uint8_t track;
 };
 
 class KeyTrack {
 public:
     virtual int getWidth() = 0;
     virtual void parseGrid(uint32_t time, const char *grid) = 0;
-    virtual MusicianNode *createMusicianNode() = 0;
-    // XXX: Should `_note` be moved to this base class?
-    virtual void getNotesToDisplay(uint32_t hitpos, std::vector<KeyNote *> &out) = 0;
+    virtual void draw(uint32_t time, cocos2d::DrawNode *dn) = 0;
 
     static KeyTrack *create(const std::string &name);
+
+protected:
+    std::vector<KeyNote> _notes;
 };
 
 template <int N> class KeyTrackBasicKeys : public KeyTrack {
@@ -71,25 +73,18 @@ public:
     virtual int getWidth() override { return N; }
     virtual void parseGrid(uint32_t time, const char *grid) override {
         for (int i = 0; i < N; i++) if (!isspace(grid[i])) {
-            KeyTrackBasicKeys<N>::Note n;
+            KeyNote n;
             n.time = time;
             n.tag = grid[i];
-            n.trackIdx = i;
+            n.track = i;
             _notes.push_back(n);
-            printf("%d %c %d\n", n.time, n.tag, n.trackIdx);
+            printf("%d %c %d\n", n.time, n.tag, n.track);
         }
     }
 
-    virtual MusicianNode *createMusicianNode() override;
-    void getNotesToDisplay(uint32_t hitpos, std::vector<KeyNote *> &out) override;
-
-    class Note : public KeyNote {
-    public:
-        uint8_t trackIdx;
-    };
+    void draw(uint32_t time, cocos2d::DrawNode *dn) override;
 
 protected:
-    std::vector<Note> _notes;
 };
 
 class Musician {
@@ -113,11 +108,9 @@ public:
         return _recentTriggers;
     }
     uint32_t getTimePositionInTrack();
-    inline void getNotesToDisplay(uint32_t hitpos, std::vector<KeyNote *> &out) {
-        _keyTrack->getNotesToDisplay(hitpos, out);
+    inline void draw(cocos2d::DrawNode *dn) {
+        _keyTrack->draw(this->getTimePositionInTrack(), dn);
     }
-
-    MusicianNode *createMusicianNode();
 
 protected:
     std::vector<std::pair<uint32_t, uint16_t>> _tempoChanges;

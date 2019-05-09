@@ -1,10 +1,12 @@
 #include "GameData.h"
+#include "Global.h"
 #include "widgets/MusicianNode.h"
 #include <cassert>
 #include <cctype>
 #include <cstddef>
 #include <cstring>
 #include <tuple>
+using namespace cocos2d;
 
 KeyTrack *KeyTrack::create(const std::string &name)
 {
@@ -13,16 +15,17 @@ KeyTrack *KeyTrack::create(const std::string &name)
     return nullptr;
 }
 
-template <int N> MusicianNode *KeyTrackBasicKeys<N>::createMusicianNode() {
-    return MusicianNodeBasicKeys::create();
-}
-
-template <int N> void KeyTrackBasicKeys<N>::getNotesToDisplay(
-    uint32_t hitpos, std::vector<KeyNote *> &out)
+template <int N> void KeyTrackBasicKeys<N>::draw(uint32_t time, DrawNode *dn)
 {
-    out.clear();
-    for (auto &n : _notes)
-        if (n.time >= hitpos) out.push_back((KeyNote *)&n);
+    Size size = dn->getContentSize();
+    for (const auto &n : _notes) {
+        float posX = size.width / 4 * n.track;
+        float posY = HIT_LINE_POS + size.height * 0.0025 * ((float)n.time - time);
+        dn->drawSegment(
+            Vec2(posX, posY),
+            Vec2(posX + size.width / 4, posY),
+            2, Color4F(0.5, 0.6, 1, 0.9));
+    }
 }
 
 void Musician::startPlay()
@@ -46,12 +49,6 @@ uint32_t Musician::getTimePositionInTrack()
 {
     // TODO: Take speed change into account with `_tempoChangePtr`
     return (uint32_t)(_curTick * (_tempoChanges.front().second));
-}
-
-MusicianNode *Musician::createMusicianNode() {
-    auto ret = _keyTrack->createMusicianNode();
-    ret->setMusician(this);
-    return ret;
 }
 
 static inline void rtrim(char *s)

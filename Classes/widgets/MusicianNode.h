@@ -13,27 +13,20 @@ public:
         _musician(nullptr)
     { }
 
-    virtual bool init() override;
+    bool init() override;
+    CREATE_FUNC(MusicianNode);
 
     void clearAndRedrawBackground();
-    virtual void setContentSize(const cocos2d::Size &size) override;
+    void setContentSize(const cocos2d::Size &size) override;
 
     inline void setMusician(Musician *musician) { _musician = musician; }
 
     void startPlay();
-    virtual void update(float dt) override = 0;
+    void update(float dt) override;
 
 protected:
     cocos2d::DrawNode *_drawNode;
     Musician *_musician;
-};
-
-class MusicianNodeBasicKeys : public MusicianNode
-{
-public:
-    CREATE_FUNC(MusicianNodeBasicKeys);
-
-    virtual void update(float dt) override;
 };
 
 #endif

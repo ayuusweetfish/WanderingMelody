@@ -23,7 +23,8 @@ bool Gameplay::init()
     int numMusicians = _gig.getMusicianCount();
     MusicianNode *mus[numMusicians];
     for (int i = 0; i < numMusicians; i++) {
-        mus[i] = _gig.getMusician(i).createMusicianNode();
+        mus[i] = MusicianNode::create();
+        mus[i]->setMusician(&_gig.getMusician(i));
         mus[i]->setContentSize(Size(WIN_W * 0.23, WIN_H));
         mus[i]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
         mus[i]->setPosition(Vec2(WIN_W * (0.016 + 0.246 * i), 0));

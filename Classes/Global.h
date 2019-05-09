@@ -24,4 +24,6 @@
 
 #define WIN_SIZE cocos2d::Size(WIN_W, WIN_H)
 
+#define HIT_LINE_POS    (WIN_H / 3.0)
+
 #endif
