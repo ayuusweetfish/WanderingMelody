@@ -10,6 +10,8 @@ public:
     virtual void parseGrid(int32_t time, const char *grid);
     virtual int getWidth() { return N; }
 
+    virtual void sendEvent(int message);
+
     class Display : public Musician::Display {
     public:
         Display() : _mus(nullptr), _drawNode(nullptr) { }
@@ -31,6 +33,9 @@ public:
     };
 
     virtual Musician::Display *createDisplay() { return Display::create(this); }
+
+protected:
+    void triggerNote(uint8_t trackIdx);
 };
 
 template class MusicianNKeys<2>;

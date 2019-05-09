@@ -9,7 +9,3 @@ void Musician::tick(double dt)
 {
     _curTick += dt * 240;
 }
-
-void Musician::sendEvent(int message)
-{
-}

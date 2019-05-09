@@ -14,10 +14,10 @@ template <int N> bool MusicianNKeys<N>::Display::init(MusicianNKeys<N> *mus)
 
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
-        printf("+ %d\n", (int)keyCode);
+        _mus->sendEvent((int)keyCode);
     };
     listener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, Event *event) {
-        printf("- %d\n", (int)keyCode);
+        _mus->sendEvent((int)keyCode + 1024);
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 

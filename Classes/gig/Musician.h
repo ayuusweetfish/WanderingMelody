@@ -40,7 +40,7 @@ public:
 
     void startPlay();
     void tick(double dt);
-    void sendEvent(int message);
+    virtual void sendEvent(int message) = 0;
     inline const std::vector<MusicNote *> &getRecentTriggers() {
         return _recentTriggers;
     }
