@@ -3,6 +3,7 @@
 
 #include "gig/MusicTrack.h"
 
+#include "cocos2d.h"
 #include <utility>
 #include <vector>
 
@@ -29,6 +30,13 @@ public:
 
     virtual void parseGrid(int32_t time, const char *grid) = 0;
     virtual int getWidth() = 0;
+
+    class Display : public cocos2d::Node {
+    public:
+        Display() { }
+    };
+
+    virtual Display *createDisplay() = 0;
 
     void startPlay();
     void tick(double dt);

@@ -18,18 +18,16 @@ bool Gameplay::init()
         return true;
     }
 
-    /*int numMusicians = _gig.getMusicianCount();
-    MusicianNode *mus[numMusicians];
+    int numMusicians = _gig.getMusicianCount();
+    Musician::Display *mus[numMusicians];
     for (int i = 0; i < numMusicians; i++) {
-        mus[i] = MusicianNode::create();
-        mus[i]->setMusician(&_gig.getMusician(i));
+        mus[i] = _gig.getMusician(i)->createDisplay();
         mus[i]->setContentSize(Size(WIN_W * 0.23, WIN_H));
         mus[i]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
         mus[i]->setPosition(Vec2(WIN_W * (0.016 + 0.246 * i), 0));
         this->addChild(mus[i]);
+        _gig.getMusician(i)->startPlay();
     }
-
-    mus[0]->startPlay();*/
 
     return true;
 }
