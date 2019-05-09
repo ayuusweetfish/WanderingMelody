@@ -53,7 +53,7 @@ list(APPEND GAME_SOURCE
      Classes/scenes/Gameplay.cpp
      Classes/gig/Musician.cpp
      Classes/gig/MusicianNKeys.cpp
-     Classes/gig/MusicianNKeysView.cpp
+     Classes/gig/MusicianNKeysDisplay.cpp
      Classes/gig/Gig.cpp
      )
 list(APPEND GAME_HEADER

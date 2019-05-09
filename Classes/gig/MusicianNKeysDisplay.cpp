@@ -4,6 +4,17 @@
 #include "Global.h"
 using namespace cocos2d;
 
+template <int N> typename MusicianNKeys<N>::Display *
+    MusicianNKeys<N>::Display::create(MusicianNKeys<N> *mus)
+{
+    auto ret = new MusicianNKeys<N>::Display();
+    if (ret == nullptr || !ret->init(mus)) {
+        delete ret;
+        return nullptr;
+    }
+    return ret;
+}
+
 template <int N> bool MusicianNKeys<N>::Display::init(MusicianNKeys<N> *mus)
 {
     _mus = mus;
@@ -59,3 +70,6 @@ template <int N> void MusicianNKeys<N>::Display::update(float dt)
             n.triggered == -1 ? Color4F(0.5, 0.6, 1, 0.9) : Color4F(1, 0.8, 0.4, 0.9));
     }
 }
+
+template class MusicianNKeys<2>;
+template class MusicianNKeys<4>;

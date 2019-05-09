@@ -15,6 +15,11 @@ template <int N> void MusicianNKeys<N>::parseGrid(int32_t time, const char *grid
     }
 }
 
+template <int N> void MusicianNKeys<N>::setKeyMapping(const int keyCodes[N])
+{
+    for (int i = 0; i < N; i++) _keyMapping[i] = keyCodes[i];
+}
+
 template <int N> void MusicianNKeys<N>::startPlay()
 {
     Musician::startPlay();
@@ -39,3 +44,6 @@ template <int N> void MusicianNKeys<N>::triggerNote(uint8_t trackIdx)
             n.triggered = _curTick;
     }
 }
+
+template class MusicianNKeys<2>;
+template class MusicianNKeys<4>;
