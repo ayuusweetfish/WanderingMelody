@@ -6,6 +6,14 @@
 #include <utility>
 #include <vector>
 
+class KeyNote {
+public:
+    uint32_t time;  // in ticks
+    char tag;
+    uint8_t track;
+    int32_t triggered;
+};
+
 class Musician {
 public:
     Musician() { }
@@ -14,13 +22,13 @@ public:
         if (_musicTracks.size() <= idx)
             _musicTracks.resize(idx + 1);
     }
-    inline void addTempoChange(uint32_t time, uint16_t tempo) {
+    inline void addTempoChange(int32_t time, uint16_t tempo) {
         _tempoChanges.push_back({time, tempo});
     }
     inline MusicTrack &getMusicTrack(int idx) { return _musicTracks[idx]; }
 
-    void parseGrid(uint32_t time, const char *grid) { }
-    int getWidth() { return 4; }
+    virtual void parseGrid(int32_t time, const char *grid) = 0;
+    virtual int getWidth() = 0;
 
     void startPlay();
     void tick(double dt);
@@ -28,10 +36,11 @@ public:
     inline const std::vector<MusicNote *> &getRecentTriggers() {
         return _recentTriggers;
     }
-    uint32_t getTimePositionInTrack();
+    double getCurTick() { return _curTick; }
 
 protected:
-    std::vector<std::pair<uint32_t, uint16_t>> _tempoChanges;
+    std::vector<KeyNote> _keyNotes;
+    std::vector<std::pair<int32_t, uint16_t>> _tempoChanges;
     std::vector<MusicTrack> _musicTracks;
 
     // Fields used during playback

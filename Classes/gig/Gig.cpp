@@ -1,4 +1,5 @@
 #include "gig/Gig.h"
+#include "gig/MusicianNKeys.h"
 
 static inline void rtrim(char *s)
 {
@@ -45,6 +46,13 @@ static inline int gridReadNote(const char *s)
     static const int semitones[7] = { 9, 11, 0, 2, 4, 5, 7 };
     int ret = (octave - '0') * 12 + semitones[pitchClass - 'A'] + accidental;
     return ret + 12;    // For compliance with MIDI
+}
+
+static inline Musician *createMusicianOfType(const std::string &name)
+{
+    if (name == "4K") return new MusicianNKeys<4>();
+    if (name == "2K") return new MusicianNKeys<2>();
+    return nullptr;
 }
 
 Gig::FileReadResult Gig::init(const std::string &path)
@@ -129,7 +137,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         i++;    // Skip the delimiter
 
         if (trackIdx == -1) {
-            _musicians[musicianIdx] = new Musician();
+            _musicians[musicianIdx] = createMusicianOfType(s + i);
             if (_musicians[musicianIdx] == nullptr)
                 RET_ERRF("Col %d: Unrecognized track type: %s", i + 1, s + i);
             tracks.push_back({musicianIdx, -1, offset});
@@ -168,7 +176,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
     if (tracks.empty()) RET_ERR("No tracks in file");
 
     ////// Sequence grid //////
-    uint32_t lastBarEnd = 0, lastTime = 0, time = 0;
+    int32_t lastBarEnd = 0, lastTime = 0, time = 0;
     int lastStep = 0;
     while (fgets(s, 256, f) != NULL) {
         lineNum++;
@@ -211,7 +219,8 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         }
 
         if (bpm != 0) {
-            for (Musician *m : _musicians) m->addTempoChange(time, bpm);
+            for (Musician *m : _musicians)
+                if (m != nullptr) m->addTempoChange(time, bpm);
         }
 
         for (const trackLayout &t : tracks) {
