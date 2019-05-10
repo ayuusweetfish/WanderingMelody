@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 
+class Soundbank;
+
 class MusicNote {
 public:
     MusicNote() : tag(' '),
@@ -20,24 +22,13 @@ public:
     static const uint8_t NOTE_OFF = 0xfe;
 };
 
-class Soundbank {
-};
-
-class SoundBankAudioFile : public Soundbank {
-};
-
 class MusicTrack {
 public:
     MusicTrack() : _soundbank(nullptr) { }
-    inline void addNote(const MusicNote &note) {
-        if (note.note != MusicNote::NOCHANGE || note.vel != MusicNote::NOCHANGE ||
-            note.pan != MusicNote::NOCHANGE || note.dtune != MusicNote::NOCHANGE)
-        {
-            _notes.push_back(note);
-            printf("%d %c %d %d %d %d\n",
-                note.time, note.tag, note.note, note.vel, note.pan, note.dtune);
-        }
-    }
+
+    inline void setSoundbank(Soundbank *bank) { _soundbank = bank; }
+    void addNote(const MusicNote &note);
+    void triggerNote();
 
 protected:
     Soundbank *_soundbank;

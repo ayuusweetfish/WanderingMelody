@@ -1,5 +1,6 @@
 #include "gig/Gig.h"
 #include "gig/MusicianNKeys.h"
+#include "audio/SoundbankSoundFont.h"
 
 static inline void rtrim(char *s)
 {
@@ -119,6 +120,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         if (musicianIdx < 1 || musicianIdx > _musicians.size())
             RET_ERRF("Col %d: Invalid musician index: "
                 "should be between 1 and 4", i);
+        musicianIdx -= 1;
         if (s[i] == '/') {
             i++;
             if (s[i++] != 'T') RET_ERR("Invalid track tag: 'T' expected");
@@ -143,6 +145,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
             tracks.push_back({musicianIdx, -1, offset});
             offset += (1 + _musicians[musicianIdx]->getWidth());
         } else {
+            trackIdx -= 1;
             std::vector<size_t> fields;
             if (s[i] == '|') {
                 i++;
@@ -162,14 +165,16 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
                         if (fields[j] == fields.back())
                             RET_ERRF("Col %d: Duplicate parameter \"%c%c\"",
                                 i + 1, s[i], s[i + 1]);
-                    if (s[i + 2] == '|') break;
-                    if (s[i + 2] != ' ')
-                        RET_ERRF("Col %d: Parameter name too long", i + 1);
                     i += 3;
+                    if (s[i - 1] == '|') break;
+                    if (s[i - 1] != ' ')
+                        RET_ERRF("Col %d: Parameter name too long", i - 2);
                 }
             }
+            auto bank = new SoundbankSoundFont(s + i);
             tracks.push_back({musicianIdx, trackIdx, offset, fields});
             _musicians[musicianIdx]->allocateMusicTrack(trackIdx);
+            _musicians[musicianIdx]->getMusicTrack(trackIdx).setSoundbank(bank);
             offset += (5 + 2 * fields.size());
         }
     }
