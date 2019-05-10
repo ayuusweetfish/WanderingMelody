@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "scenes/Startup.h"
 #include "scenes/Gameplay.h"
+#include "audio/AudioOutput.h"
 using namespace cocos2d;
 
 bool AppDelegate::applicationDidFinishLaunching()
@@ -17,6 +18,10 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     auto scene = Gameplay::createScene();
     director->runWithScene(scene);
+
+    AudioOutput::createInstance();
+    AudioOutput::getInstance()->startPlayback();
+
     return true;
 }
 
