@@ -10,7 +10,7 @@ void Musician::tick(double dt)
 {
     if (!_isPlaying) return;
     int32_t lastTick = (int32_t)_curTick;
-    _curTick += dt * 240;
+    _curTick += dt * _tempoChanges.front().second;
     for (auto &mt : _musicTracks)
         mt.triggerAutoNotes(lastTick, (int32_t)_curTick);
 }
