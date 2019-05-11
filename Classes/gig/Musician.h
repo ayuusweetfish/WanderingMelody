@@ -17,7 +17,7 @@ public:
 
 class Musician {
 public:
-    Musician() { }
+    Musician() : _isPlaying(0) { }
 
     inline void allocateMusicTrack(int idx) {
         if (_musicTracks.size() <= idx)
@@ -52,6 +52,7 @@ protected:
     std::vector<MusicTrack> _musicTracks;
 
     // Fields used during playback
+    bool _isPlaying;
     int _tempoChangePtr;
     double _curTick;
     std::vector<MusicNote *> _recentTriggers;

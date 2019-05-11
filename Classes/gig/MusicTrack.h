@@ -11,7 +11,7 @@ public:
     MusicNote() : tag(' '),
         note(NOCHANGE), vel(NOCHANGE), pan(NOCHANGE), dtune(NOCHANGE) { }
 
-    uint32_t time;
+    int32_t time;
     char tag;
     uint8_t note;
     uint8_t vel;
@@ -28,7 +28,8 @@ public:
 
     inline void setSoundbank(Soundbank *bank) { _soundbank = bank; }
     void addNote(const MusicNote &note);
-    void triggerNote();
+    void triggerNote(int32_t time, char tag);
+    void triggerAutoNotes(int32_t start, int32_t end);
 
 protected:
     Soundbank *_soundbank;

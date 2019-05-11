@@ -15,6 +15,7 @@ SoundbankSoundFont::SoundbankSoundFont(const char *s)
 
 void SoundbankSoundFont::sendNote(const MusicNote &note)
 {
+    if (note.note == MusicNote::NOCHANGE) return;
     _lastNote = _curNote;
     _lastNoteOffTime = _lastNote.phase;
     if (note.note == MusicNote::NOTE_OFF) {

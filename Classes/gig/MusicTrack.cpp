@@ -12,8 +12,16 @@ void MusicTrack::addNote(const MusicNote &note)
     }
 }
 
-void MusicTrack::triggerNote()
+void MusicTrack::triggerNote(int32_t time, char tag)
 {
-    _soundbank->sendNote(_notes.front());
-    if (_notes.size() > 1) _notes.erase(_notes.begin());
+    for (MusicNote &n : _notes)
+        if (n.time == time && n.tag == tag)
+            _soundbank->sendNote(n);
+}
+
+void MusicTrack::triggerAutoNotes(int32_t start, int32_t end)
+{
+    for (MusicNote &n : _notes)
+        if (n.time >= start && n.time < end && (n.tag == '.' || n.tag == ' '))
+            _soundbank->sendNote(n);
 }
