@@ -28,11 +28,41 @@ bool Gameplay::init()
         mus[i]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
         mus[i]->setPosition(Vec2(WIN_W * (0.016 + 0.246 * i), 0));
         this->addChild(mus[i]);
-        _gig.getMusician(i)->startPlay();
     }
 
     ((MusicianNKeys<4> *)_gig.getMusician(0))->setKeyMapping((int []){149, 147, 126, 145});
     ((MusicianNKeys<2> *)_gig.getMusician(1))->setKeyMapping((int []){134, 135});
+
+    auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W / 2, WIN_H / 8);
+    layerStart->setPosition((WIN_SIZE - Size(WIN_W / 2, WIN_H / 8)) / 2);
+    this->addChild(layerStart, 9999);
+    _layerStart = layerStart;
+
+    auto labelStart = Label::createWithTTF("Press Enter", "fonts/arial.ttf", 42);
+    labelStart->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+    labelStart->setPosition(Size(WIN_W / 2, WIN_H / 8) / 2);
+    labelStart->setColor(Color3B(64, 64, 64));
+    layerStart->addChild(labelStart);
+    _labelStart = labelStart;
+
+    auto listener = cocos2d::EventListenerKeyboard::create();
+    listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
+        if (_playState == 0 && keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
+            _labelStart->runAction(Sequence::createWithTwoActions(
+                EaseQuadraticActionIn::create(
+                    Spawn::createWithTwoActions(
+                        ScaleTo::create(0.4, 2), FadeOut::create(0.4)
+                    )
+                ),
+                CallFunc::create([this] () {
+                    for (int i = 0; i < _gig.getMusicianCount(); i++)
+                        _gig.getMusician(i)->startPlay();
+                })
+            ));
+            _layerStart->runAction(FadeOut::create(0.4));
+        }
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     return true;
 }

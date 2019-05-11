@@ -15,6 +15,12 @@ public:
 
 protected:
     Gig _gig;
+
+    cocos2d::LayerColor *_layerStart;
+    cocos2d::Label *_labelStart;
+
+    // 0 - not started, 1 - playing, 2 - paused
+    char _playState;
 };
 
 #endif
