@@ -52,6 +52,7 @@ list(APPEND GAME_SOURCE
      Classes/scenes/Startup.cpp
      Classes/scenes/Gameplay.cpp
      Classes/audio/AudioOutput.cpp
+     Classes/audio/SoundbankPureSine.cpp
      Classes/audio/SoundbankSoundFont.cpp
      Classes/gig/MusicTrack.cpp
      Classes/gig/Musician.cpp

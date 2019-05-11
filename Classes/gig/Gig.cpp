@@ -1,5 +1,6 @@
 #include "gig/Gig.h"
 #include "gig/MusicianNKeys.h"
+#include "audio/SoundbankPureSine.h"
 #include "audio/SoundbankSoundFont.h"
 
 static inline void rtrim(char *s)
