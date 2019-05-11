@@ -40,9 +40,14 @@ bool AppDelegate::applicationDidFinishLaunching()
 void AppDelegate::applicationDidEnterBackground()
 {
     Director::getInstance()->stopAnimation();
+    AudioOutput::getInstance()->removeCallback(0);
 }
 
 void AppDelegate::applicationWillEnterForeground()
 {
     Director::getInstance()->startAnimation();
+    AudioOutput::getInstance()->registerCallback([] (float *outbuf, int nframes) {
+        for (int i = 0; i < nframes * 2; i++)
+            outbuf[i] += sin((phase + i / 2) * M_PI / 100) * 0.2;
+    });
 }

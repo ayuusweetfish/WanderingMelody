@@ -4,6 +4,7 @@
 #include "audio/miniaudio.h"
 
 #include <functional>
+#include <utility>
 #include <vector>
 #include <cstdint>
 
@@ -27,7 +28,8 @@ private:
     const char *_errMsg;
 
     ma_device _device;
-    std::vector<callback_t> _callbacks;
+    std::vector<std::pair<bool, callback_t>> _callbacks;
+    std::vector<size_t> _emptyPos;
 
     void render(float *outbuf, uint32_t nframes);
 

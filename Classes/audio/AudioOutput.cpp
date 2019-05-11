@@ -16,18 +16,33 @@ void audioOutputCallback(ma_device *device, float *outbuf, float *inbuf, ma_uint
 
 int AudioOutput::registerCallback(callback_t callback)
 {
-    _callbacks.push_back(callback);
-    return _callbacks.size() - 1;
+    if (!_emptyPos.empty()) {
+        int id = _emptyPos.back();
+        _callbacks[id] = {true, callback};
+        _emptyPos.pop_back();
+        return id;
+    } else {
+        _callbacks.push_back({true, callback});
+        return _callbacks.size() - 1;
+    }
 }
 
 void AudioOutput::removeCallback(int id)
 {
+    // No bound checks
+    _callbacks[id].first = false;
+    _emptyPos.push_back(id);
+    int i;
+    for (i = _callbacks.size() - 1; i >= 0; i--)
+        if (_callbacks[i].first) break;
+    _callbacks.resize(i + 1);
 }
 
 void AudioOutput::render(float *outbuf, uint32_t nframes)
 {
     // Assume outbuf is zeroed out
-    for (const auto &f : _callbacks) f(outbuf, nframes);
+    for (const auto &f : _callbacks)
+        if (f.first) f.second(outbuf, nframes);
 }
 
 AudioOutput::AudioOutput()
