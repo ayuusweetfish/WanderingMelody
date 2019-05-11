@@ -219,7 +219,11 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
                 else
                     RET_ERRF("Col 6: Step should be either 1 or %d", lastStep + 1);
             }
-            if (step == 1) lastBarEnd += lastStep * 240;
+            if (step == 1) {
+                lastBarEnd += lastStep * 240;
+                for (Musician *m : _musicians)
+                    if (m != nullptr) m->addBarline(lastBarEnd);
+            }
             time = lastBarEnd + (step - 1) * 240;
             lastStep = step;
         }

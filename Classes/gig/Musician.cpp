@@ -4,6 +4,8 @@ void Musician::startPlay()
 {
     _curTick = 0;
     _isPlaying = true;
+    _barlines.push_back(0);
+    _barlinePtr = 0;
 }
 
 void Musician::tick(double dt)

@@ -26,6 +26,7 @@ public:
     inline void addTempoChange(int32_t time, uint16_t tempo) {
         _tempoChanges.push_back({time, tempo});
     }
+    inline void addBarline(int32_t time) { _barlines.push_back(time); }
     inline MusicTrack &getMusicTrack(int idx) { return _musicTracks[idx]; }
 
     virtual void parseGrid(int32_t time, const char *grid) = 0;
@@ -49,11 +50,13 @@ public:
 protected:
     std::vector<KeyNote> _keyNotes;
     std::vector<std::pair<int32_t, uint16_t>> _tempoChanges;
+    std::vector<int32_t> _barlines;
     std::vector<MusicTrack> _musicTracks;
 
     // Fields used during playback
     bool _isPlaying;
     int _tempoChangePtr;
+    int _barlinePtr;
     double _curTick;
     std::vector<MusicNote *> _recentTriggers;
 };

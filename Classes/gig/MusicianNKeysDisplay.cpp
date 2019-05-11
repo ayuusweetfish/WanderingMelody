@@ -60,12 +60,20 @@ template <int N> void MusicianNKeys<N>::Display::update(float dt)
         Vec2(size.width, HIT_LINE_POS),
         2, Color4F(1, 1, 0.7, 0.9));
 
+    // Bar lines
+    for (int32_t barline : _mus->_barlines) {
+        float posY = HIT_LINE_POS + size.height * 0.0025 * (barline - _mus->getCurTick());
+        _drawNode->drawSegment(
+            Vec2(0, posY), Vec2(size.width, posY), 2, Color4F(0.7, 0.7, 0.7, 0.5)
+        );
+    }
+
     for (const auto &n : _mus->_keyNotes) {
         float posX = size.width / N * n.track;
         float posY = HIT_LINE_POS + size.height * 0.0025 * (n.time - _mus->getCurTick());
         _drawNode->drawSegment(
-            Vec2(posX, posY),
-            Vec2(posX + size.width / N, posY),
+            Vec2(posX + 2, posY),
+            Vec2(posX + size.width / N - 2, posY),
             2,
             n.triggered == -1 ? Color4F(0.5, 0.6, 1, 0.9) : Color4F(1, 0.8, 0.4, 0.9));
     }
