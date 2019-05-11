@@ -57,6 +57,30 @@ static inline Musician *createMusicianOfType(const std::string &name)
     return nullptr;
 }
 
+static inline Soundbank *createSoundbank(const std::string &wd, const std::string &desc)
+{
+    int i = 0, j, len = desc.length();
+    std::string path;
+    std::unordered_map<std::string, std::string> args;
+    while (i < len) {
+        j = desc.find(' ', i);
+        if (j == std::string::npos) j = len;
+
+        if (i == 0) {
+            path = desc.substr(0, j);
+        } else {
+            int k = desc.find('=', i);
+            if (k >= i && k < j)
+                args[desc.substr(i, k - i)] = desc.substr(k + 1, j - k - 1);
+        }
+
+        if (j == len) break;
+        i = j + 1;
+    }
+    for (auto x : args) printf("%s %s\n", x.first.c_str(), x.second.c_str());
+    return new SoundbankSoundFont(wd + path);
+}
+
 Gig::FileReadResult Gig::init(const std::string &path)
 {
     FILE *f = fopen(path.c_str(), "r");
@@ -172,7 +196,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
                         RET_ERRF("Col %d: Parameter name too long", i - 2);
                 }
             }
-            auto bank = new SoundbankSoundFont("/Users/lsq/Documents/MuseScore3Development/SoundFonts/SGM-v2.01-NicePianosGuitarsBass-V1.2.sf2");   // s + i
+            auto bank = createSoundbank("/Users/lsq/Downloads/OpenXLSX-master/exp/", s + i);
             tracks.push_back({musicianIdx, trackIdx, offset, fields});
             _musicians[musicianIdx]->allocateMusicTrack(trackIdx);
             _musicians[musicianIdx]->getMusicTrack(trackIdx).setSoundbank(bank);
