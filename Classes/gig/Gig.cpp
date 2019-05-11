@@ -172,12 +172,10 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
                         RET_ERRF("Col %d: Parameter name too long", i - 2);
                 }
             }
+            auto bank = new SoundbankSoundFont("/Users/lsq/Documents/MuseScore3Development/SoundFonts/SGM-v2.01-NicePianosGuitarsBass-V1.2.sf2");   // s + i
             tracks.push_back({musicianIdx, trackIdx, offset, fields});
             _musicians[musicianIdx]->allocateMusicTrack(trackIdx);
-            if (musicianIdx == 0 && trackIdx == 0) {
-                auto bank = new SoundbankSoundFont("/Users/lsq/Documents/MuseScore3Development/SoundFonts/SGM-v2.01-NicePianosGuitarsBass-V1.2.sf2");   // s + i
-                _musicians[musicianIdx]->getMusicTrack(trackIdx).setSoundbank(bank);
-            }
+            _musicians[musicianIdx]->getMusicTrack(trackIdx).setSoundbank(bank);
             offset += (5 + 2 * fields.size());
         }
     }

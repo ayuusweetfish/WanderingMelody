@@ -4,11 +4,13 @@
 #include "audio/Soundbank.h"
 #include "audio/tsf.h"
 
+#include <map>
+#include <string>
 #include <cstdint>
 
 class SoundbankSoundFont : public Soundbank {
 public:
-    SoundbankSoundFont(const char *s);
+    SoundbankSoundFont(const std::string &s);
     ~SoundbankSoundFont();
 
     virtual void sendNote(const MusicNote &note) override;
@@ -16,7 +18,10 @@ public:
 protected:
     void render(float *output, uint32_t nframe);
 
+    static std::map<std::string, std::pair<tsf *, int>> _cache;
+
     tsf *_f;
+    int _channelNum;
     MusicNote _lastNote;
 };
 
