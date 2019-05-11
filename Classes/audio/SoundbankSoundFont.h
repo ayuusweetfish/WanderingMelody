@@ -3,11 +3,17 @@
 
 #include "audio/Soundbank.h"
 
+#include <cstdint>
+
 class SoundbankSoundFont : public Soundbank {
 public:
-    SoundbankSoundFont(const char *s) { }
+    SoundbankSoundFont(const char *s);
 
     virtual void sendNote(const MusicNote &note) override;
+
+protected:
+    void render(float *output, uint32_t nframe);
+    int _phase;
 };
 
 #endif
