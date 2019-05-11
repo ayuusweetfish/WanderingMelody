@@ -3,12 +3,20 @@
 
 #include "audio/miniaudio.h"
 
+#include <functional>
+#include <vector>
+#include <cstdint>
+
 class AudioOutput {
 public:
     AudioOutput();
     ~AudioOutput();
 
+    typedef std::function<void (float *, uint32_t)> callback_t;
+
     void startPlayback();
+    int registerCallback(callback_t callback);
+    void removeCallback(int id);
 
     static inline void createInstance() { if (!_instance) _instance = new AudioOutput(); }
     static inline void destroyInstance() { if (_instance) { delete _instance; _instance = nullptr; } }
@@ -19,6 +27,12 @@ private:
     const char *_errMsg;
 
     ma_device _device;
+    std::vector<callback_t> _callbacks;
+
+    void render(float *outbuf, uint32_t nframes);
+
+    friend void audioOutputCallback(
+        ma_device *device, float *outbuf, float *inbuf, ma_uint32 nframes);
 
     static AudioOutput *_instance;
 };

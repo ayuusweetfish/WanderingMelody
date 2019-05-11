@@ -9,11 +9,25 @@ AudioOutput *AudioOutput::_instance;
 
 static int phase = 0;
 
-void audioOutputCallback(ma_device *device, float *outbuf, float *intbuf, ma_uint32 nframes)
+void audioOutputCallback(ma_device *device, float *outbuf, float *inbuf, ma_uint32 nframes)
 {
-    for (int i = 0; i < nframes * 2; i++)
-        outbuf[i] = sin((phase + i / 2) * M_PI / 100) * 0.2;
-    phase += nframes;
+    AudioOutput::getInstance()->render(outbuf, nframes);
+}
+
+int AudioOutput::registerCallback(callback_t callback)
+{
+    _callbacks.push_back(callback);
+    return _callbacks.size() - 1;
+}
+
+void AudioOutput::removeCallback(int id)
+{
+}
+
+void AudioOutput::render(float *outbuf, uint32_t nframes)
+{
+    // Assume outbuf is zeroed out
+    for (const auto &f : _callbacks) f(outbuf, nframes);
 }
 
 AudioOutput::AudioOutput()
