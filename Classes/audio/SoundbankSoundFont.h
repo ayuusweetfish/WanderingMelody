@@ -13,7 +13,13 @@ public:
 
 protected:
     void render(float *output, uint32_t nframe);
-    int _phase;
+    struct {
+        MusicNote musicNote;
+        float angVel;
+        int phase;
+    } _lastNote, _curNote;
+    int _lastNoteOffTime;
+    bool _isCurNoteOn;
 };
 
 #endif

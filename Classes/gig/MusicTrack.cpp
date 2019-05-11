@@ -15,4 +15,5 @@ void MusicTrack::addNote(const MusicNote &note)
 void MusicTrack::triggerNote()
 {
     _soundbank->sendNote(_notes.front());
+    if (_notes.size() > 1) _notes.erase(_notes.begin());
 }
