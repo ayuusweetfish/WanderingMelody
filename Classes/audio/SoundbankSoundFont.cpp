@@ -27,7 +27,11 @@ SoundbankSoundFont::SoundbankSoundFont(const std::string &s)
                 this, std::placeholders::_1, std::placeholders::_2));
     }
 
-    tsf_channel_set_bank(_f, _channelNum, 0);
+    const int TMP_PRESET[4] = {10, 12, 12, 14};
+    const float TMP_VOL[4] = {12.0, 0.2, 0.15};
+    tsf_channel_set_presetindex(_f, _channelNum, TMP_PRESET[_channelNum]);
+    tsf_channel_set_volume(_f, _channelNum, TMP_VOL[_channelNum]);
+    //tsf_channel_set_bank(_f, _channelNum, 8);
 
     _lastNote.vel = 50;
     _lastNote.pan = 50;
@@ -57,4 +61,5 @@ void SoundbankSoundFont::sendNote(const MusicNote &note)
 void SoundbankSoundFont::render(float *output, uint32_t nframes)
 {
     tsf_render_float(_f, output, nframes, 1);
+    for (int i = 0; i < nframes * 2; i++) output[i] *= 10;
 }

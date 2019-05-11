@@ -8,7 +8,7 @@ bool Gameplay::init()
 {
     if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255))) return false;
 
-    Gig::FileReadResult r = _gig.init("/Users/lsq/Downloads/OpenXLSX-master/exp/1.txt");
+    Gig::FileReadResult r = _gig.init("/Users/lsq/Downloads/OpenXLSX-master/exp/2.txt");
     if (!r.succeeded) {
         auto label = Label::createWithTTF(r.errMsg, "fonts/arial.ttf", 42);
         label->setMaxLineWidth(WIN_W * 2 / 3);
@@ -31,7 +31,7 @@ bool Gameplay::init()
     }
 
     ((MusicianNKeys<4> *)_gig.getMusician(0))->setKeyMapping((int []){149, 147, 126, 145});
-    ((MusicianNKeys<2> *)_gig.getMusician(1))->setKeyMapping((int []){134, 135});
+    //((MusicianNKeys<2> *)_gig.getMusician(1))->setKeyMapping((int []){134, 135});
 
     auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W / 2, WIN_H / 8);
     layerStart->setPosition((WIN_SIZE - Size(WIN_W / 2, WIN_H / 8)) / 2);
