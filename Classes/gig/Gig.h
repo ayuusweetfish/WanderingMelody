@@ -28,6 +28,7 @@ protected:
     std::unordered_map<std::string, std::string> _metadata;
     std::vector<Musician *> _musicians;
 
+    std::string _workingDir;
     FileReadResult initWithStdioFile(FILE *f);
 };
 

@@ -3,6 +3,8 @@
 #include "audio/SoundbankPureSine.h"
 #include "audio/SoundbankSoundFont.h"
 
+#include <unistd.h>
+
 static inline void rtrim(char *s)
 {
     int l = strlen(s) - 1;
@@ -83,6 +85,15 @@ static inline Soundbank *createSoundbank(const std::string &wd, const std::strin
 
 Gig::FileReadResult Gig::init(const std::string &path)
 {
+    size_t delim = path.find_last_of('/');
+    if (delim != std::string::npos) {
+        _workingDir = path.substr(0, delim + 1);
+    } else {
+        char wd[256];
+        if (getcwd(wd, sizeof wd) == NULL)
+            return FileReadResult(false, "Cannot get working directory");
+        _workingDir = wd;
+    }
     FILE *f = fopen(path.c_str(), "r");
     if (!f) return FileReadResult(false, "Cannot open file \"" + path + '\"');
     auto ret = this->initWithStdioFile(f);
@@ -196,7 +207,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
                         RET_ERRF("Col %d: Parameter name too long", i - 2);
                 }
             }
-            auto bank = createSoundbank("/Users/lsq/Downloads/OpenXLSX-master/exp/", s + i);
+            auto bank = createSoundbank(_workingDir, s + i);
             tracks.push_back({musicianIdx, trackIdx, offset, fields});
             _musicians[musicianIdx]->allocateMusicTrack(trackIdx);
             _musicians[musicianIdx]->getMusicTrack(trackIdx).setSoundbank(bank);
