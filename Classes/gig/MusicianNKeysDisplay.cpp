@@ -44,7 +44,7 @@ template <int N> void MusicianNKeys<N>::Display::update(float dt)
     _drawNode->clear();
 
     Size size = this->getContentSize();
-    float speed = Config::getScrollSpeed() / _mus->getCurTempo();
+    float speed = Config::getScrollSpeed() / _mus->getOrigTempo();
 
     _drawNode->drawSolidRect(
         Vec2(0, 0),

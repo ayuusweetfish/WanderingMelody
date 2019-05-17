@@ -46,7 +46,9 @@ public:
         return _recentTriggers;
     }
     double getCurTick() { return _curTick; }
-    double getCurTempo() { return _tempoChanges.front().second; }
+    double getOrigTempo() { return _tempoChanges.front().second; }
+    double getSpeed() { return _speed; }
+    double getAccel() { return _accel; }
 
 protected:
     std::vector<KeyNote> _keyNotes;
@@ -56,10 +58,14 @@ protected:
 
     // Fields used during playback
     bool _isPlaying;
+    double _speed, _accel;
     int _tempoChangePtr;
     int _barlinePtr;
     double _curTick;
     std::vector<MusicNote *> _recentTriggers;
+
+    void addHitOffset(double delta);
+    std::queue<double> _hitOffsets;
 };
 
 #endif
