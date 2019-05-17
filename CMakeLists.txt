@@ -55,6 +55,7 @@ list(APPEND GAME_SOURCE
      Classes/audio/AudioOutput.cpp
      Classes/audio/SoundbankPureSine.cpp
      Classes/audio/SoundbankSoundFont.cpp
+     Classes/gig/Beater.cpp
      Classes/gig/MusicTrack.cpp
      Classes/gig/Musician.cpp
      Classes/gig/MusicianNKeys.cpp
