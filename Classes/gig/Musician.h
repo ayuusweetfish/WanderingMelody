@@ -4,6 +4,7 @@
 #include "gig/MusicTrack.h"
 
 #include "cocos2d.h"
+#include <deque>
 #include <utility>
 #include <vector>
 
@@ -65,7 +66,7 @@ protected:
     std::vector<MusicNote *> _recentTriggers;
 
     void addHitOffset(double delta);
-    std::queue<double> _hitOffsets;
+    std::deque<double> _hitOffsets;
 };
 
 #endif

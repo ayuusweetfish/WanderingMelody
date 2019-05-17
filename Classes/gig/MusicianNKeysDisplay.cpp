@@ -61,6 +61,10 @@ template <int N> void MusicianNKeys<N>::Display::update(float dt)
         Vec2(0, HIT_LINE_POS),
         Vec2(size.width, HIT_LINE_POS),
         2, Color4F(1, 1, 0.7, 0.9));
+    _drawNode->drawSegment(
+        Vec2(0, HIT_LINE_POS + _mus->_accel),
+        Vec2(size.width, HIT_LINE_POS + _mus->_accel),
+        2, Color4F(1, 0.7, 0.7, 0.9));
 
     // Bar lines
     for (int32_t barline : _mus->_barlines) {

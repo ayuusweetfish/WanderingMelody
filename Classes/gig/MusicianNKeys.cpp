@@ -39,7 +39,7 @@ template <int N> void MusicianNKeys<N>::sendEvent(int message)
 
 template <int N> void MusicianNKeys<N>::triggerNote(uint8_t trackIdx)
 {
-    int tolTicks = 0.3 * _speed;
+    int tolTicks = 0.5 * _speed;
     for (KeyNote &n : _keyNotes) if (n.track == trackIdx && n.triggered == -1) {
         if (n.time >= _curTick - tolTicks && n.time <= _curTick + tolTicks) {
             n.triggered = _curTick;
