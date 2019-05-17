@@ -31,7 +31,7 @@ bool Gameplay::init()
     }
 
     ((MusicianNKeys<4> *)_gig.getMusician(0))->setKeyMapping((int []){149, 147, 126, 145});
-    //((MusicianNKeys<2> *)_gig.getMusician(1))->setKeyMapping((int []){134, 135});
+    ((MusicianNKeys<4> *)_gig.getMusician(1))->setKeyMapping((int []){131, 133, 134, 135});
 
     auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W / 2, WIN_H / 8);
     layerStart->setPosition((WIN_SIZE - Size(WIN_W / 2, WIN_H / 8)) / 2);

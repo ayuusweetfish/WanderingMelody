@@ -19,7 +19,7 @@ SoundbankSoundFont::SoundbankSoundFont(
         _channelNum = mapItr->second.second++;
     } else {
         _f = tsf_load_filename(s.c_str());
-        if (!_f) return;
+        if (!_f) return;    // TODO: Report errors
         tsf_set_output(_f, TSF_STEREO_INTERLEAVED, 44100, 0);
         _channelNum = 0;
         _cache.insert({s, {_f, 1}});

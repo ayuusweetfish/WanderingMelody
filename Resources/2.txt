@@ -6,150 +6,151 @@ Notes    |N.B.
 
 P1   |4K
 P1/T1|Vl|1.sf2 Patch=10 Gain=12.0
-P1/T2|Vl|1.sf2 Patch=12 Gain=0.2
-P1/T3|Vl|1.sf2 Patch=12 Gain=0.15
+P2   |4K
+P2/T1|Vl|1.sf2 Patch=12 Gain=0.2
+P2/T2|Vl|1.sf2 Patch=12 Gain=0.15
 
- 600|1   |    |      | A-3  |      
-    |2   |    |      |      |      
-    |3   |    |      | E-3  |      
-    |4   |    |      |      |      
-    |5   |    |      | A-3  |      
-    |6   |    |      |      |      
-    |7   |    |      | E-3  |      
-    |8   |    |      |      |      
-    |1   | o  |oA-4  | A-3  |      
-    |2   |o   |oE-4  | C#4  | E-4  
-    |3   | o  |oA-4  | E-3  |      
-    |4   |  o |oC#5  | C#4  | E-4  
-    |5   |   o|oE-5  | A-3  |      
-    |6   | o  |oA-4  | C#4  | E-4  
-    |7   |  o |oC#5  | E-3  |      
-    |8   |   o|oE-5  | C#4  | E-4  
-    |1   | o  |oF#5  | F#3  |      
-    |2   |o   |oA-4  | A-3  | D-4  
-    |3   | o  |oF#5  | D-3  |      
-    |4   |   o|oA-5  | A-3  | D-4  
-    |5   |  o |oE-5  | A-3  |      
-    |6   |    |      | C#4  | E-4  
-    |7   | o  |oA-4  | E-3  |      
-    |8   |o   |oE-4  | C#4  | E-4  
-    |1   |   o|oD-5  | F#3  |      
-    |2   |o   |oF#4  | A-3  | D-4  
-    |3   | o  |oA-4  | D-3  |      
-    |4   |   o|oD-5  | A-3  | D-4  
-    |5   |  o |oC#5  | A-3  |      
-    |6   |o   |oE-4  | C#4  | E-4  
-    |7   | o  |oA-4  | E-3  |      
-    |8   |   o|oC#5  | C#4  | E-4  
-    |1   |  o |oB-4  | F#3  |      
-    |2   | o  |oA-4  | B-3  | D-4  
-    |3   | o  |oA-4  | D-3  |      
-    |4   |   o|oC#5  | B-3  | D-4  
-    |5   |  o |oB-4  | E-3  |      
-    |6   |    |      | G#3  | B-3  
-    |7   |o   |oE-4  | B-2  |      
-    |8   |    |      | G#3  | B-3  
-    |1   | o  |oA-4  | A-3  |      
-    |2   |o   |oE-4  | C#4  | E-4  
-    |3   | o  |oA-4  | E-3  |      
-    |4   |  o |oC#5  | C#4  | E-4  
-    |5   |   o|oE-5  | A-3  |      
-    |6   | o  |oA-4  | C#4  | E-4  
-    |7   |  o |oC#5  | E-3  |      
-    |8   |   o|oE-5  | C#4  | E-4  
-    |1   | o  |oF#5  | F#3  |      
-    |2   | o  |oF#5  | A-3  | D-4  
-    |.500|o   |oF-5  |      |      
-    |3   | o  |oF#5  | D-3  |      
-    |4   |   o|oA-5  | A-3  | D-4  
-    |5   |  o |oG#5  | G#3  |      
-    |6   |  o |oF#5  | C#4  | E-4  
-    |.333|   o|oG#5  |      |      
-    |.667|  o |oF#5  |      |      
-    |7   | o  |oE-5  | E-3  |      
-    |8   |o   |oA-4  | C#4  | E-4  
-    |1   |   o|oD-5  | F#3  |      
-    |2   |o   |oF#4  | A-3  | D-4  
-    |3   | o  |oA-4  | D-3  |      
-    |4   |   o|oD-5  | A-3  | D-4  
-    |5   |  o |oC#5  | A-3  |      
-    |6   |o   |oE-4  | C#4  | E-4  
-    |7   | o  |oA-4  | E-3  |      
-    |8   |   o|oC#5  | C#4  | E-4  
-    |1   |  o |oB-4  | F#3  |      
-    |2   |  o |oB-4  | B-3  | D-4  
-    |.500|   o|oC#5  |      |      
-    |3   |  o |oB-4  | E-3  |      
-    |4   | o  |oA-4  | G#3  | B-3  
-    |5   | o  |oA-4  | A-3  |      
-    |6   |    |      | C#4  | E-4  
-    |7   | o  |oA-4  | E-3  |      
-    |8   |  o |oC#5  | C#4  | E-4  
-    |1   |   o|oE-5  | A-3  |      
-    |2   |o   |oE-4  | C#4  | E-4  
-    |3   | o  |oA-4  | E-3  |      
-    |4   |  o |oC#5  | C#4  | E-4  
-    |5   |   o|oD-5  | F#3  |      
-    |6   |o   |oF#4  | A-3  | D-4  
-    |7   | o  |oA-4  | D-3  |      
-    |8   |  o |oB-4  | A-3  | D-4  
-    |1   |   o|oC#5  | A-3  |      
-    |2   |o   |oE-4  | C#4  | E-4  
-    |3   | o  |oA-4  | E-3  |      
-    |4   |   o|oC#5  | C#4  | E-4  
-    |5   |  o |oB-4  | E-3  |      
-    |6   |o   |oE-4  | G#3  | B-3  
-    |7   | o  |oG#4  | B-2  |      
-    |8   |  o |oB-4  | G#3  | B-3  
-    |1   |   o|oE-5  | A-3  |      
-    |2   |o   |oE-4  | C#4  | E-4  
-    |3   | o  |oC#5  | E-3  |      
-    |4   |   o|oE-5  | C#4  | E-4  
-    |5   |  o |oD-5  | F#3  |      
-    |6   |o   |oF#4  | A-3  | D-4  
-    |7   | o  |oA-4  | D-3  |      
-    |8   |   o|oD-5  | A-3  | D-4  
-    |1   |  o |oC#5  | A-3  |      
-    |2   |o   |oE-4  | C#4  | E-4  
-    |3   | o  |oA-4  | E-3  |      
-    |4   |   o|oC#5  | C#4  | E-4  
-    |5   |  o |oB-4  | E-3  |      
-    |6   |o   |oE-4  | G#3  | B-3  
-    |7   |   o|oD-5  | B-2  |      
-    |8   | o  |oB#4  | G#3  | B-3  
-    |1   |  o |oC#5  | A-3  |      
-    |2   |o   |oE-4  | C#4  | E-4  
-    |3   | o  |oA-4  | E-3  |      
-    |4   |  o |oC#5  | C#4  | E-4  
-    |5   |   o|oE-5  | A-3  |      
-    |6   | o  |oA-4  | C#4  | E-4  
-    |7   |  o |oC#5  | E-3  |      
-    |8   |   o|oE-5  | C#4  | E-4  
-    |1   | o  |oF#5  | F#3  |      
-    |2   | o  |oF#5  | A-3  | D-4  
-    |.500|o   |oF-5  |      |      
-    |3   | o  |oF#5  | D-3  |      
-    |4   |   o|oA-5  | A-3  | D-4  
-    |5   |  o |oG#5  | G#3  |      
-    |6   |  o |oF#5  | C#4  | E-4  
-    |.333|   o|oG#5  |      |      
-    |.667|  o |oF#5  |      |      
-    |7   | o  |oE-5  | E-3  |      
-    |8   |o   |oA-4  | C#4  | E-4  
-    |1   |   o|oD-5  | F#3  |      
-    |2   |o   |oF#4  | A-3  | D-4  
-    |3   | o  |oA-4  | D-3  |      
-    |4   |   o|oD-5  | A-3  | D-4  
-    |5   |  o |oC#5  | A-3  |      
-    |6   |o   |oE-4  | C#4  | E-4  
-    |7   | o  |oA-4  | E-3  |      
-    |8   |   o|oC#5  | C#4  | E-4  
-    |1   |  o |oB-4  | F#3  |      
-    |2   |  o |oB-4  | B-3  | D-4  
-    |.500|   o|oC#5  |      |      
-    |3   |  o |oB-4  | E-3  |      
-    |4   | o  |oA-4  | G#3  | B-3  
-    |5   | o  |oA-4  | A-3  |      
-    |6   |    |      | E-3  |      
-    |7   | o  |oA-4  | A-2  |      
-    |8   |    |      |      |      
+ 600|1   |    |      |    | A-3  |      
+    |2   |    |      |    |      |      
+    |3   |    |      |    | E-3  |      
+    |4   |    |      |    |      |      
+    |5   |    |      |    | A-3  |      
+    |6   |    |      |    |      |      
+    |7   |    |      |    | E-3  |      
+    |8   |    |      |    |      |      
+    |1   | o  |oA-4  | o  |oA-3  |      
+    |2   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |3   | o  |oA-4  |o   |oE-3  |      
+    |4   |  o |oC#5  |  ox|oC#4  |xE-4  
+    |5   |   o|oE-5  | o  |oA-3  |      
+    |6   | o  |oA-4  |  ox|oC#4  |xE-4  
+    |7   |  o |oC#5  |o   |oE-3  |      
+    |8   |   o|oE-5  |  ox|oC#4  |xE-4  
+    |1   | o  |oF#5  | o  |oF#3  |      
+    |2   |o   |oA-4  |  ox|oA-3  |xD-4  
+    |3   | o  |oF#5  |o   |oD-3  |      
+    |4   |   o|oA-5  |  ox|oA-3  |xD-4  
+    |5   |  o |oE-5  | o  |oA-3  |      
+    |6   |    |      |  ox|oC#4  |xE-4  
+    |7   | o  |oA-4  |o   |oE-3  |      
+    |8   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |1   |   o|oD-5  | o  |oF#3  |      
+    |2   |o   |oF#4  |  ox|oA-3  |xD-4  
+    |3   | o  |oA-4  |o   |oD-3  |      
+    |4   |   o|oD-5  |  ox|oA-3  |xD-4  
+    |5   |  o |oC#5  | o  |oA-3  |      
+    |6   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |7   | o  |oA-4  |o   |oE-3  |      
+    |8   |   o|oC#5  |  ox|oC#4  |xE-4  
+    |1   |  o |oB-4  | o  |oF#3  |      
+    |2   | o  |oA-4  |  ox|oB-3  |xD-4  
+    |3   | o  |oA-4  |o   |oD-3  |      
+    |4   |   o|oC#5  |  ox|oB-3  |xD-4  
+    |5   |  o |oB-4  | o  |oE-3  |      
+    |6   |    |      |  ox|oG#3  |xB-3  
+    |7   |o   |oE-4  |o   |oB-2  |      
+    |8   |    |      |  ox|oG#3  |xB-3  
+    |1   | o  |oA-4  | o  |oA-3  |      
+    |2   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |3   | o  |oA-4  |o   |oE-3  |      
+    |4   |  o |oC#5  |  ox|oC#4  |xE-4  
+    |5   |   o|oE-5  | o  |oA-3  |      
+    |6   | o  |oA-4  |  ox|oC#4  |xE-4  
+    |7   |  o |oC#5  |o   |oE-3  |      
+    |8   |   o|oE-5  |  ox|oC#4  |xE-4  
+    |1   | o  |oF#5  | o  |oF#3  |      
+    |2   | o  |oF#5  |  ox|oA-3  |xD-4  
+    |.500|o   |oF-5  |    |      |      
+    |3   | o  |oF#5  |o   |oD-3  |      
+    |4   |   o|oA-5  |  ox|oA-3  |xD-4  
+    |5   |  o |oG#5  | o  |oG#3  |      
+    |6   |  o |oF#5  |  ox|oC#4  |xE-4  
+    |.333|   o|oG#5  |    |      |      
+    |.667|  o |oF#5  |    |      |      
+    |7   | o  |oE-5  |o   |oE-3  |      
+    |8   |o   |oA-4  |  ox|oC#4  |xE-4  
+    |1   |   o|oD-5  | o  |oF#3  |      
+    |2   |o   |oF#4  |  ox|oA-3  |xD-4  
+    |3   | o  |oA-4  |o   |oD-3  |      
+    |4   |   o|oD-5  |  ox|oA-3  |xD-4  
+    |5   |  o |oC#5  | o  |oA-3  |      
+    |6   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |7   | o  |oA-4  |o   |oE-3  |      
+    |8   |   o|oC#5  |  ox|oC#4  |xE-4  
+    |1   |  o |oB-4  | o  |oF#3  |      
+    |2   |  o |oB-4  |  ox|oB-3  |xD-4  
+    |.500|   o|oC#5  |    |      |      
+    |3   |  o |oB-4  |o   |oE-3  |      
+    |4   | o  |oA-4  |  ox|oG#3  |xB-3  
+    |5   | o  |oA-4  | o  |oA-3  |      
+    |6   |    |      |  ox|oC#4  |xE-4  
+    |7   | o  |oA-4  |o   |oE-3  |      
+    |8   |  o |oC#5  |  ox|oC#4  |xE-4  
+    |1   |   o|oE-5  | o  |oA-3  |      
+    |2   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |3   | o  |oA-4  |o   |oE-3  |      
+    |4   |  o |oC#5  |  ox|oC#4  |xE-4  
+    |5   |   o|oD-5  | o  |oF#3  |      
+    |6   |o   |oF#4  |  ox|oA-3  |xD-4  
+    |7   | o  |oA-4  |o   |oD-3  |      
+    |8   |  o |oB-4  |  ox|oA-3  |xD-4  
+    |1   |   o|oC#5  | o  |oA-3  |      
+    |2   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |3   | o  |oA-4  |o   |oE-3  |      
+    |4   |   o|oC#5  |  ox|oC#4  |xE-4  
+    |5   |  o |oB-4  | o  |oE-3  |      
+    |6   |o   |oE-4  |  ox|oG#3  |xB-3  
+    |7   | o  |oG#4  |o   |oB-2  |      
+    |8   |  o |oB-4  |  ox|oG#3  |xB-3  
+    |1   |   o|oE-5  | o  |oA-3  |      
+    |2   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |3   | o  |oC#5  |o   |oE-3  |      
+    |4   |   o|oE-5  |  ox|oC#4  |xE-4  
+    |5   |  o |oD-5  | o  |oF#3  |      
+    |6   |o   |oF#4  |  ox|oA-3  |xD-4  
+    |7   | o  |oA-4  |o   |oD-3  |      
+    |8   |   o|oD-5  |  ox|oA-3  |xD-4  
+    |1   |  o |oC#5  | o  |oA-3  |      
+    |2   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |3   | o  |oA-4  |o   |oE-3  |      
+    |4   |   o|oC#5  |  ox|oC#4  |xE-4  
+    |5   |  o |oB-4  | o  |oE-3  |      
+    |6   |o   |oE-4  |  ox|oG#3  |xB-3  
+    |7   |   o|oD-5  |o   |oB-2  |      
+    |8   | o  |oB#4  |  ox|oG#3  |xB-3  
+    |1   |  o |oC#5  | o  |oA-3  |      
+    |2   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |3   | o  |oA-4  |o   |oE-3  |      
+    |4   |  o |oC#5  |  ox|oC#4  |xE-4  
+    |5   |   o|oE-5  | o  |oA-3  |      
+    |6   | o  |oA-4  |  ox|oC#4  |xE-4  
+    |7   |  o |oC#5  |o   |oE-3  |      
+    |8   |   o|oE-5  |  ox|oC#4  |xE-4  
+    |1   | o  |oF#5  | o  |oF#3  |      
+    |2   | o  |oF#5  |  ox|oA-3  |xD-4  
+    |.500|o   |oF-5  |    |      |      
+    |3   | o  |oF#5  |o   |oD-3  |      
+    |4   |   o|oA-5  |  ox|oA-3  |xD-4  
+    |5   |  o |oG#5  | o  |oG#3  |      
+    |6   |  o |oF#5  |  ox|oC#4  |xE-4  
+    |.333|   o|oG#5  |    |      |      
+    |.667|  o |oF#5  |    |      |      
+    |7   | o  |oE-5  |o   |oE-3  |      
+    |8   |o   |oA-4  |  ox|oC#4  |xE-4  
+    |1   |   o|oD-5  | o  |oF#3  |      
+    |2   |o   |oF#4  |  ox|oA-3  |xD-4  
+    |3   | o  |oA-4  |o   |oD-3  |      
+    |4   |   o|oD-5  |  ox|oA-3  |xD-4  
+    |5   |  o |oC#5  | o  |oA-3  |      
+    |6   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |7   | o  |oA-4  |o   |oE-3  |      
+    |8   |   o|oC#5  |  ox|oC#4  |xE-4  
+    |1   |  o |oB-4  | o  |oF#3  |      
+    |2   |  o |oB-4  |  ox|oB-3  |xD-4  
+    |.500|   o|oC#5  |    |      |      
+    |3   |  o |oB-4  |o   |oE-3  |      
+    |4   | o  |oA-4  |  ox|oG#3  |xB-3  
+    |5   | o  |oA-4  | o  |oA-3  |      
+    |6   |    |      |o   |oE-3  |      
+    |7   | o  |oA-4  | o  |oA-2  |      
+    |8   |    |      |    |      |      
