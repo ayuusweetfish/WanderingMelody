@@ -46,6 +46,7 @@ public:
         return _recentTriggers;
     }
     double getCurTick() { return _curTick; }
+    double getCurTempo() { return _tempoChanges.front().second; }
 
 protected:
     std::vector<KeyNote> _keyNotes;

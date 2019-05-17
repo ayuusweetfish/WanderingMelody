@@ -2,6 +2,7 @@
 
 #include "cocos2d.h"
 #include "Global.h"
+#include "Config.h"
 using namespace cocos2d;
 
 template <int N> typename MusicianNKeys<N>::Display *
@@ -43,6 +44,7 @@ template <int N> void MusicianNKeys<N>::Display::update(float dt)
     _drawNode->clear();
 
     Size size = this->getContentSize();
+    float speed = Config::getScrollSpeed() / _mus->getCurTempo();
 
     _drawNode->drawSolidRect(
         Vec2(0, 0),
@@ -62,7 +64,7 @@ template <int N> void MusicianNKeys<N>::Display::update(float dt)
 
     // Bar lines
     for (int32_t barline : _mus->_barlines) {
-        float posY = HIT_LINE_POS + size.height * 0.001 * (barline - _mus->getCurTick());
+        float posY = HIT_LINE_POS + size.height * speed * (barline - _mus->getCurTick());
         _drawNode->drawSegment(
             Vec2(0, posY), Vec2(size.width, posY), 2, Color4F(0.7, 0.7, 0.7, 0.5)
         );
@@ -70,7 +72,7 @@ template <int N> void MusicianNKeys<N>::Display::update(float dt)
 
     for (const auto &n : _mus->_keyNotes) {
         float posX = size.width / N * n.track;
-        float posY = HIT_LINE_POS + size.height * 0.001 * (n.time - _mus->getCurTick());
+        float posY = HIT_LINE_POS + size.height * speed * (n.time - _mus->getCurTick());
         _drawNode->drawSegment(
             Vec2(posX + 2, posY),
             Vec2(posX + size.width / N - 2, posY),

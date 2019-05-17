@@ -49,6 +49,7 @@ endif()
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
+     Classes/Config.cpp
      Classes/scenes/Startup.cpp
      Classes/scenes/Gameplay.cpp
      Classes/audio/AudioOutput.cpp
