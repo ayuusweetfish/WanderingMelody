@@ -80,7 +80,7 @@ static inline Soundbank *createSoundbank(const std::string &wd, const std::strin
         i = j + 1;
     }
     for (auto x : args) printf("%s %s\n", x.first.c_str(), x.second.c_str());
-    return new SoundbankSoundFont(wd + path);
+    return new SoundbankSoundFont(wd + path, args);
 }
 
 Gig::FileReadResult Gig::init(const std::string &path)

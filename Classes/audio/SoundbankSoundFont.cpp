@@ -6,9 +6,11 @@
 
 #include <cmath>
 
-std::map<std::string, std::pair<tsf *, int>> SoundbankSoundFont::_cache;
+std::unordered_map<std::string, std::pair<tsf *, int>> SoundbankSoundFont::_cache;
 
-SoundbankSoundFont::SoundbankSoundFont(const std::string &s)
+SoundbankSoundFont::SoundbankSoundFont(
+    const std::string &s,
+    std::unordered_map<std::string, std::string> args)
 {
     auto mapItr = _cache.find(s);
 
@@ -27,11 +29,10 @@ SoundbankSoundFont::SoundbankSoundFont(const std::string &s)
                 this, std::placeholders::_1, std::placeholders::_2));
     }
 
-    const int TMP_PRESET[4] = {10, 12, 12, 14};
-    const float TMP_VOL[4] = {12.0, 0.2, 0.15};
-    tsf_channel_set_presetindex(_f, _channelNum, TMP_PRESET[_channelNum]);
-    tsf_channel_set_volume(_f, _channelNum, TMP_VOL[_channelNum]);
-    //tsf_channel_set_bank(_f, _channelNum, 8);
+    int presetNum = getArgNumber(args, "Patch", 0);
+    double volume = getArgNumber(args, "Gain", 1);
+    tsf_channel_set_presetindex(_f, _channelNum, presetNum);
+    tsf_channel_set_volume(_f, _channelNum, volume);
 
     _lastNote.vel = 50;
     _lastNote.pan = 50;
