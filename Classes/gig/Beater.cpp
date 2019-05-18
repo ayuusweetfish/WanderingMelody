@@ -103,6 +103,17 @@ void Beater::solveCurve(const point_t &p, double k, const line_t &line, double X
     _d = D0 / D;
 }
 
+bool Beater::isAscending(double x1, double x2) const
+{
+    const double EPS = 1e-6;
+    double a = 3 * _a, b = 2 * _b, c = _c;
+    double x3 = -b / (2 * a);
+    return ((a * x1 + b) * x1 + c >= EPS)
+        && ((a * x2 + b) * x2 + c >= EPS)
+        && (x3 < x1 || x3 > x2 ||
+            (a * x3 + b) * x3 + c >= EPS);
+}
+
 void Beater::update(const point_t &p)
 {
     // Update the window of points
@@ -120,3 +131,29 @@ void Beater::update(const point_t &p)
 
 #undef x
 #undef y
+
+void Beater::test()
+{
+    _q.clear();
+    _q.push_back({0.38, 3.02});
+    _q.push_back({1.72, 4.40});
+    _q.push_back({3.58, 4.72});
+    _q.push_back({5.14, 6.22});
+    _q.push_back({8.00, 7.00});
+    auto l = this->regression();
+    printf("%.4lf x + %.4lf\n", l.first, l.second);
+
+    this->solveCurve({1.7198, 4.7636}, 0.35, {0.6, 2.7622}, 3.7103);
+    // 0.1828 x^3 + -1.4259 x^2 + 3.6327 x + 1.8037
+    printf("%.4lf x^3 + %.4lf x^2 + %.4lf x + %.4lf\n", _a, _b, _c, _d);
+
+    double x1 = 1.7198, x2_min = 3.7103, x2_max = 100;
+    for (int i = 0; i < 20; i++) {
+        double x2 = (x2_min + x2_max) / 2;
+        this->solveCurve({x1, 4.7636}, 0.35, {0.6, 2.7622}, x2);
+        bool asc = isAscending(x1, x2);
+        printf("%.4lf | %d\n", x2, (int)asc);
+        (asc ? x2_max : x2_min) = x2;
+    }
+    printf("(%.4lf, %.4lf)\n", x2_min, x2_min * 0.6 + 2.7622);
+}

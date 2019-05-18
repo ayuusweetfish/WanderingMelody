@@ -15,6 +15,8 @@ public:
     inline double getY(double x) { return ((_a * x + _b) * x + _c) * x + _d; }
     inline double getK(double x) { return (3 * _a * x + 2 * _b) * x + _c; }
 
+    void test();
+
 protected:
     const int _size;
     std::deque<point_t> _q;
@@ -23,6 +25,7 @@ protected:
 
     inline line_t regression() const;
     inline void solveCurve(const point_t &p, double k, const line_t &line, double x);
+    inline bool isAscending(double x1, double x2) const;
 };
 
 #endif
