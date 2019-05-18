@@ -114,7 +114,7 @@ bool Beater::isAscending(double x1, double x2) const
             (a * x3 + b) * x3 + c >= EPS);
 }
 
-void Beater::update(const point_t &p)
+void Beater::update(const point_t &p, double k)
 {
     // Update the window of points
     if (_q.size() >= 8) _q.pop_front();
@@ -122,38 +122,25 @@ void Beater::update(const point_t &p)
     if (_q.size() < 4) return;
 
     // Linear regression
-    Beater::line_t l = this->regression();
+    _l = this->regression();
 
     // Solve for the cubic curve
-    solveCurve(p, 0, l, p.x + 1);
-    // TODO: Increase target X when the speed may become negative
+    double x2_min = p.x + 1;
+    solveCurve(p, k, _l, x2_min);
+    if (this->isAscending(p.x, x2_min)) {
+        _xFin = x2_min;
+        return;
+    }
+
+    double x2_max = p.x + 100000;
+    // Rare case, so doing a bit heavy work is acceptable
+    for (int i = 0; i < 20; i++) {
+        double x2 = (x2_min + x2_max) / 2;
+        solveCurve(p, k, _l, x2);
+        (this->isAscending(p.x, x2) ? x2_max : x2_min) = x2;
+    }
+    _xFin = x2_min;
 }
 
 #undef x
 #undef y
-
-void Beater::test()
-{
-    _q.clear();
-    _q.push_back({0.38, 3.02});
-    _q.push_back({1.72, 4.40});
-    _q.push_back({3.58, 4.72});
-    _q.push_back({5.14, 6.22});
-    _q.push_back({8.00, 7.00});
-    auto l = this->regression();
-    printf("%.4lf x + %.4lf\n", l.first, l.second);
-
-    this->solveCurve({1.7198, 4.7636}, 0.35, {0.6, 2.7622}, 3.7103);
-    // 0.1828 x^3 + -1.4259 x^2 + 3.6327 x + 1.8037
-    printf("%.4lf x^3 + %.4lf x^2 + %.4lf x + %.4lf\n", _a, _b, _c, _d);
-
-    double x1 = 1.7198, x2_min = 3.7103, x2_max = 100;
-    for (int i = 0; i < 20; i++) {
-        double x2 = (x2_min + x2_max) / 2;
-        this->solveCurve({x1, 4.7636}, 0.35, {0.6, 2.7622}, x2);
-        bool asc = isAscending(x1, x2);
-        printf("%.4lf | %d\n", x2, (int)asc);
-        (asc ? x2_max : x2_min) = x2;
-    }
-    printf("(%.4lf, %.4lf)\n", x2_min, x2_min * 0.6 + 2.7622);
-}
