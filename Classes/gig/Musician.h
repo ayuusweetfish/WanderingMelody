@@ -2,9 +2,9 @@
 #define __WanderingMelody__Musician_h__
 
 #include "gig/MusicTrack.h"
+#include "gig/Beater.h"
 
 #include "cocos2d.h"
-#include <deque>
 #include <utility>
 #include <vector>
 
@@ -48,8 +48,6 @@ public:
     }
     double getCurTick() { return _curTick; }
     double getOrigTempo() { return _tempoChanges.front().second; }
-    double getSpeed() { return _speed; }
-    double getAccel() { return _accel; }
 
 protected:
     std::vector<KeyNote> _keyNotes;
@@ -59,14 +57,13 @@ protected:
 
     // Fields used during playback
     bool _isPlaying;
-    double _speed, _accel;
     int _tempoChangePtr;
     int _barlinePtr;
-    double _curTick;
+    double _curTime, _curTick;
     std::vector<MusicNote *> _recentTriggers;
 
-    void addHitOffset(double delta);
-    std::deque<double> _hitOffsets;
+    Beater _beater;
+    void addHit(double orig, double actual);
 };
 
 #endif

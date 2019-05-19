@@ -6,6 +6,7 @@
 
 class Beater {
 public:
+    Beater() { }
     Beater(int size, double k)
         : _size(size), _xFin(0), _l(line_t(k, 0)) { }
     typedef std::pair<double, double> point_t;
@@ -24,7 +25,7 @@ public:
     }
 
 protected:
-    const int _size;
+    int _size;
     std::deque<point_t> _q;
 
     double _a, _b, _c, _d;
