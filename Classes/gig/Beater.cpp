@@ -121,12 +121,14 @@ void Beater::update(const point_t &p, double k)
     _q.push_back(p);
     if (_q.size() < 4) return;
 
+    point_t pp(p.x, this->getY(p.x));
+
     // Linear regression
     _l = this->regression();
 
     // Solve for the cubic curve
     double x2_min = p.x + 1;
-    solveCurve(p, k, _l, x2_min);
+    solveCurve(pp, k, _l, x2_min);
     if (this->isAscending(p.x, x2_min)) {
         _xFin = x2_min;
         return;
@@ -136,7 +138,7 @@ void Beater::update(const point_t &p, double k)
     // Rare case, so doing a bit heavy work is acceptable
     for (int i = 0; i < 20; i++) {
         double x2 = (x2_min + x2_max) / 2;
-        solveCurve(p, k, _l, x2);
+        solveCurve(pp, k, _l, x2);
         (this->isAscending(p.x, x2) ? x2_max : x2_min) = x2;
     }
     _xFin = x2_min;

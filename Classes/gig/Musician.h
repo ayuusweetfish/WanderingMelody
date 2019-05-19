@@ -63,7 +63,7 @@ protected:
     std::vector<MusicNote *> _recentTriggers;
 
     Beater _beater;
-    void addHit(double orig, double actual);
+    void addHit(double noteTick);
 };
 
 #endif

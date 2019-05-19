@@ -45,7 +45,7 @@ template <int N> void MusicianNKeys<N>::triggerNote(uint8_t trackIdx)
             n.triggered = _curTick;
             // TODO: Handle multiple keys of the same tag
             for (auto &mt : _musicTracks) mt.triggerNote(n.time, n.tag);
-            addHit(n.time, _curTime);
+            addHit(n.time);
             break;
         }
     }

@@ -24,7 +24,7 @@ void Musician::tick(double dt)
         mt.triggerAutoNotes(lastTick, (int32_t)_curTick);
 }
 
-void Musician::addHit(double orig, double actual)
+void Musician::addHit(double noteTick)
 {
-    _beater.update({_curTime, orig}, _beater.getK(_curTime));
+    _beater.update({_curTime, noteTick}, _beater.getK(_curTime));
 }
