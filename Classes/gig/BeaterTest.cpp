@@ -4,7 +4,9 @@
 
 int main()
 {
-    Beater b(8, 0);
+    Beater b(8, 2);
+
+    printf("%.4lf %.4lf\n", b.getY(10), b.getK(10));
 
     b.update({0.7607, 1.3057}, 0);
     b.update({1.4638, 2.0353}, 0);

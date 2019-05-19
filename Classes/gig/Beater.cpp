@@ -117,7 +117,7 @@ bool Beater::isAscending(double x1, double x2) const
 void Beater::update(const point_t &p, double k)
 {
     // Update the window of points
-    if (_q.size() >= 8) _q.pop_front();
+    if (_q.size() >= _size) _q.pop_front();
     _q.push_back(p);
     if (_q.size() < 4) return;
 
