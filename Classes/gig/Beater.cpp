@@ -1,5 +1,9 @@
 #include "Beater.h"
 
+#include <cmath>
+#include <algorithm>
+#include <tuple>
+
 using point_t = Beater::point_t;
 using line_t = Beater::line_t;
 
@@ -42,27 +46,44 @@ static inline double det4(
 
 Beater::line_t Beater::regression() const
 {
-    double x_bar = 0, y_bar = 0;
+    double x_sum = 0, y_sum = 0;
+    double xx_sum = 0, yy_sum = 0, xy_sum = 0;
     for (const auto &p0 : _q) {
-        x_bar += p0.x;
-        y_bar += p0.y;
+        x_sum += p0.x;
+        y_sum += p0.y;
+        xx_sum += p0.x * p0.x;
+        yy_sum += p0.y * p0.y;
+        xy_sum += p0.x * p0.y;
     }
-    x_bar /= _q.size();
-    y_bar /= _q.size();
 
-    double slr_a_num = 0;
-    double slr_a_deno = 0;
-    for (const auto &p0 : _q) {
-        double xx = p0.x - x_bar;
-        double yy = p0.y - y_bar;
-        slr_a_num += xx * yy;
-        slr_a_deno += xx * xx;
+    double x_bar = x_sum / _q.size();
+    double y_bar = y_sum / _q.size();
+    double xx_bar = xx_sum / _q.size();
+    double yy_bar = yy_sum / _q.size();
+    double xy_bar = xy_sum / _q.size();
+
+    // tuple<R, slope, interception>
+    std::tuple<double, double, double> best(-1, 0, 0);
+
+    for (int i = -1; i < (int)_q.size(); i++) {
+        if (i != -1) {
+            // Try removing one sample
+            x_bar = (x_sum - _q[i].x) / (_q.size() - 1);
+            y_bar = (y_sum - _q[i].y) / (_q.size() - 1);
+            xx_bar = (xx_sum - _q[i].x * _q[i].x) / (_q.size() - 1);
+            yy_bar = (yy_sum - _q[i].y * _q[i].y) / (_q.size() - 1);
+            xy_bar = (xy_sum - _q[i].x * _q[i].y) / (_q.size() - 1);
+        }
+
+        double slr_r = (xy_bar - x_bar * y_bar)
+            / sqrt((xx_bar - x_bar * x_bar) * (yy_bar - y_bar * y_bar));
+        // TODO: Handle division by zero (though quite unlikely to happen)
+        double slr_a = (xy_bar - x_bar * y_bar) / (xx_bar - x_bar * x_bar);
+        double slr_b = y_bar - x_bar * slr_a;
+        best = std::max(best, {slr_r, slr_a, slr_b});
     }
-    // TODO: Handle division by zero (though quite unlikely to happen)
-    double slr_a = slr_a_num / slr_a_deno;
-    double slr_b = y_bar - x_bar * slr_a;
 
-    return line_t(slr_a, slr_b);
+    return line_t(std::get<1>(best), std::get<2>(best));
 }
 
 void Beater::solveCurve(const point_t &p, double k, const line_t &line, double X)
