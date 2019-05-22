@@ -124,15 +124,15 @@ void Beater::solveCurve(const point_t &p, double k, const line_t &line, double X
     _d = D0 / D;
 }
 
-bool Beater::isAscending(double x1, double x2) const
+bool Beater::isAscending(double x1, double x2, double min_k) const
 {
     const double EPS = 1e-6;
     double a = 3 * _a, b = 2 * _b, c = _c;
     double x3 = -b / (2 * a);
-    return ((a * x1 + b) * x1 + c >= EPS)
-        && ((a * x2 + b) * x2 + c >= EPS)
+    return ((a * x1 + b) * x1 + c >= min_k + EPS)
+        && ((a * x2 + b) * x2 + c >= min_k + EPS)
         && (x3 < x1 || x3 > x2 ||
-            (a * x3 + b) * x3 + c >= EPS);
+            (a * x3 + b) * x3 + c >= min_k + EPS);
 }
 
 void Beater::update(const point_t &p, double k)
@@ -145,24 +145,25 @@ void Beater::update(const point_t &p, double k)
     point_t pp(p.x, this->getY(p.x));
 
     // Linear regression
-    _l = this->regression();
+    auto new_l = this->regression();
+    if (new_l.first > 0) _l = new_l;
 
     // Solve for the cubic curve
     double x2_min = p.x + 1;
     solveCurve(pp, k, _l, x2_min);
-    if (this->isAscending(p.x, x2_min)) {
+    if (this->isAscending(p.x, x2_min, k / 2)) {
         _xFin = x2_min;
         return;
     }
 
     double x2_max = p.x + 100000;
     // Rare case, so doing a bit heavy work is acceptable
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 40; i++) {
         double x2 = (x2_min + x2_max) / 2;
         solveCurve(pp, k, _l, x2);
-        (this->isAscending(p.x, x2) ? x2_max : x2_min) = x2;
+        (this->isAscending(p.x, x2, k / 2) ? x2_max : x2_min) = x2;
     }
-    _xFin = x2_min;
+    _xFin = x2_max + 1e-3;
 }
 
 #undef x
