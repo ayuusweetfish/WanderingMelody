@@ -43,8 +43,16 @@ template <int N> void MusicianNKeys<N>::triggerNote(uint8_t trackIdx)
     for (KeyNote &n : _keyNotes) if (n.track == trackIdx && n.triggered == -1) {
         if (n.time >= _curTick - tolTicks && n.time <= _curTick + tolTicks) {
             n.triggered = _curTick;
-            // TODO: Handle multiple keys of the same tag
-            for (auto &mt : _musicTracks) mt.triggerNote(n.time, n.tag);
+            // Handle multiple keys of the same tag
+            // TODO: Optimize with data structures
+            bool allTriggered = true;
+            for (KeyNote &nn : _keyNotes)
+                if (nn.time == n.time && nn.triggered == -1 && nn.tag == n.tag) {
+                    allTriggered = false;
+                    break;
+                }
+            if (allTriggered)
+                for (auto &mt : _musicTracks) mt.triggerNote(n.time, n.tag);
             addHit(n.time);
             break;
         }

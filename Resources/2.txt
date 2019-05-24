@@ -19,13 +19,13 @@ P2/T2|Vl|1.sf2 Patch=12 Gain=0.15
     |7   |    |      |    | E-3  |      
     |8   |    |      |    |      |      
     |1   | o  |oA-4  | o  |oA-3  |      
-    |2   |o   |oE-4  |  ox|oC#4  |xE-4  
+    |2   |o   |oE-4  |  oo|oC#4  |oE-4  
     |3   | o  |oA-4  |o   |oE-3  |      
-    |4   |  o |oC#5  |  ox|oC#4  |xE-4  
+    |4   |  o |oC#5  |  oo|oC#4  |oE-4  
     |5   |   o|oE-5  | o  |oA-3  |      
-    |6   | o  |oA-4  |  ox|oC#4  |xE-4  
+    |6   | o  |oA-4  |  oo|oC#4  |oE-4  
     |7   |  o |oC#5  |o   |oE-3  |      
-    |8   |   o|oE-5  |  ox|oC#4  |xE-4  
+    |8   |   o|oE-5  |  oo|oC#4  |oE-4  
     |1   | o  |oF#5  | o  |oF#3  |      
     |2   |o   |oA-4  |  ox|oA-3  |xD-4  
     |3   | o  |oF#5  |o   |oD-3  |      
