@@ -32,7 +32,7 @@ protected:
     double _xFin;
     line_t _l;
 
-    inline line_t regression() const;
+    inline std::pair<line_t, double> regression() const;
     inline void solveCurve(const point_t &p, double k, const line_t &line, double x);
     inline bool isAscending(double x1, double x2, double min_k) const;
 };

@@ -44,7 +44,7 @@ static inline double det4(
 #define x   first
 #define y   second
 
-Beater::line_t Beater::regression() const
+std::pair<Beater::line_t, double> Beater::regression() const
 {
     double x_sum = 0, y_sum = 0;
     double xx_sum = 0, yy_sum = 0, xy_sum = 0;
@@ -83,7 +83,7 @@ Beater::line_t Beater::regression() const
         best = std::max(best, {slr_r, slr_a, slr_b});
     }
 
-    return line_t(std::get<1>(best), std::get<2>(best));
+    return {line_t(std::get<1>(best), std::get<2>(best)), std::get<0>(best)};
 }
 
 void Beater::solveCurve(const point_t &p, double k, const line_t &line, double X)
@@ -145,11 +145,12 @@ void Beater::update(const point_t &p, double k)
     point_t pp(p.x, this->getY(p.x));
 
     // Linear regression
-    auto new_l = this->regression();
+    auto slr_result = this->regression();
+    line_t new_l = slr_result.first;
     if (new_l.first > 0) _l = new_l;
 
     // Solve for the cubic curve
-    double x2_min = p.x + 1;
+    double x2_min = p.x + 1 / (slr_result.second * slr_result.second);
     solveCurve(pp, k, _l, x2_min);
     if (this->isAscending(p.x, x2_min, k / 2)) {
         _xFin = x2_min;
