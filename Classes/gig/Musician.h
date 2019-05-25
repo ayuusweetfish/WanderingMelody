@@ -43,12 +43,13 @@ public:
     inline Display *getDisplay() { return _display; }
 
     virtual void startPlay();
-    virtual void tick(double dt);
+    virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
     virtual void sendEvent(int message) = 0;
     inline const std::vector<MusicNote *> &getRecentTriggers() {
         return _recentTriggers;
     }
     double getCurTick() { return _curTick; }
+    double getRawTick() { return _rawTick; }
     double getOrigTempo() { return _tempoChanges.front().second; }
 
 protected:
@@ -61,7 +62,7 @@ protected:
     bool _isPlaying;
     int _tempoChangePtr;
     int _barlinePtr;
-    double _curTime, _curTick;
+    double _curTime, _curTick, _rawTick;    // _curTick is the adjusted value
     std::vector<MusicNote *> _recentTriggers;
 
     Beater _beater;

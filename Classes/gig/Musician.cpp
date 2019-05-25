@@ -12,7 +12,7 @@ void Musician::startPlay()
     _beater = Beater(8, this->getOrigTempo());
 }
 
-void Musician::tick(double dt)
+void Musician::tick(double dt, double lcap, double hcap)
 {
     if (_display) _display->refresh();
 
@@ -20,7 +20,8 @@ void Musician::tick(double dt)
     int32_t lastTick = (int32_t)_curTick;
 
     _curTime += dt;
-    _curTick = _beater.getY(_curTime);
+    _rawTick = _beater.getY(_curTime);
+    _curTick = std::min(std::max(_rawTick, lcap), hcap);
 
     for (auto &mt : _musicTracks)
         mt.triggerAutoNotes(lastTick, (int32_t)_curTick);

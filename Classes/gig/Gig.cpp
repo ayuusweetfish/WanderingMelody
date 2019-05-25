@@ -317,7 +317,21 @@ void Gig::startPlay()
 
 void Gig::tick(float dt)
 {
+    std::pair<double, int>
+        f1(-1, -1), f2(-1, -1),
+        b1(INFINITY, -1), b2(INFINITY, -1);
     for (int i = 0; i < _musicians.size(); i++) {
-        _musicians[i]->tick(dt);
+        std::pair<double, int> cur(_musicians[i]->getRawTick(), i);
+        if (f1 < cur) { f2 = f1; f1 = cur; }
+        else if (f2 < cur) { f2 = cur; }
+        if (b1 > cur) { b2 = b1; b1 = cur; }
+        else if (b2 > cur) { b2 = cur; }
+    }
+
+    for (int i = 0; i < _musicians.size(); i++) {
+        _musicians[i]->tick(dt,
+            (i == b1.second ? b2.first : b1.first) - 480 * 4,
+            (i == f1.second ? f2.first : f1.first) + 480 * 4
+        );
     }
 }
