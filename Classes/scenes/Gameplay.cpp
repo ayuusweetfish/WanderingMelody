@@ -30,8 +30,14 @@ bool Gameplay::init()
         this->addChild(mus[i]);
     }
 
+    // ZXCV
     ((MusicianNKeys<4> *)_gig.getMusician(0))->setKeyMapping((int []){149, 147, 126, 145});
+    // HJKL
     ((MusicianNKeys<4> *)_gig.getMusician(1))->setKeyMapping((int []){131, 133, 134, 135});
+    // QWER
+    ((MusicianNKeys<4> *)_gig.getMusician(2))->setKeyMapping((int []){140, 146, 128, 141});
+    // 7890
+    ((MusicianNKeys<4> *)_gig.getMusician(3))->setKeyMapping((int []){83, 84, 85, 76});
 
     auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W / 2, WIN_H / 8);
     layerStart->setPosition((WIN_SIZE - Size(WIN_W / 2, WIN_H / 8)) / 2);
