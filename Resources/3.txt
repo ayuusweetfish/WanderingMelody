@@ -1,0 +1,27 @@
+Title    |NyaNyaNyanNyanNyaaNoKoneko
+Subtitle |
+Artist   |daniwellP
+Cover Art|
+Notes    |
+
+P1   |4K
+P1/T1|Vl|1.sf2 Patch=9 Gain=1.0
+P2   |4K
+P2/T1|Vl|1.sf2 Patch=11 Gain=4.0
+P3   |4K
+P3/T1|Vl|1.sf2 Patch=13 Gain=0.08
+P4   |4K
+P4/T1|Vl|1.sf2 Patch=12 Gain=0.4
+
+1200|1   |    |      |    |      |    |      |    | F-5  
+    |2   |    |      |    |      |    |      |    |      
+    |3   |    |      |    |      |    |      |    |      
+    |4   |    |      |    | E-4  |    |      |    |      
+    |5   |    |      |    |      |    |      |    |      
+    |6   |    |      |    | C-4  |    |      |    |      
+    |7   |    | A-3  |    |      |    |      |    |      
+    |8   |    | B-3  |    |      |    |      |    |      
+    |9   |    |      |    |      |    | C-5  |    |      
+    |10  |    |      |    |      |    | C-5  |    |      
+    |11  |    |      |    |      |    |      |    |      
+    |12  |    |      |    |      |    | C-5  |    |      

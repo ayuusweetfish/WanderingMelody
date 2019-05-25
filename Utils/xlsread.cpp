@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
         const std::string &tickStr = sheetSeq.Cell(seqRow, 2).Value().AsString();
         if (tickStr.empty()) break;
         fprintf(f, "%4s|%-4s",
-            tempoStr.substr(0, 3).c_str(),
+            tempoStr.substr(0, 4).c_str(),
             tickStr.substr(0, 4).c_str());
         int seqCol = 3;
         for (int w : trackWidths) {
