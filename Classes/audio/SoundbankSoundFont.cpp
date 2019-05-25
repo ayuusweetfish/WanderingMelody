@@ -49,7 +49,7 @@ void SoundbankSoundFont::sendNote(const MusicNote &note)
     if (note.note == MusicNote::NOTE_OFF) {
         tsf_channel_note_off_all(_f, _channelNum);
         printf("Off %d\n", _channelNum);
-    } else {
+    } else if (note.note < MusicNote::NOTE_MAX) {
         tsf_channel_note_off_all(_f, _channelNum);
         if (note.vel != MusicNote::NOCHANGE) _lastNote.vel = note.vel;
         if (note.pan != MusicNote::NOCHANGE) _lastNote.pan = note.pan;

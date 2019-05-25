@@ -55,6 +55,7 @@ public:
     double getCurTick() { return _curTick; }
     double getRawTick() { return _rawTick; }
     double getOrigTempo() { return _tempoChanges.front().second; }
+    bool isInBreak() { return _isInBreak; }
 
 protected:
     std::vector<KeyNote> _keyNotes;
@@ -68,13 +69,17 @@ protected:
     int _barlinePtr;
     double _curTime, _curTick, _rawTick;    // _curTick is the adjusted value
     std::vector<MusicNote *> _recentTriggers;
+    bool _isInBreak;
+    void processFlags(MusicTrack::flags_t flags);
 
     Beater _beater;
-    void addHit(int32_t noteTick);
+    void addHit(double time, int32_t noteTick, bool propagateUp = true);
 
     Display *_display;
     Gig *_gig;
     int _tag;
+
+    friend class Gig;
 };
 
 #endif

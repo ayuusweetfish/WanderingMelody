@@ -35,6 +35,7 @@ static inline int gridReadNote(const char *s)
 {
     if (s[0] == ' ' && s[1] == ' ' && s[2] == ' ') return MusicNote::NOCHANGE;
     if (s[0] == '=' && s[1] == '=' && s[2] == '=') return MusicNote::NOTE_OFF;
+    if (s[0] == '~' && s[1] == '~' && s[2] == '~') return MusicNote::NOTE_BREAK;
 
     char pitchClass = s[0];
     if (pitchClass < 'A' || pitchClass > 'G') return -1;
@@ -340,5 +341,6 @@ void Gig::tick(float dt)
 
 void Gig::dispatchHit(int idx, double time, int32_t noteTick)
 {
-    printf("%d %.4lf %d\n", idx, time, noteTick);
+    for (auto &mus : _musicians)
+        if (mus->isInBreak()) mus->addHit(time, noteTick, false);
 }

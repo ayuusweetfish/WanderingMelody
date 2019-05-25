@@ -52,8 +52,11 @@ template <int N> void MusicianNKeys<N>::triggerNote(uint8_t trackIdx)
                     break;
                 }
             if (allTriggered)
-                for (auto &mt : _musicTracks) mt.triggerNote(n.time, n.tag);
-            addHit(n.time);
+                for (auto &mt : _musicTracks) {
+                    MusicTrack::flags_t f = mt.triggerNote(n.time, n.tag);
+                    this->processFlags(f);
+                }
+            addHit(_curTime, n.time);
             break;
         }
     }
