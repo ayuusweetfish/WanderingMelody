@@ -5,7 +5,9 @@
 
 template <int N> class MusicianNKeys : public Musician {
 public:
-    MusicianNKeys() { }
+    MusicianNKeys() {
+        for (int i = 0; i < N; i++) _isKeyDown[i] = false;
+    }
 
     virtual void parseGrid(int32_t time, const char *grid) override;
     virtual int getWidth() override { return N; }
