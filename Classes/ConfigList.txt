@@ -1,1 +1,1 @@
-CONFIG_ITEM(float, ScrollSpeed, 0.6)
+CONFIG_ITEM(float, ScrollSpeed, 0.9)
