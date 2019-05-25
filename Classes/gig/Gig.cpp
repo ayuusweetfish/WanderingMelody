@@ -305,6 +305,8 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         if (_musicians[i] == nullptr) {
             _musicians.erase(_musicians.begin() + i);
             i--;
+        } else {
+            _musicians[i]->setGig(this, i);
         }
 
     return FileReadResult(true, "");
@@ -334,4 +336,9 @@ void Gig::tick(float dt)
             (i == f1.second ? f2.first : f1.first) + 480 * 4
         );
     }
+}
+
+void Gig::dispatchHit(int idx, double time, int32_t noteTick)
+{
+    printf("%d %.4lf %d\n", idx, time, noteTick);
 }

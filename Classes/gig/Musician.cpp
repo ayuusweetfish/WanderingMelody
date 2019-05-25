@@ -1,4 +1,5 @@
 #include "gig/Musician.h"
+#include "gig/Gig.h"
 
 #include <algorithm>
 
@@ -27,7 +28,8 @@ void Musician::tick(double dt, double lcap, double hcap)
         mt.triggerAutoNotes(lastTick, (int32_t)_curTick);
 }
 
-void Musician::addHit(double noteTick)
+void Musician::addHit(int32_t noteTick)
 {
-    _beater.update({_curTime, noteTick}, _beater.getK(_curTime));
+    _beater.update({_curTime, (double)noteTick}, _beater.getK(_curTime));
+    if (_gig) _gig->dispatchHit(_tag, _curTime, noteTick);
 }

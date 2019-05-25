@@ -27,6 +27,8 @@ public:
     void startPlay();
     void tick(float dt);
 
+    void dispatchHit(int idx, double time, int32_t noteTick);
+
 protected:
     std::unordered_map<std::string, std::string> _metadata;
     std::vector<Musician *> _musicians;

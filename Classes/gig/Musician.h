@@ -16,9 +16,11 @@ public:
     int32_t triggered;
 };
 
+class Gig;
+
 class Musician {
 public:
-    Musician() : _isPlaying(0), _display(nullptr) { }
+    Musician() : _isPlaying(0), _display(nullptr), _gig(nullptr) { }
 
     inline void allocateMusicTrack(int idx) {
         if (_musicTracks.size() <= idx)
@@ -41,6 +43,8 @@ public:
 
     virtual Display *createDisplay() = 0;
     inline Display *getDisplay() { return _display; }
+
+    inline void setGig(Gig *gig, int tag) { _gig = gig; _tag = tag; }
 
     virtual void startPlay();
     virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
@@ -66,11 +70,11 @@ protected:
     std::vector<MusicNote *> _recentTriggers;
 
     Beater _beater;
-    void addHit(double noteTick);
+    void addHit(int32_t noteTick);
 
     Display *_display;
-
-    friend class Gig;
+    Gig *_gig;
+    int _tag;
 };
 
 #endif
