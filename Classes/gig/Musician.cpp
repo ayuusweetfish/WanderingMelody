@@ -14,6 +14,8 @@ void Musician::startPlay()
 
 void Musician::tick(double dt)
 {
+    if (_display) _display->refresh();
+
     if (!_isPlaying) return;
     int32_t lastTick = (int32_t)_curTick;
 

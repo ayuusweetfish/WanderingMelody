@@ -21,7 +21,7 @@ public:
         virtual bool init(MusicianNKeys *mus);
         static Display *create(MusicianNKeys *mus);
 
-        virtual void update(float dt) override;
+        virtual void refresh() override;
 
     protected:
         cocos2d::DrawNode *_drawNode;
@@ -29,7 +29,7 @@ public:
     };
 
     virtual Musician::Display *createDisplay() override {
-        return Display::create(this);
+        return (_display = Display::create(this));
     }
 
 protected:

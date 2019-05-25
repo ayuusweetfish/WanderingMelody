@@ -55,8 +55,7 @@ bool Gameplay::init()
                     )
                 ),
                 CallFunc::create([this] () {
-                    for (int i = 0; i < _gig.getMusicianCount(); i++)
-                        _gig.getMusician(i)->startPlay();
+                    _gig.startPlay();
                 })
             ));
             _layerStart->runAction(FadeOut::create(0.4));
@@ -64,5 +63,12 @@ bool Gameplay::init()
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
+    this->scheduleUpdate();
+
     return true;
+}
+
+void Gameplay::update(float dt)
+{
+    _gig.tick(dt);
 }

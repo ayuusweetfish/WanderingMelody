@@ -33,14 +33,11 @@ template <int N> bool MusicianNKeys<N>::Display::init(MusicianNKeys<N> *mus)
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-    this->scheduleUpdate();
-
     return true;
 }
 
-template <int N> void MusicianNKeys<N>::Display::update(float dt)
+template <int N> void MusicianNKeys<N>::Display::refresh()
 {
-    _mus->tick(dt);
     _drawNode->clear();
 
     Size size = this->getContentSize();

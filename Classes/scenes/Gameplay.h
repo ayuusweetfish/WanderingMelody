@@ -13,6 +13,8 @@ public:
     CREATE_FUNC(Gameplay);
     SCENE_FUNC(Gameplay);
 
+    virtual void update(float dt) override;
+
 protected:
     Gig _gig;
 

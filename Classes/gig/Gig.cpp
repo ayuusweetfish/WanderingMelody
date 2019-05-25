@@ -309,3 +309,15 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
 
     return FileReadResult(true, "");
 }
+
+void Gig::startPlay()
+{
+    for (auto &mus : _musicians) mus->startPlay();
+}
+
+void Gig::tick(float dt)
+{
+    for (int i = 0; i < _musicians.size(); i++) {
+        _musicians[i]->tick(dt);
+    }
+}

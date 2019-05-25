@@ -24,6 +24,9 @@ public:
     inline int getMusicianCount() { return _musicians.size(); }
     inline Musician *getMusician(int idx) { return _musicians[idx]; }
 
+    void startPlay();
+    void tick(float dt);
+
 protected:
     std::unordered_map<std::string, std::string> _metadata;
     std::vector<Musician *> _musicians;

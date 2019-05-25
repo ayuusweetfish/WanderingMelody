@@ -18,7 +18,7 @@ public:
 
 class Musician {
 public:
-    Musician() : _isPlaying(0) { }
+    Musician() : _isPlaying(0), _display(nullptr) { }
 
     inline void allocateMusicTrack(int idx) {
         if (_musicTracks.size() <= idx)
@@ -36,9 +36,11 @@ public:
     class Display : public cocos2d::Node {
     public:
         Display() { }
+        virtual void refresh() = 0;
     };
 
     virtual Display *createDisplay() = 0;
+    inline Display *getDisplay() { return _display; }
 
     virtual void startPlay();
     virtual void tick(double dt);
@@ -64,6 +66,10 @@ protected:
 
     Beater _beater;
     void addHit(double noteTick);
+
+    Display *_display;
+
+    friend class Gig;
 };
 
 #endif
