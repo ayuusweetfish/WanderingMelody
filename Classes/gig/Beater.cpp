@@ -150,7 +150,8 @@ void Beater::update(const point_t &p, double k)
     if (new_l.first > 0) _l = new_l;
 
     // Solve for the cubic curve
-    double x2_min = p.x + 1 / (slr_result.second * slr_result.second);
+    // TODO: Make the parameter (2.5) tunable
+    double x2_min = p.x + 2.5 / (slr_result.second * slr_result.second);
     solveCurve(pp, k, _l, x2_min);
     if (this->isAscending(p.x, x2_min, k / 2)) {
         _xFin = x2_min;
