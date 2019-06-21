@@ -32,8 +32,8 @@ bool Gameplay::init()
 
     // ZXCV
     ((MusicianNKeys<4> *)_gig.getMusician(0))->setKeyMapping((int []){149, 147, 126, 145});
-    // HJKL
-    ((MusicianNKeys<4> *)_gig.getMusician(1))->setKeyMapping((int []){131, 133, 134, 135});
+    // KL;'
+    ((MusicianNKeys<4> *)_gig.getMusician(1))->setKeyMapping((int []){134, 135, 87, 67});
     // QWER
     ((MusicianNKeys<4> *)_gig.getMusician(2))->setKeyMapping((int []){140, 146, 128, 141});
     // 7890
