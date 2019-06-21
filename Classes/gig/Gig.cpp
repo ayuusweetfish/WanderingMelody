@@ -102,6 +102,11 @@ Gig::FileReadResult Gig::init(const std::string &path)
     return ret;
 }
 
+Gig::FileReadResult Gig::peek(const std::string &path)
+{
+    return this->init(path);
+}
+
 Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
 {
     _musicians.resize(4);

@@ -10,6 +10,7 @@
 class Gig {
 public:
     Gig() { }
+    // TODO: Add destructor
 
     struct FileReadResult {
         FileReadResult(bool succeeded, const std::string &errMsg) :
@@ -20,6 +21,11 @@ public:
         std::string errMsg;
     };
     FileReadResult init(const std::string &path);
+    FileReadResult peek(const std::string &path);
+
+    inline std::unordered_map<std::string, std::string> getMetadata() {
+        return _metadata;
+    }
 
     inline int getMusicianCount() { return _musicians.size(); }
     inline Musician *getMusician(int idx) { return _musicians[idx]; }
