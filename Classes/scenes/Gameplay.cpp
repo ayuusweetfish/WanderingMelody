@@ -158,7 +158,7 @@ bool Gameplay::ModPanel::init()
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         if (keyCode == EventKeyboard::KeyCode::KEY_TAB ||
             keyCode == EventKeyboard::KeyCode::KEY_ESCAPE ||
-            keyCode == EventKeyboard::KeyCode::KEY_RETURN)
+            keyCode == EventKeyboard::KeyCode::KEY_ENTER)
         {
             this->runAction(Sequence::createWithTwoActions(
                 EaseQuadraticActionOut::create(
