@@ -8,8 +8,9 @@
 
 class Soundbank {
 public:
-    Soundbank() { }
+    Soundbank() : _valid(true) { }
 
+    bool isValid() { return _valid; }
     virtual void sendNote(const MusicNote &note) = 0;
 
 protected:
@@ -20,6 +21,8 @@ protected:
         auto it = args.find(key);
         return (it != args.end() ? std::stod(it->second) : dfault);
     }
+
+    bool _valid;
 };
 
 #endif

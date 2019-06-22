@@ -60,7 +60,8 @@ static inline Musician *createMusicianOfType(const std::string &name)
     return nullptr;
 }
 
-static inline Soundbank *createSoundbank(const std::string &wd, const std::string &desc)
+static inline std::pair<Soundbank *, std::string>
+    createSoundbank(const std::string &wd, const std::string &desc)
 {
     int i = 0, j, len = desc.length();
     std::string path;
@@ -81,7 +82,12 @@ static inline Soundbank *createSoundbank(const std::string &wd, const std::strin
         i = j + 1;
     }
     for (auto x : args) printf("%s %s\n", x.first.c_str(), x.second.c_str());
-    return new SoundbankSoundFont(wd + path, args);
+    auto bank = new SoundbankSoundFont(wd + path, args);
+    std::string err;
+    if (!bank->isValid()) {
+        err = "Invalid SoundFont file: " + path;
+    }
+    return {bank, err};
 }
 
 Gig::FileReadResult Gig::init(const std::string &path)
@@ -213,7 +219,12 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
                         RET_ERRF("Col %d: Parameter name too long", i - 2);
                 }
             }
-            auto bank = createSoundbank(_workingDir, s + i);
+            auto bankAndErr = createSoundbank(_workingDir, s + i);
+            auto bank = bankAndErr.first;
+            auto bankErr = bankAndErr.second;
+            if (!bank->isValid()) {
+                RET_ERRF("Cannot load sound bank: %s", bankErr.c_str());
+            }
             tracks.push_back({musicianIdx, trackIdx, offset, fields});
             _musicians[musicianIdx]->allocateMusicTrack(trackIdx);
             _musicians[musicianIdx]->getMusicTrack(trackIdx).setSoundbank(bank);
