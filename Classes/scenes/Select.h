@@ -18,6 +18,7 @@ public:
 protected:
     struct SongListEntry {
         std::string path;
+        std::string title;
         std::unordered_map<std::string, std::string> metadata;
         bool succeeded;
         cocos2d::LayerColor *display;

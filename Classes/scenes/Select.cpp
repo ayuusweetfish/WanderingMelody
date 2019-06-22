@@ -4,6 +4,8 @@
 #include "gig/Gig.h"
 using namespace cocos2d;
 
+#include <algorithm>
+
 template <typename K1, typename V1, typename K2, typename V2>
 static inline V1 findOrDefault(
     const std::unordered_map<K1, V1> &map, const K2 &key, const V2 &dfault
@@ -32,11 +34,11 @@ bool Select::init()
 
             auto display = LayerColor::create(
                 Color4B(240, 235, 230, 192), WIN_W, WIN_H / 5);
-            display->setPosition(Vec2(0, -WIN_H / 5 * (int)_songList.size()));
             _songListContainer->addChild(display);
 
+            auto title = findOrDefault(gig.getMetadata(), "Title", "<Unknown>");
             auto labelTitle = Label::createWithTTF(
-                findOrDefault(gig.getMetadata(), "Title", "<Unknown>"),
+                title,
                 "OpenSans-Light.ttf", 42
             );
             labelTitle->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
@@ -54,10 +56,19 @@ bool Select::init()
             display->addChild(labelArtist);
 
             _songList.push_back((SongListEntry){
-                file + "map.txt", gig.getMetadata(), result.succeeded, display
+                file + "map.txt", title, gig.getMetadata(), result.succeeded, display
             });
         }
     }
+
+    std::sort(_songList.begin(), _songList.end(),
+        [](const SongListEntry &lhs, const SongListEntry &rhs) {
+            return lhs.title < rhs.title;
+        });
+
+    for (int i = 0; i < _songList.size(); i++)
+        _songList[i].display->setPosition(Vec2(0, -WIN_H / 5 * i));
+
     _songList[_selIdx].display->runAction(
         TintTo::create(0.2, Color3B(255, 204, 102))
     );
