@@ -33,6 +33,8 @@ bool Gameplay::init()
                     )
                 ),
                 CallFunc::create([this] () {
+                    for (int i = 0; i < _gig.getMusicianCount(); i++)
+                        _gig.getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
                     _gig.startPlay();
                 })
             ));
