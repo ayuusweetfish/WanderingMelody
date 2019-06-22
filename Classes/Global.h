@@ -12,14 +12,23 @@
 
 #define GO_TO_SCENE(__nextScene__) do { \
     Director::getInstance()->pushScene( \
-        TransitionFade::create(0.4, __nextScene__, Color3B::WHITE) \
+        TransitionFade::create(0.4, scene, Color3B::WHITE) \
     ); \
     LayerColor *cover = LayerColor::create(Color4B::WHITE); \
     cover->setOpacity(0); \
     this->addChild(cover, INT_MAX); \
+    auto listener = EventListenerKeyboard::create(); \
+    listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) { \
+        event->stopPropagation(); \
+    }; \
+    cover->getEventDispatcher()-> \
+        addEventListenerWithFixedPriority(listener, INT_MIN); \
     cover->runAction(Sequence::create( \
         DelayTime::create(0.4), \
-        CallFunc::create([cover]() { cover->setOpacity(255); }), \
+        CallFunc::create([cover, listener]() { \
+            cover->setOpacity(255); \
+            cover->getEventDispatcher()->removeEventListener(listener); \
+        }), \
         FadeOut::create(0.2), \
         RemoveSelf::create(), \
         nullptr \
@@ -29,12 +38,20 @@
 #define GO_BACK_SCENE() do { \
     LayerColor *cover = LayerColor::create(Color4B::WHITE); \
     this->getScene()->addChild(cover, INT_MAX); \
+    auto listener = EventListenerKeyboard::create(); \
+    listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) { \
+        event->stopPropagation(); \
+    }; \
+    cover->getEventDispatcher()-> \
+        addEventListenerWithFixedPriority(listener, INT_MIN); \
     cover->setOpacity(0); \
-    cover->runAction(Sequence::create( \
-        FadeIn::create(0.2), \
-        CallFunc::create([]() { Director::getInstance()->popScene(); }), \
-        nullptr \
-    )); \
+    cover->runAction(FadeIn::create(0.2)); \
+    Director::getInstance()->getScheduler()->schedule( \
+        [cover, listener](float _) { \
+            Director::getInstance()->popScene(); \
+            cover->getEventDispatcher()->removeEventListener(listener); \
+        }, \
+        Director::getInstance(), 0, 0, 0.2, false, "go_back"); \
 } while (0)
 
 #define IS_ON_PC (CC_TARGET_PLATFORM == CC_PLATFORM_WINDOWS \
