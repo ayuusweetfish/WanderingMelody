@@ -34,7 +34,7 @@ public:
     inline void setSoundbank(Soundbank *bank) { _soundbank = bank; }
     void addNote(const MusicNote &note);
     flags_t triggerNote(int32_t time, char tag);
-    flags_t triggerAutoNotes(int32_t start, int32_t end);
+    flags_t triggerAutoNotes(int32_t start, int32_t end, bool disregardAuto = false);
 
 protected:
     Soundbank *_soundbank;

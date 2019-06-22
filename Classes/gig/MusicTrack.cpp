@@ -33,12 +33,14 @@ flags_t MusicTrack::triggerNote(int32_t time, char tag)
     return flags;
 }
 
-flags_t MusicTrack::triggerAutoNotes(int32_t start, int32_t end)
+flags_t MusicTrack::triggerAutoNotes(int32_t start, int32_t end, bool disregardAuto)
 {
     if (!_soundbank) return 0;
     flags_t flags = 0;
     for (MusicNote &n : _notes)
-        if (n.time >= start && n.time < end && (n.tag == '.' || n.tag == ' ')) {
+        if (n.time >= start && n.time < end &&
+            (disregardAuto || n.tag == '.' || n.tag == ' '))
+        {
             _soundbank->sendNote(n);
             flags = updateFlags(flags, n);
         }

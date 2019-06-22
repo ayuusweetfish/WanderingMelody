@@ -26,7 +26,8 @@ void Musician::tick(double dt, double lcap, double hcap)
     _curTick = std::min(std::max(_rawTick, lcap), hcap);
 
     for (auto &mt : _musicTracks) {
-        MusicTrack::flags_t f = mt.triggerAutoNotes(lastTick, (int32_t)_curTick);
+        MusicTrack::flags_t f =
+            mt.triggerAutoNotes(lastTick, (int32_t)_curTick, _isAutoplay);
         this->processFlags(f);
     }
 }

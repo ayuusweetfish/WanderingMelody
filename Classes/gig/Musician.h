@@ -45,6 +45,7 @@ public:
     inline Display *getDisplay() { return _display; }
 
     inline void setGig(Gig *gig, int tag) { _gig = gig; _tag = tag; }
+    inline void setIsAutoplay(bool isAutoplay) { _isAutoplay = isAutoplay; }
 
     virtual void startPlay();
     virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
@@ -55,7 +56,7 @@ public:
     double getCurTick() { return _curTick; }
     double getRawTick() { return _rawTick; }
     double getOrigTempo() { return _tempoChanges.front().second; }
-    bool isInBreak() { return _isInBreak; }
+    bool isInBreak() { return _isInBreak || _isAutoplay; }
 
 protected:
     std::vector<KeyNote> _keyNotes;
@@ -65,6 +66,7 @@ protected:
 
     // Fields used during playback
     bool _isPlaying;
+    bool _isAutoplay;
     int _tempoChangePtr;
     int _barlinePtr;
     double _curTime, _curTick, _rawTick;    // _curTick is the adjusted value
