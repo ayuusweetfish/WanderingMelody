@@ -1,5 +1,6 @@
 #include "Select.h"
 #include "Global.h"
+#include "scenes/Gameplay.h"
 #include "gig/Gig.h"
 using namespace cocos2d;
 
@@ -57,6 +58,31 @@ bool Select::init()
             });
         }
     }
+    _songList[_selIdx].display->runAction(
+        TintTo::create(0.2, Color3B(255, 204, 102))
+    );
+
+    auto listener = cocos2d::EventListenerKeyboard::create();
+    listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
+        if (keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
+            auto nextScene = Gameplay::createScene();
+            GO_TO_SCENE(nextScene);
+            return;
+        }
+
+        _songList[_selIdx].display->runAction(
+            TintTo::create(0.2, Color3B(240, 235, 230))
+        );
+        if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+            _selIdx = (_selIdx + 1) % _songList.size();
+        } else if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+            _selIdx = (_selIdx - 1 + (int)_songList.size()) % _songList.size();
+        }
+        _songList[_selIdx].display->runAction(
+            TintTo::create(0.2, Color3B(255, 204, 102))
+        );
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     // Fade in on startup
     auto cover = LayerColor::create(Color4B::BLACK);

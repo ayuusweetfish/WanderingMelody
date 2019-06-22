@@ -25,6 +25,8 @@ protected:
 
     std::vector<SongListEntry> _songList;
     cocos2d::Node *_songListContainer;
+
+    int _selIdx;
 };
 
 #endif
