@@ -9,6 +9,8 @@
 class Gameplay : public cocos2d::LayerColor
 {
 public:
+    ~Gameplay();
+
     bool init() override;
     CREATE_FUNC(Gameplay);
     SCENE_FUNC(Gameplay);
@@ -24,6 +26,9 @@ protected:
 
     // -1 - not loaded, 0 - not started, 1 - playing, 2 - paused
     char _playState;
+
+    class ModPanel;
+    ModPanel *_modPanel;
 };
 
 #endif
