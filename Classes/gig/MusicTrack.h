@@ -32,6 +32,7 @@ public:
     static const int FLAGS_BREAK = 1;
 
     inline void setSoundbank(Soundbank *bank) { _soundbank = bank; }
+    void releaseSoundbank();
     void addNote(const MusicNote &note);
     flags_t triggerNote(int32_t time, char tag);
     flags_t triggerAutoNotes(int32_t start, int32_t end, bool disregardAuto = false);

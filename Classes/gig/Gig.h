@@ -10,7 +10,7 @@
 class Gig {
 public:
     Gig() { }
-    // TODO: Add destructor
+    ~Gig();
 
     struct FileReadResult {
         FileReadResult(bool succeeded, const std::string &errMsg) :

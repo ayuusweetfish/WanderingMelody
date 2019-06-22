@@ -43,3 +43,8 @@ void Musician::processFlags(MusicTrack::flags_t flags)
     if (flags & MusicTrack::FLAGS_BREAK)
         _isInBreak ^= 1;
 }
+
+Musician::~Musician()
+{
+    for (auto &mt : _musicTracks) mt.releaseSoundbank();
+}

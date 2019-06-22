@@ -21,6 +21,7 @@ class Gig;
 class Musician {
 public:
     Musician() : _isPlaying(0), _display(nullptr), _gig(nullptr) { }
+    virtual ~Musician();
 
     inline void allocateMusicTrack(int idx) {
         if (_musicTracks.size() <= idx)

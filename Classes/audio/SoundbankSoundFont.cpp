@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-std::unordered_map<std::string, std::pair<tsf *, int>> SoundbankSoundFont::_cache;
+SoundbankSoundFont::cache_t SoundbankSoundFont::_cache;
 
 SoundbankSoundFont::SoundbankSoundFont(
     const std::string &s,
@@ -15,8 +15,8 @@ SoundbankSoundFont::SoundbankSoundFont(
     auto mapItr = _cache.find(s);
 
     if (mapItr != _cache.end()) {
-        _f = mapItr->second.first;
-        _channelNum = mapItr->second.second++;
+        _f = std::get<0>(mapItr->second);
+        _channelNum = std::get<1>(mapItr->second)++;
     } else {
         _f = tsf_load_filename(s.c_str());
         if (!_f) {
@@ -25,12 +25,14 @@ SoundbankSoundFont::SoundbankSoundFont(
         }
         tsf_set_output(_f, TSF_STEREO_INTERLEAVED, 44100, 0);
         _channelNum = 0;
-        _cache.insert({s, {_f, 1}});
-        // TODO: Reference counting, current logic is terrible T-T
-        AudioOutput::getInstance()->registerCallback(
+
+        int callbackId = AudioOutput::getInstance()->registerCallback(
             std::bind(&SoundbankSoundFont::render,
-                this, std::placeholders::_1, std::placeholders::_2));
+                _f, std::placeholders::_1, std::placeholders::_2));
+
+        mapItr = _cache.insert({s, {_f, 1, callbackId}}).first;
     }
+    _cacheItr = mapItr;
 
     int presetNum = getArgNumber(args, "Patch", 0);
     double volume = getArgNumber(args, "Gain", 1);
@@ -44,7 +46,11 @@ SoundbankSoundFont::SoundbankSoundFont(
 
 SoundbankSoundFont::~SoundbankSoundFont()
 {
-    tsf_close(_f);
+    if ((std::get<1>(_cacheItr->second) -= 1) == 0) {
+        AudioOutput::getInstance()->removeCallback(std::get<2>(_cacheItr->second));
+        tsf_close(_f);
+        _cache.erase(_cacheItr);
+    }
 }
 
 void SoundbankSoundFont::sendNote(const MusicNote &note)
@@ -62,8 +68,8 @@ void SoundbankSoundFont::sendNote(const MusicNote &note)
     }
 }
 
-void SoundbankSoundFont::render(float *output, uint32_t nframes)
+void SoundbankSoundFont::render(tsf *f, float *output, uint32_t nframes)
 {
-    tsf_render_float(_f, output, nframes, 1);
+    tsf_render_float(f, output, nframes, 1);
     for (int i = 0; i < nframes * 2; i++) output[i] *= 10;
 }

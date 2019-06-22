@@ -16,14 +16,20 @@ void audioOutputCallback(ma_device *device, float *outbuf, float *inbuf, ma_uint
 
 int AudioOutput::registerCallback(callback_t callback)
 {
-    if (!_emptyPos.empty()) {
-        int id = _emptyPos.back();
-        _callbacks[id] = {true, callback};
+    int id = -1;
+    while (!_emptyPos.empty()) {
+        if (_emptyPos.back() < _callbacks.size()) {
+            id = _emptyPos.back();
+            break;
+        }
         _emptyPos.pop_back();
-        return id;
-    } else {
+    }
+    if (id == -1) {
         _callbacks.push_back({true, callback});
         return _callbacks.size() - 1;
+    } else {
+        _callbacks[id] = {true, callback};
+        return id;
     }
 }
 

@@ -9,8 +9,8 @@ void MusicTrack::addNote(const MusicNote &note)
         note.pan != MusicNote::NOCHANGE || note.dtune != MusicNote::NOCHANGE)
     {
         _notes.push_back(note);
-        printf("%d %c %d %d %d %d\n",
-            note.time, note.tag, note.note, note.vel, note.pan, note.dtune);
+        //printf("%d %c %d %d %d %d\n",
+        //    note.time, note.tag, note.note, note.vel, note.pan, note.dtune);
     }
 }
 
@@ -19,6 +19,11 @@ static inline flags_t updateFlags(flags_t f, const MusicNote &n)
     if (n.note == MusicNote::NOTE_BREAK)
         f ^= MusicTrack::FLAGS_BREAK;
     return f;
+}
+
+void MusicTrack::releaseSoundbank()
+{
+    if (_soundbank) delete _soundbank;
 }
 
 flags_t MusicTrack::triggerNote(int32_t time, char tag)

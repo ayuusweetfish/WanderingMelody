@@ -9,6 +9,7 @@
 class Soundbank {
 public:
     Soundbank() : _valid(true) { }
+    virtual ~Soundbank() { }
 
     bool isValid() { return _valid; }
     virtual void sendNote(const MusicNote &note) = 0;

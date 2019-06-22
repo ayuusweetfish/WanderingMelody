@@ -360,3 +360,8 @@ void Gig::dispatchHit(int idx, double time, int32_t noteTick)
     for (auto &mus : _musicians)
         if (mus->isInBreak()) mus->addHit(time, noteTick, false);
 }
+
+Gig::~Gig()
+{
+    for (auto mus : _musicians) delete mus;
+}

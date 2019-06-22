@@ -11,16 +11,19 @@ public:
     SoundbankSoundFont(
         const std::string &s,
         std::unordered_map<std::string, std::string> args);
-    ~SoundbankSoundFont();
+    virtual ~SoundbankSoundFont() override;
 
     virtual void sendNote(const MusicNote &note) override;
 
 protected:
-    void render(float *output, uint32_t nframe);
+    static void render(tsf *f, float *output, uint32_t nframe);
 
-    static std::unordered_map<std::string, std::pair<tsf *, int>> _cache;
+    // tuple<tsf, reference count, callback ID>
+    typedef std::unordered_map<std::string, std::tuple<tsf *, int, int>> cache_t;
+    static cache_t _cache;
 
     tsf *_f;
+    cache_t::iterator _cacheItr;
     int _channelNum;
     MusicNote _lastNote;
 };
