@@ -54,7 +54,7 @@ bool Select::init()
             display->addChild(labelArtist);
 
             _songList.push_back((SongListEntry){
-                file, gig.getMetadata(), result.succeeded, display
+                file + "map.txt", gig.getMetadata(), result.succeeded, display
             });
         }
     }
@@ -65,8 +65,11 @@ bool Select::init()
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         if (keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
-            auto nextScene = Gameplay::createScene();
-            GO_TO_SCENE(nextScene);
+            auto gameplay = Gameplay::create();
+            gameplay->load(_songList[_selIdx].path);
+            auto scene = Scene::create();
+            scene->addChild(gameplay);
+            GO_TO_SCENE(scene);
             return;
         }
 

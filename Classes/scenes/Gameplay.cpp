@@ -8,48 +8,7 @@ bool Gameplay::init()
 {
     if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255))) return false;
 
-    Gig::FileReadResult r = _gig.init("/Users/lsq/Downloads/OpenXLSX-master/exp/3.txt");
-    if (!r.succeeded) {
-        auto label = Label::createWithTTF(r.errMsg, "fonts/arial.ttf", 42);
-        label->setMaxLineWidth(WIN_W * 2 / 3);
-        label->enableWrap(true);
-        label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-        label->setPosition(WIN_SIZE / 2);
-        label->setColor(Color3B(0, 0, 0));
-        this->addChild(label);
-        return true;
-    }
-
-    int numMusicians = _gig.getMusicianCount();
-    Musician::Display *mus[numMusicians];
-    for (int i = 0; i < numMusicians; i++) {
-        mus[i] = _gig.getMusician(i)->createDisplay();
-        mus[i]->setContentSize(Size(WIN_W * 0.23, WIN_H));
-        mus[i]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-        mus[i]->setPosition(Vec2(WIN_W * (0.016 + 0.246 * i), 0));
-        this->addChild(mus[i]);
-    }
-
-    // ZXCV
-    ((MusicianNKeys<4> *)_gig.getMusician(0))->setKeyMapping((int []){149, 147, 126, 145});
-    // KL;'
-    ((MusicianNKeys<4> *)_gig.getMusician(1))->setKeyMapping((int []){134, 135, 87, 67});
-    // QWER
-    ((MusicianNKeys<4> *)_gig.getMusician(2))->setKeyMapping((int []){140, 146, 128, 141});
-    // 7890
-    ((MusicianNKeys<4> *)_gig.getMusician(3))->setKeyMapping((int []){83, 84, 85, 76});
-
-    auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W / 2, WIN_H / 8);
-    layerStart->setPosition((WIN_SIZE - Size(WIN_W / 2, WIN_H / 8)) / 2);
-    this->addChild(layerStart, 9999);
-    _layerStart = layerStart;
-
-    auto labelStart = Label::createWithTTF("Press Enter", "fonts/arial.ttf", 42);
-    labelStart->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-    labelStart->setPosition(Size(WIN_W / 2, WIN_H / 8) / 2);
-    labelStart->setColor(Color3B(64, 64, 64));
-    layerStart->addChild(labelStart);
-    _labelStart = labelStart;
+    _playState = -1;
 
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
@@ -71,9 +30,61 @@ bool Gameplay::init()
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-    this->scheduleUpdate();
-
     return true;
+}
+
+void Gameplay::load(const std::string &path)
+{
+    Gig::FileReadResult r = _gig.init(path);
+    if (!r.succeeded) {
+        auto label = Label::createWithTTF(r.errMsg, "fonts/arial.ttf", 42);
+        label->setMaxLineWidth(WIN_W * 2 / 3);
+        label->enableWrap(true);
+        label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+        label->setPosition(WIN_SIZE / 2);
+        label->setColor(Color3B(0, 0, 0));
+        this->addChild(label);
+        return;
+    }
+
+    auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W / 2, WIN_H / 8);
+    layerStart->setPosition((WIN_SIZE - Size(WIN_W / 2, WIN_H / 8)) / 2);
+    this->addChild(layerStart, 9999);
+    _layerStart = layerStart;
+
+    auto labelStart = Label::createWithTTF("Press Enter", "fonts/arial.ttf", 42);
+    labelStart->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+    labelStart->setPosition(Size(WIN_W / 2, WIN_H / 8) / 2);
+    labelStart->setColor(Color3B(64, 64, 64));
+    layerStart->addChild(labelStart);
+    _labelStart = labelStart;
+
+    int numMusicians = _gig.getMusicianCount();
+    Musician::Display *mus[numMusicians];
+    for (int i = 0; i < numMusicians; i++) {
+        mus[i] = _gig.getMusician(i)->createDisplay();
+        mus[i]->setContentSize(Size(WIN_W * 0.23, WIN_H));
+        mus[i]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+        mus[i]->setPosition(Vec2(WIN_W * (0.016 + 0.246 * i), 0));
+        this->addChild(mus[i]);
+    }
+
+    // ZXCV
+    // KL;'
+    // QWER
+    // 7890
+    const int keyMapping[4][4] = {
+        {149, 147, 126, 145},
+        {134, 135, 87, 67},
+        {140, 146, 128, 141},
+        {83, 84, 85, 76}
+    };
+
+    for (int i = 0; i < 4 && i < _gig.getMusicianCount(); i++)
+        ((MusicianNKeys<4> *)_gig.getMusician(i))->setKeyMapping(keyMapping[i]);
+
+    this->scheduleUpdate();
+    _playState = 0;
 }
 
 void Gameplay::update(float dt)

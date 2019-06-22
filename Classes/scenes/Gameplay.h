@@ -13,6 +13,7 @@ public:
     CREATE_FUNC(Gameplay);
     SCENE_FUNC(Gameplay);
 
+    void load(const std::string &path);
     virtual void update(float dt) override;
 
 protected:
@@ -21,7 +22,7 @@ protected:
     cocos2d::LayerColor *_layerStart;
     cocos2d::Label *_labelStart;
 
-    // 0 - not started, 1 - playing, 2 - paused
+    // -1 - not loaded, 0 - not started, 1 - playing, 2 - paused
     char _playState;
 };
 
