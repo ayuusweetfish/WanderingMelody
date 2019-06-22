@@ -37,7 +37,7 @@ void Gameplay::load(const std::string &path)
 {
     Gig::FileReadResult r = _gig.init(path);
     if (!r.succeeded) {
-        auto label = Label::createWithTTF(r.errMsg, "fonts/arial.ttf", 42);
+        auto label = Label::createWithTTF(r.errMsg, "OpenSans-Light.ttf", 42);
         label->setMaxLineWidth(WIN_W * 2 / 3);
         label->enableWrap(true);
         label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
@@ -52,7 +52,7 @@ void Gameplay::load(const std::string &path)
     this->addChild(layerStart, 9999);
     _layerStart = layerStart;
 
-    auto labelStart = Label::createWithTTF("Press Enter", "fonts/arial.ttf", 42);
+    auto labelStart = Label::createWithTTF("Press Enter", "OpenSans-Light.ttf", 42);
     labelStart->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     labelStart->setPosition(Size(WIN_W / 2, WIN_H / 8) / 2);
     labelStart->setColor(Color3B(64, 64, 64));

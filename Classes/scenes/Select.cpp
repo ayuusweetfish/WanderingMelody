@@ -37,19 +37,19 @@ bool Select::init()
 
             auto labelTitle = Label::createWithTTF(
                 findOrDefault(gig.getMetadata(), "Title", "<Unknown>"),
-                "fonts/arial.ttf", 42
+                "OpenSans-Light.ttf", 42
             );
             labelTitle->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-            labelTitle->setPosition(Vec2(24, WIN_H * 13 / 100));
+            labelTitle->setPosition(Vec2(24, WIN_H * 27 / 200));
             labelTitle->setColor(Color3B(0, 0, 0));
             display->addChild(labelTitle);
 
             auto labelArtist = Label::createWithTTF(
                 findOrDefault(gig.getMetadata(), "Artist", "<Unknown>"),
-                "fonts/arial.ttf", 28
+                "OpenSans-Light.ttf", 28
             );
             labelArtist->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-            labelArtist->setPosition(Vec2(24, WIN_H * 6 / 100));
+            labelArtist->setPosition(Vec2(24, WIN_H * 12 / 200));
             labelArtist->setColor(Color3B(128, 128, 128));
             display->addChild(labelArtist);
 
