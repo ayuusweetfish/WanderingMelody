@@ -10,6 +10,7 @@ public:
     virtual bool init() override;
     CREATE_FUNC(ModPanel);
 
+    void setNumMusicians(int num);
     inline bool isAutoplay(int i) { return _autoplay[i]; }
 
 protected:
@@ -89,7 +90,10 @@ void Gameplay::load(const std::string &path)
     layerStart->addChild(labelStart);
     _labelStart = labelStart;
 
+    int numMusicians = _gig.getMusicianCount();
+
     auto modPanel = ModPanel::create();
+    modPanel->setNumMusicians(numMusicians);
     modPanel->setContentSize(Size(WIN_W, WIN_H / 2));
     modPanel->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
     modPanel->setPosition(Vec2(0, -WIN_H / 12));
@@ -98,7 +102,6 @@ void Gameplay::load(const std::string &path)
     modPanel->retain();
     _modPanel = modPanel;
 
-    int numMusicians = _gig.getMusicianCount();
     Musician::Display *mus[numMusicians];
     for (int i = 0; i < numMusicians; i++) {
         mus[i] = _gig.getMusician(i)->createDisplay();
@@ -194,4 +197,9 @@ bool Gameplay::ModPanel::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     return true;
+}
+
+void Gameplay::ModPanel::setNumMusicians(int num)
+{
+    for (int i = 0; i < 4; i++) _autoplayLabel[i]->setVisible(i < num);
 }
