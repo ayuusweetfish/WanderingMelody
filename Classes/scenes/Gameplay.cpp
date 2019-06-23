@@ -26,6 +26,7 @@ bool Gameplay::init()
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         if (_playState == 0 && keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
+            _playState = 1;
             _labelStart->runAction(Sequence::createWithTwoActions(
                 EaseQuadraticActionIn::create(
                     Spawn::createWithTwoActions(

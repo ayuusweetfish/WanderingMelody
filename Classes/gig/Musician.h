@@ -20,7 +20,9 @@ class Gig;
 
 class Musician {
 public:
-    Musician() : _isPlaying(0), _display(nullptr), _gig(nullptr) { }
+    Musician()
+      : _curTime(0), _curTick(0), _isPlaying(false),
+        _display(nullptr), _gig(nullptr) { }
     virtual ~Musician();
 
     inline void allocateMusicTrack(int idx) {
@@ -51,9 +53,6 @@ public:
     virtual void startPlay();
     virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
     virtual void sendEvent(int message) = 0;
-    inline const std::vector<MusicNote *> &getRecentTriggers() {
-        return _recentTriggers;
-    }
     double getCurTick() { return _curTick; }
     double getRawTick() { return _rawTick; }
     double getOrigTempo() { return _tempoChanges.front().second; }
@@ -71,7 +70,6 @@ protected:
     int _tempoChangePtr;
     int _barlinePtr;
     double _curTime, _curTick, _rawTick;    // _curTick is the adjusted value
-    std::vector<MusicNote *> _recentTriggers;
     bool _isInBreak;
     void processFlags(MusicTrack::flags_t flags);
 
