@@ -40,7 +40,8 @@ protected:
     std::vector<Musician *> _musicians;
 
     std::string _workingDir;
-    FileReadResult initWithStdioFile(FILE *f);
+    FileReadResult initWithPath(const std::string &path, bool isPeek);
+    FileReadResult initWithStdioFile(FILE *f, bool isPeek);
 };
 
 #endif

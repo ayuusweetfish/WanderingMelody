@@ -92,6 +92,16 @@ static inline std::pair<Soundbank *, std::string>
 
 Gig::FileReadResult Gig::init(const std::string &path)
 {
+    return this->initWithPath(path, false);
+}
+
+Gig::FileReadResult Gig::peek(const std::string &path)
+{
+    return this->initWithPath(path, true);
+}
+
+Gig::FileReadResult Gig::initWithPath(const std::string &path, bool isPeek)
+{
     size_t delim = path.find_last_of('/');
     if (delim != std::string::npos) {
         _workingDir = path.substr(0, delim + 1);
@@ -103,17 +113,12 @@ Gig::FileReadResult Gig::init(const std::string &path)
     }
     FILE *f = fopen(path.c_str(), "r");
     if (!f) return FileReadResult(false, "Cannot open file \"" + path + '\"');
-    auto ret = this->initWithStdioFile(f);
+    auto ret = this->initWithStdioFile(f, isPeek);
     fclose(f);
     return ret;
 }
 
-Gig::FileReadResult Gig::peek(const std::string &path)
-{
-    return this->init(path);
-}
-
-Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
+Gig::FileReadResult Gig::initWithStdioFile(FILE *f, bool isPeek)
 {
     _musicians.resize(4);
 
@@ -146,6 +151,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f)
         s[lastNonSpace + 1] = '\0';
         _metadata[s] = s + i + 1;
     }
+    if (isPeek) return FileReadResult(true, "");
 
     ////// Track setup //////
     struct trackLayout {
