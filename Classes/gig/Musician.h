@@ -21,7 +21,8 @@ class Gig;
 class Musician {
 public:
     Musician()
-      : _curTime(0), _curTick(0), _isPlaying(false),
+      : _isAutoplay(false), _isAutoscroll(false),
+        _curTime(0), _curTick(0), _isPlaying(false),
         _display(nullptr), _gig(nullptr) { }
     virtual ~Musician();
 
@@ -50,6 +51,7 @@ public:
     inline void setGig(Gig *gig, int tag) { _gig = gig; _tag = tag; }
     inline Gig *getGig() { return _gig; }
     inline void setIsAutoplay(bool isAutoplay) { _isAutoplay = isAutoplay; }
+    inline void setIsAutoscroll(bool isAutoscroll) { _isAutoscroll = isAutoscroll; }
 
     virtual void startPlay();
     inline void refresh() { if (_display) _display->refresh(); }
@@ -58,7 +60,7 @@ public:
     double getCurTick() { return _curTick; }
     double getRawTick() { return _rawTick; }
     double getOrigTempo() { return _tempoChanges.front().second; }
-    bool isInBreak() { return _isInBreak || _isAutoplay; }
+    bool isInBreak() { return _isInBreak || _isAutoscroll; }
 
 protected:
     std::vector<KeyNote> _keyNotes;
@@ -66,9 +68,11 @@ protected:
     std::vector<int32_t> _barlines;
     std::vector<MusicTrack> _musicTracks;
 
+    bool _isAutoplay;
+    bool _isAutoscroll;
+
     // Fields used during playback
     bool _isPlaying;
-    bool _isAutoplay;
     int _tempoChangePtr;
     int _barlinePtr;
     double _curTime, _curTick, _rawTick;    // _curTick is the adjusted value

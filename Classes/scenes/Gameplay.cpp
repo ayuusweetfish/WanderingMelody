@@ -1,5 +1,6 @@
 #include "Gameplay.h"
 #include "Global.h"
+
 #include "gig/Musician.h"
 #include "gig/MusicianNKeys.h"
 using namespace cocos2d;
@@ -53,6 +54,16 @@ bool Gameplay::init()
                 CallFunc::create([this] () {
                     for (int i = 0; i < _gig.getMusicianCount(); i++)
                         _gig.getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
+
+                    ModPanel::SpeedMode mode = _modPanel->getSpeedMode();
+                    if (mode >= ModPanel::CONDUCTOR && mode < ModPanel::CONDUCTOR + 4) {
+                        for (int i = 0; i < _gig.getMusicianCount(); i++)
+                            _gig.getMusician(i)->setIsAutoscroll(i != (int)mode - ModPanel::CONDUCTOR);
+                    } else if (mode == ModPanel::METRONOME) {
+                        for (int i = 0; i < _gig.getMusicianCount(); i++)
+                            _gig.getMusician(i)->setIsAutoscroll(true);
+                    }
+
                     _gig.startPlay();
                 })
             ));
@@ -252,7 +263,7 @@ const char *Gameplay::ModPanel::getSpeedModeName(SpeedMode mode)
     static char s[16];
     if (mode == FREESTYLE) return "Freestyle";
     if (mode >= CONDUCTOR && mode < CONDUCTOR + 4) {
-        sprintf(s, "Conductor P%d", (int)mode - CONDUCTOR);
+        sprintf(s, "Conductor P%d", (int)mode - CONDUCTOR + 1);
         return s;
     }
     if (mode == METRONOME) return "Metronome";
