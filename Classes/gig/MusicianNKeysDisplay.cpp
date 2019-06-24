@@ -1,4 +1,5 @@
 #include "gig/MusicianNKeys.h"
+#include "gig/Gig.h"
 
 #include "cocos2d.h"
 #include "Global.h"
@@ -54,11 +55,6 @@ template <int N> void MusicianNKeys<N>::Display::refresh()
             Vec2(size.width * (i + 1) / N, size.height),
             Color4F(0.8, 0.8, 0.8, 1));
 
-    _drawNode->drawSegment(
-        Vec2(0, HIT_LINE_POS),
-        Vec2(size.width, HIT_LINE_POS),
-        2, Color4F(1, 1, 0.7, 0.9));
-
     // Bar lines
     for (int32_t barline : _mus->_barlines) {
         float posY = HIT_LINE_POS + size.height * speed * (barline - _mus->getCurTick());
@@ -67,6 +63,41 @@ template <int N> void MusicianNKeys<N>::Display::refresh()
         );
     }
 
+    // Progress indicators
+    const Color4F playerColors[4] = {
+        {0.8f, 0.8f, 0.5f, 0.9f},
+        {1.0f, 0.7f, 1.0f, 0.9f},
+        {0.5f, 1.0f, 1.0f, 0.9f},
+        {0.7f, 1.0f, 0.7f, 0.9f}
+    };
+
+    const float TRI_SIZE = 12;
+    const float SQRT3_2 = 0.8660254037844386;
+
+    int myId = -1;
+    for (int i = 0; i < _mus->getGig()->getMusicianCount(); i++) {
+        Musician *mus = _mus->getGig()->getMusician(i);
+        if (mus == _mus) {
+            myId = i;
+        } else {
+            double p = mus->getCurTick();
+            float posY = HIT_LINE_POS + size.height * speed * (p - _mus->getCurTick());
+            posY = clampf(posY, 12, size.height - 12);
+            _drawNode->drawTriangle(
+                Vec2(-3, posY),
+                Vec2(-3 - TRI_SIZE * SQRT3_2, posY + TRI_SIZE / 2),
+                Vec2(-3 - TRI_SIZE * SQRT3_2, posY - TRI_SIZE / 2),
+                playerColors[i]
+            );
+        }
+    }
+
+    _drawNode->drawSegment(
+        Vec2(0, HIT_LINE_POS),
+        Vec2(size.width, HIT_LINE_POS),
+        2, playerColors[myId]);
+
+    // Notes
     for (const auto &n : _mus->_keyNotes) {
         float posX = size.width / N * n.track;
         float posY = HIT_LINE_POS + size.height * speed * (n.time - _mus->getCurTick());

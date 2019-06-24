@@ -48,9 +48,11 @@ public:
     inline Display *getDisplay() { return _display; }
 
     inline void setGig(Gig *gig, int tag) { _gig = gig; _tag = tag; }
+    inline Gig *getGig() { return _gig; }
     inline void setIsAutoplay(bool isAutoplay) { _isAutoplay = isAutoplay; }
 
     virtual void startPlay();
+    inline void refresh() { if (_display) _display->refresh(); }
     virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
     virtual void sendEvent(int message) = 0;
     double getCurTick() { return _curTick; }
