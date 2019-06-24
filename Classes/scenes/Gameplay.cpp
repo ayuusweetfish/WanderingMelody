@@ -10,12 +10,28 @@ public:
     virtual bool init() override;
     CREATE_FUNC(ModPanel);
 
+    enum SpeedMode {
+        FREESTYLE = 0,
+        CONDUCTOR = 1,
+        METRONOME = 10,
+        PAST_THE_END
+    };
+
+    static const char *getSpeedModeName(SpeedMode mode);
+    static Color3B getSpeedModeColor(SpeedMode mode);
+
     void setNumMusicians(int num);
     inline bool isAutoplay(int i) { return _autoplay[i]; }
+    inline SpeedMode getSpeedMode() { return _speedMode; }
 
 protected:
+    int _numMusicians;
+
     bool _autoplay[4];
     cocos2d::Label *_autoplayLabel[4];
+
+    SpeedMode _speedMode;
+    cocos2d::Label *_speedModeLabel;
 };
 
 bool Gameplay::init()
@@ -139,6 +155,8 @@ bool Gameplay::ModPanel::init()
 {
     if (!LayerColor::initWithColor(Color4B(192, 240, 255, 230))) return false;
 
+    _numMusicians = 4;
+
     auto labelAutoplay = Label::createWithTTF("Auto Play", "OpenSans-Light.ttf", 42);
     labelAutoplay->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
     labelAutoplay->setPosition(Vec2(24, WIN_H / 2 - 40));
@@ -157,6 +175,20 @@ bool Gameplay::ModPanel::init()
         this->addChild(label);
         _autoplayLabel[i] = label;
     }
+
+    auto labelSpeedMode = Label::createWithTTF("Speed Mode", "OpenSans-Light.ttf", 42);
+    labelSpeedMode->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+    labelSpeedMode->setPosition(Vec2(24, WIN_H / 2 - 100));
+    labelSpeedMode->setColor(Color3B::BLACK);
+    this->addChild(labelSpeedMode);
+
+    _speedMode = FREESTYLE;
+    auto label = Label::createWithTTF(
+        ModPanel::getSpeedModeName(_speedMode), "OpenSans-Light.ttf", 42);
+    label->setPosition(Vec2(WIN_W * 0.667, WIN_H / 2 - 100));
+    label->setColor(Color3B(128, 128, 128));
+    this->addChild(label);
+    _speedModeLabel = label;
 
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
@@ -192,6 +224,22 @@ bool Gameplay::ModPanel::init()
             ));
         }
 
+        if (keyCode == EventKeyboard::KeyCode::KEY_Q) {
+            _speedMode = (SpeedMode)((int)_speedMode + 1);
+            if (_speedMode == CONDUCTOR + _numMusicians)
+                _speedMode = METRONOME;
+            if (_speedMode == PAST_THE_END)
+                _speedMode = FREESTYLE;
+            _speedModeLabel->setString(getSpeedModeName(_speedMode));
+            _speedModeLabel->runAction(Spawn::createWithTwoActions(
+                TintTo::create(0.2, getSpeedModeColor(_speedMode)),
+                Sequence::createWithTwoActions(
+                    ScaleTo::create(0, 0.91),
+                    EaseElasticOut::create(ScaleTo::create(0.5, 1), 0.3)
+                )
+            ));
+        }
+
         event->stopPropagation();
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
@@ -199,7 +247,28 @@ bool Gameplay::ModPanel::init()
     return true;
 }
 
+const char *Gameplay::ModPanel::getSpeedModeName(SpeedMode mode)
+{
+    static char s[16];
+    if (mode == FREESTYLE) return "Freestyle";
+    if (mode >= CONDUCTOR && mode < CONDUCTOR + 4) {
+        sprintf(s, "Conductor P%d", (int)mode - CONDUCTOR);
+        return s;
+    }
+    if (mode == METRONOME) return "Metronome";
+    return nullptr;
+}
+
+Color3B Gameplay::ModPanel::getSpeedModeColor(SpeedMode mode)
+{
+    if (mode == FREESTYLE) return Color3B(128, 128, 128);
+    if (mode >= CONDUCTOR && mode < CONDUCTOR + 4) return Color3B(255, 128, 128);
+    if (mode == METRONOME) return Color3B(128, 128, 255);
+    return Color3B(128, 128, 128);
+}
+
 void Gameplay::ModPanel::setNumMusicians(int num)
 {
+    _numMusicians = num;
     for (int i = 0; i < 4; i++) _autoplayLabel[i]->setVisible(i < num);
 }
