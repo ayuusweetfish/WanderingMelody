@@ -55,9 +55,13 @@ bool Select::init()
             labelArtist->setColor(Color3B(128, 128, 128));
             display->addChild(labelArtist);
 
-            _songList.push_back((SongListEntry){
-                file + "map.txt", title, gig.getMetadata(), result.succeeded, display
-            });
+            SongListEntry entry;
+            entry.path = file + "map.txt";
+            entry.title = title;
+            entry.metadata = gig.getMetadata();
+            entry.succeeded = result.succeeded;
+            entry.display = display;
+            _songList.push_back(entry);
         }
     }
 

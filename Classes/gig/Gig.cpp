@@ -3,7 +3,14 @@
 #include "audio/SoundbankPureSine.h"
 #include "audio/SoundbankSoundFont.h"
 
+#ifdef _WIN32
+#include <direct.h>
+#define getcwd _getcwd
+#else
 #include <unistd.h>
+#endif
+
+#include <cctype>
 
 static inline void rtrim(char *s)
 {

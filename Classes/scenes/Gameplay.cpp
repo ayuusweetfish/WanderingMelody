@@ -129,7 +129,7 @@ void Gameplay::load(const std::string &path)
     modPanel->retain();
     _modPanel = modPanel;
 
-    Musician::Display *mus[numMusicians];
+    Musician::Display *mus[4];
     for (int i = 0; i < numMusicians; i++) {
         mus[i] = _gig.getMusician(i)->createDisplay();
         mus[i]->setContentSize(Size(WIN_W * 0.23, WIN_H));
