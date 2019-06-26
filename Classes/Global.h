@@ -54,7 +54,7 @@
         Director::getInstance(), 0, 0, 0.2, false, "go_back"); \
 } while (0)
 
-#define IS_ON_PC (CC_TARGET_PLATFORM == CC_PLATFORM_WINDOWS \
+#define IS_ON_PC (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 \
     || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX \
     || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 
