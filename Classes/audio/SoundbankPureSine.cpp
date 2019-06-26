@@ -18,6 +18,7 @@ SoundbankPureSine::SoundbankPureSine(const char *s)
 
 void SoundbankPureSine::sendNote(const MusicNote &note)
 {
+    std::lock_guard<std::mutex> guard(_mutex);
     if (note.note == MusicNote::NOCHANGE) return;
     _lastNote = _curNote;
     _lastNoteOffTime = _lastNote.phase;
@@ -34,6 +35,7 @@ void SoundbankPureSine::sendNote(const MusicNote &note)
 
 void SoundbankPureSine::render(float *output, uint32_t nframes)
 {
+    std::lock_guard<std::mutex> guard(_mutex);
     if (_isCurNoteOn) {
         for (int i = 0; i < nframes; i++) {
             float x = sinf((_curNote.phase + i) * _curNote.angVel);

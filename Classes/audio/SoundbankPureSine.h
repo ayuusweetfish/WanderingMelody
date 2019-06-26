@@ -4,6 +4,7 @@
 #include "audio/Soundbank.h"
 
 #include <cstdint>
+#include <mutex>
 
 class SoundbankPureSine : public Soundbank {
 public:
@@ -20,6 +21,8 @@ protected:
     } _lastNote, _curNote;
     int _lastNoteOffTime;
     bool _isCurNoteOn;
+
+    std::mutex _mutex;
 };
 
 #endif

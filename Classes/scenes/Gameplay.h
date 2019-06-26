@@ -6,6 +6,9 @@
 #include "Global.h"
 #include "gig/Gig.h"
 
+#include <mutex>
+#include <thread>
+
 class Gameplay : public cocos2d::LayerColor
 {
 public:
@@ -20,6 +23,9 @@ public:
 
 protected:
     Gig _gig;
+
+    std::mutex *_gigMutex;
+    std::atomic<bool> *_gigStopSignal;
 
     cocos2d::LayerColor *_layerStart;
     cocos2d::Label *_labelStart;

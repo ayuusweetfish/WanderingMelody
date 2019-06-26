@@ -5,6 +5,9 @@
 #include "gig/MusicianNKeys.h"
 using namespace cocos2d;
 
+#include <atomic>
+#include <chrono>
+
 class Gameplay::ModPanel : public cocos2d::LayerColor
 {
 public:
@@ -89,6 +92,8 @@ bool Gameplay::init()
 Gameplay::~Gameplay()
 {
     if (_modPanel) _modPanel->release();
+    std::lock_guard<std::mutex> guard(*_gigMutex);
+    _gigStopSignal->store(true);
 }
 
 void Gameplay::load(const std::string &path)
@@ -154,11 +159,33 @@ void Gameplay::load(const std::string &path)
 
     this->scheduleUpdate();
     _playState = 0;
+
+    _gigMutex = new std::mutex();
+    _gigStopSignal = new std::atomic<bool>(false);
+    auto mutex = _gigMutex;
+    auto signal = _gigStopSignal;
+    auto &gig = _gig;
+    auto gigUpdateThread = std::thread([mutex, signal, &gig] {
+        std::chrono::steady_clock clock;
+        auto last = clock.now();
+        while (!signal->load()) {
+            auto now = clock.now();
+            auto dt = std::chrono::duration_cast<std::chrono::nanoseconds>(now - last);
+            int64_t dtNanos = dt.count();
+            std::lock_guard<std::mutex> guard(*mutex);
+            gig.tick((double)dtNanos / 1e9);
+            last = now;
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        }
+        delete mutex;
+        delete signal;
+    });
+    gigUpdateThread.detach();
 }
 
 void Gameplay::update(float dt)
 {
-    _gig.tick(dt);
+    _gig.refresh();
 }
 
 

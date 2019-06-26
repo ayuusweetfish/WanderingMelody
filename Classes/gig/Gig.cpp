@@ -366,6 +366,10 @@ void Gig::tick(float dt)
             (i == f1.second ? f2.first : f1.first) + 480 * 4
         );
     }
+}
+
+void Gig::refresh()
+{
     for (int i = 0; i < _musicians.size(); i++)
         _musicians[i]->refresh();
 }
