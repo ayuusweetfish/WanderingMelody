@@ -3,6 +3,9 @@
 #include "audio/SoundbankPureSine.h"
 #include "audio/SoundbankSoundFont.h"
 
+#include "cocos2d.h"
+using namespace cocos2d;
+
 #ifdef _WIN32
 #include <direct.h>
 #define getcwd _getcwd
@@ -89,7 +92,8 @@ static inline std::pair<Soundbank *, std::string>
         i = j + 1;
     }
     for (auto x : args) printf("%s %s\n", x.first.c_str(), x.second.c_str());
-    auto bank = new SoundbankSoundFont(wd + path, args);
+    auto fullPath = FileUtils::getInstance()->fullPathForFilename(wd + path);
+    auto bank = new SoundbankSoundFont(fullPath, args);
     std::string err;
     if (!bank->isValid()) {
         err = "Invalid SoundFont file: " + path;
