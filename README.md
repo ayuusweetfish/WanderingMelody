@@ -9,6 +9,8 @@ Current version is built with Cocos2d-x 3.17.1.
 Before building, copy the entire Cocos2d-x folder into the project and rename
 it as `cocos2d`. Or perhaps create a symlink, whichever is more convenient.
 
+You may need to re-run CMake after each change to `Resources/`.
+
 ### Linux/macOS
 
 ```sh
@@ -28,18 +30,18 @@ Open the generated file `WanderingMelody.sln` and build in Visual Studio.
 ## Controls
 
 Song selection:
-* _Arrows_: navigation
-* _Enter_: select
+* **Arrows**: navigation
+* **Enter**: select
 
 Pre-game:
-* _Tab_: mod selection
-  - _1234_: toggle autoplay
-  - _Q_: speed mode
-* _Enter_: start
-* _Esc_: back
+* **Tab**: options panel
+  - **1234**: toggle autoplay
+  - **Q**: mode selection
+* **Enter**: start
+* **Esc**: back
 
 Key mappings:
-* P1: _ZXCV_
-* P2: _KL;'_
-* P3: _QWER_
-* P4: _7890_
+* P1: **ZXCV**
+* P2: **KL;'**
+* P3: **QWER**
+* P4: **7890**
