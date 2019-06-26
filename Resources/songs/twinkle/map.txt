@@ -5,10 +5,10 @@ Cover Art|
 Notes    |
 
 P1   |4K
-P1/T1|Vl|1.sf2 Patch=8 Gain=0.3
+P1/T1|Vl|MuseScore_General.sf2 Patch=8 Gain=0.3
 P2   |4K
-P2/T1|Vl|1.sf2 Patch=12 Gain=0.15
-P2/T2|Vl|1.sf2 Patch=12 Gain=0.1
+P2/T1|Vl|MuseScore_General.sf2 Patch=12 Gain=0.15
+P2/T2|Vl|MuseScore_General.sf2 Patch=12 Gain=0.1
 
  600|1   |    |      |    | A-3  |      
     |2   |    |      |    |      |      

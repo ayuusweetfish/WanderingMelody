@@ -5,17 +5,17 @@ Cover Art|
 Notes    |
 
 P1   |4K
-P1/T1|Vl|1.sf2 Patch=9 Gain=0.2
-P1/T2|Vl|1.sf2 Patch=9 Gain=0.15
+P1/T1|Vl|MuseScore_General.sf2 Patch=9 Gain=0.2
+P1/T2|Vl|MuseScore_General.sf2 Patch=9 Gain=0.15
 P2   |4K
-P2/T1|Vl|1.sf2 Patch=11 Gain=0.1
+P2/T1|Vl|MuseScore_General.sf2 Patch=11 Gain=0.1
 P3   |4K
-P3/T1|Vl|1.sf2 Patch=13 Gain=0.35
-P3/T2|Vl|1.sf2 Patch=13 Gain=0.25
+P3/T1|Vl|MuseScore_General.sf2 Patch=13 Gain=0.35
+P3/T2|Vl|MuseScore_General.sf2 Patch=13 Gain=0.25
 P4   |4K
-P4/T1|Vl|1.sf2 Patch=12 Gain=0.25
-P4/T2|Vl|1.sf2 Patch=12 Gain=0.1
-P4/T3|Vl|1.sf2 Patch=12 Gain=0.1
+P4/T1|Vl|MuseScore_General.sf2 Patch=12 Gain=0.25
+P4/T2|Vl|MuseScore_General.sf2 Patch=12 Gain=0.1
+P4/T3|Vl|MuseScore_General.sf2 Patch=12 Gain=0.1
 
 2000|1   |    | C-315|      |    |      |    |      |      |    |      |      |      
     |2   |    |      |      |    |      |    |      |      |    |      |      |      

@@ -232,7 +232,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f, bool isPeek)
                         RET_ERRF("Col %d: Parameter name too long", i - 2);
                 }
             }
-            auto bankAndErr = createSoundbank(_workingDir, s + i);
+            auto bankAndErr = createSoundbank("soundbanks/", s + i);
             auto bank = bankAndErr.first;
             auto bankErr = bankAndErr.second;
             if (!bank->isValid()) {
