@@ -49,6 +49,14 @@ template <int N> void MusicianNKeys<N>::Display::refresh()
         Vec2(size.width, size.height),
         Color4F(0.8, 0.8, 0.8, 0.8));
 
+    for (int i = 1; i < N; i++)
+        _drawNode->drawSegment(
+            Vec2(size.width * i / N, 0),
+            Vec2(size.width * i / N, size.height),
+            1,
+            Color4F(0.7, 0.7, 0.7, 0.5)
+        );
+
     for (int i = 0; i < N; i++) if (_mus->_isKeyDown[i])
         _drawNode->drawSolidRect(
             Vec2(size.width * i / N, 0),
