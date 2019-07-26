@@ -1,6 +1,7 @@
 #include "Options.h"
 #include "Global.h"
 #include "widgets/ListMenu.h"
+#include "widgets/KeyBindingsPanel.h"
 using namespace cocos2d;
 
 #include <vector>
@@ -24,7 +25,8 @@ bool Options::init()
     for (int i = 0; i < 10; i++)
         items.push_back(ListMenu::Item("Heya", [] (ListMenu::Item &i) { i._value = 0; },
             i % 3, {"Yes", "Yeah", "Yup"}));
-    auto menu = ListMenu::createWithItems(items);
+    //auto menu = ListMenu::createWithItems(items);
+    auto menu = KeyBindingsPanel::create();
     menu->setContentSize(Size(WIN_W * 0.8, WIN_H * 0.75));
     menu->setPosition(Vec2(WIN_W * 0.1, WIN_H * 0.85));
     this->addChild(menu);
