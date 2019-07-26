@@ -54,6 +54,7 @@ list(APPEND GAME_SOURCE
      Classes/scenes/Options.cpp
      Classes/scenes/Select.cpp
      Classes/scenes/Gameplay.cpp
+     Classes/scenes/widgets/ListMenu.cpp
      Classes/audio/AudioOutput.cpp
      Classes/audio/SoundbankPureSine.cpp
      Classes/audio/SoundbankSoundFont.cpp
