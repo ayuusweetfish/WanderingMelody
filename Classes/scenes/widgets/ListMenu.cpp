@@ -52,6 +52,16 @@ bool ListMenu::initWithItems(const std::vector<Item> &items)
         } else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
             _selIndex = (_selIndex + 1) % _items.size();
             updateItemPositions();
+        } else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+            auto &item = _items[_selIndex];
+            if ((item._value -= 1) < item._minValue)
+                item._value = (item._doesCycle ? item._maxValue : item._minValue);
+            updateText(_selIndex);
+        } else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+            auto &item = _items[_selIndex];
+            if ((item._value += 1) > item._maxValue)
+                item._value = (item._doesCycle ? item._minValue : item._maxValue);
+            updateText(_selIndex);
         }
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);

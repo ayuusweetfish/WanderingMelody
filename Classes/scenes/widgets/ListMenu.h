@@ -39,7 +39,7 @@ public:
           _selectCallback(callback),
           _value(value),
           _minValue(0),
-          _maxValue(enumText.size()),
+          _maxValue(enumText.size() - 1),
           _doesCycle(true),
           _enumText(enumText)
         { }
