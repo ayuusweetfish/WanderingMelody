@@ -79,14 +79,14 @@ bool Select::init()
 
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
-        if (keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
+        if (Config::isKeyConfirm(keyCode)) {
             auto gameplay = Gameplay::create();
             gameplay->load(_songList[_selIdx].path);
             auto scene = Scene::create();
             scene->addChild(gameplay);
             GO_TO_SCENE(scene);
             return;
-        } else if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
+        } else if (Config::isKeyCancel(keyCode)) {
             GO_BACK_SCENE();
             return;
         }
@@ -94,9 +94,9 @@ bool Select::init()
         _songList[_selIdx].display->runAction(
             TintTo::create(0.2, Color3B(240, 235, 230))
         );
-        if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+        if (Config::isKeyArrowDown(keyCode)) {
             _selIdx = (_selIdx + 1) % _songList.size();
-        } else if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+        } else if (Config::isKeyArrowUp(keyCode)) {
             _selIdx = (_selIdx - 1 + (int)_songList.size()) % _songList.size();
         }
         _songList[_selIdx].display->runAction(

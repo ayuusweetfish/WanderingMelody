@@ -31,9 +31,7 @@ bool Options::init()
 
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
-        if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
-            GO_BACK_SCENE();
-        }
+        if (Config::isKeyCancel(keyCode)) GO_BACK_SCENE();
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 

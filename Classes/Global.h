@@ -70,4 +70,6 @@
 
 #define HIT_LINE_POS    (WIN_H / 3.0)
 
+#include "Config.h"
+
 #endif

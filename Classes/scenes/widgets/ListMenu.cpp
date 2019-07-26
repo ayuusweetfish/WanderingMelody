@@ -47,21 +47,21 @@ bool ListMenu::initWithItems(const std::vector<Item> &items)
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         auto &item = _items[_selIndex];
-        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+        if (Config::isKeyArrowUp(keyCode)) {
             _selIndex = (_selIndex - 1 + _items.size()) % _items.size();
             updateItemPositions();
-        } else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+        } else if (Config::isKeyArrowDown(keyCode)) {
             _selIndex = (_selIndex + 1) % _items.size();
             updateItemPositions();
-        } else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+        } else if (Config::isKeyArrowLeft(keyCode)) {
             if ((item._value -= 1) < item._minValue)
                 item._value = (item._doesCycle ? item._maxValue : item._minValue);
             updateText(_selIndex);
-        } else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+        } else if (Config::isKeyArrowRight(keyCode)) {
             if ((item._value += 1) > item._maxValue)
                 item._value = (item._doesCycle ? item._minValue : item._maxValue);
             updateText(_selIndex);
-        } else if (keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
+        } else if (Config::isKeyConfirm(keyCode)) {
             item._selectCallback(item);
             updateText(_selIndex);
         }
