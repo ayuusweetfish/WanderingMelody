@@ -20,6 +20,9 @@ bool AppDelegate::applicationDidFinishLaunching()
     AudioOutput::createInstance();
     AudioOutput::getInstance()->startPlayback();
 
+    printf("%08x\n", COCOS2D_VERSION);
+    Controller::startDiscoveryController();
+
     auto scene = Select::createScene();
     director->runWithScene(scene);
 

@@ -44,8 +44,8 @@ bool Gameplay::init()
 
     _playState = -1;
 
-    auto listener = cocos2d::EventListenerKeyboard::create();
-    listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
+    auto keyboardListener = EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         if (_playState == 0 && keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
             _playState = 1;
             _labelStart->runAction(Sequence::createWithTwoActions(
@@ -84,7 +84,19 @@ bool Gameplay::init()
             GO_BACK_SCENE();
         }
     };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+    auto controllerListener = EventListenerController::create();
+    controllerListener->onConnected = [](Controller *controller, Event *event) {
+        printf("connected %s\n", controller->getDeviceName().c_str());
+    };
+    controllerListener->onKeyDown = [](Controller *controller, int keyCode, Event *event) {
+        printf("down %d\n", keyCode);
+    };
+    controllerListener->onKeyUp = [](Controller *controller, int keyCode, Event *event) {
+        printf("up %d\n", keyCode);
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(controllerListener, this);
 
     return true;
 }
@@ -228,7 +240,7 @@ bool Gameplay::ModPanel::init()
     this->addChild(label);
     _speedModeLabel = label;
 
-    auto listener = cocos2d::EventListenerKeyboard::create();
+    auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         if (keyCode == EventKeyboard::KeyCode::KEY_TAB ||
             keyCode == EventKeyboard::KeyCode::KEY_ESCAPE ||
