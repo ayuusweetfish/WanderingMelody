@@ -11,20 +11,16 @@
 class ListMenu : public cocos2d::Node
 {
 public:
-    class Item {
-    protected:
+    struct Item {
         std::string _title;
-        std::function<void ()> _selectCallback;
+        std::function<void (Item &)> _selectCallback;
         int _value;
         int _minValue, _maxValue;
         bool _doesCycle;
         std::vector<std::string> _enumText;
 
-        friend class ListMenu;
-
-    public:
         Item() { }
-        Item(std::string title, std::function<void ()> callback,
+        Item(std::string title, std::function<void (Item &)> callback,
             int value, int minValue, int maxValue, bool doesCycle)
         : _title(title),
           _selectCallback(callback),
@@ -33,7 +29,7 @@ public:
           _maxValue(maxValue),
           _doesCycle(doesCycle)
         { }
-        Item(std::string title, std::function<void ()> callback,
+        Item(std::string title, std::function<void (Item &)> callback,
             int value, const std::vector<std::string> &enumText)
         : _title(title),
           _selectCallback(callback),
