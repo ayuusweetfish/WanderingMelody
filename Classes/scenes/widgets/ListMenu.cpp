@@ -36,10 +36,22 @@ bool ListMenu::initWithItems(const std::vector<Item> &items)
         updateText(i);
     }
 
+    auto markerLabel = Label::createWithTTF(">", "OpenSans-Light.ttf", 28);
+    markerLabel->setAlignment(TextHAlignment::RIGHT);
+    markerLabel->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+    markerLabel->setPosition(Vec2(-6, 0));
+    markerLabel->setColor(Color3B(255, 128, 0));
+    this->addChild(markerLabel);
+    _marker = markerLabel;
+
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+            _selIndex = (_selIndex - 1 + _items.size()) % _items.size();
+            updateItemPositions();
         } else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+            _selIndex = (_selIndex + 1) % _items.size();
+            updateItemPositions();
         }
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
@@ -64,7 +76,33 @@ void ListMenu::updateText(int index)
             l2->setString(tostring(item._value));
         else
             l2->setString(item._enumText[item._value]);
-        puts(l2->getString().c_str());
+    }
+}
+
+void ListMenu::updateItemPositions()
+{
+    float extraHeight = _items.size() * 28 - _contentSize.height;
+    float offsetY = (extraHeight < 0 ? 0 : extraHeight * _selIndex / (_items.size() - 1));
+
+    _marker->stopAllActions();
+    _marker->runAction(EaseQuadraticActionOut::create(
+        MoveTo::create(0.2, Vec2(-6, -_selIndex * 28 + offsetY))
+    ));
+
+    for (int i = 0; i < _items.size(); i++) {
+        Label *l1 = _labels[i].first;
+        Label *l2 = _labels[i].second;
+        float t = 0.5 + 1.0 * i / (_items.size() - 1);
+        l1->stopAllActions();
+        l1->runAction(EaseExponentialOut::create(
+            MoveTo::create(t, Vec2(0, -i * 28 + offsetY))
+        ));
+        if (l2 != nullptr) {
+            l2->stopAllActions();
+            l2->runAction(EaseExponentialOut::create(
+                MoveTo::create(t, Vec2(_contentSize.width, -i * 28 + offsetY))
+            ));
+        }
     }
 }
 

@@ -18,8 +18,10 @@ bool Options::init()
     this->addChild(label);
 
     std::vector<ListMenu::Item> items;
-    items.push_back(ListMenu::Item("Hi", [](){}, 0, 0, 5, false));
-    items.push_back(ListMenu::Item("Heya", [](){}, 0, {"Yes", "Yeah", "Yup"}));
+    for (int i = 0; i < 10; i++)
+        items.push_back(ListMenu::Item("Hi", [](){}, -i, -i * 2, 5, false));
+    for (int i = 0; i < 10; i++)
+        items.push_back(ListMenu::Item("Heya", [](){}, i % 3, {"Yes", "Yeah", "Yup"}));
     auto menu = ListMenu::createWithItems(items);
     menu->setContentSize(Size(WIN_W * 0.8, WIN_H * 0.75));
     menu->setPosition(Vec2(WIN_W * 0.1, WIN_H * 0.85));

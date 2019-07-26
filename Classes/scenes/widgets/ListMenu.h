@@ -62,7 +62,10 @@ protected:
     std::vector<Item> _items;
     std::vector<std::pair<cocos2d::Label *, cocos2d::Label *>> _labels;
 
+    cocos2d::Node *_marker;
+
     void updateText(int index);
+    void updateItemPositions();
 };
 
 #endif
