@@ -23,7 +23,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     printf("%08x\n", COCOS2D_VERSION);
     Controller::startDiscoveryController();
 
-    auto scene = Select::createScene();
+    auto scene = Startup::createScene();
     director->runWithScene(scene);
 
     return true;

@@ -86,6 +86,9 @@ bool Select::init()
             scene->addChild(gameplay);
             GO_TO_SCENE(scene);
             return;
+        } else if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
+            GO_BACK_SCENE();
+            return;
         }
 
         _songList[_selIdx].display->runAction(

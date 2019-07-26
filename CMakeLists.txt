@@ -51,6 +51,7 @@ list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/Config.cpp
      Classes/scenes/Startup.cpp
+     Classes/scenes/Options.cpp
      Classes/scenes/Select.cpp
      Classes/scenes/Gameplay.cpp
      Classes/audio/AudioOutput.cpp
