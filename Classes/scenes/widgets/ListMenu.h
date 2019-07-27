@@ -20,6 +20,13 @@ public:
         std::vector<std::string> _enumText;
 
         Item() { }
+        Item(std::string title, std::function<void (Item &)> callback)
+        : _title(title),
+          _selectCallback(callback),
+          _value(0),
+          _minValue(0),
+          _maxValue(-1)
+        { }
         Item(std::string title, std::function<void (Item &)> callback,
             int value, int minValue, int maxValue, bool doesCycle)
         : _title(title),
@@ -52,6 +59,9 @@ public:
     }
 
     void setContentSize(const cocos2d::Size &size) override;
+
+    void moveIn();
+    void moveOut();
 
 protected:
     int _selIndex;

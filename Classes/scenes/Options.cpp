@@ -18,18 +18,38 @@ bool Options::init()
     label->setColor(Color3B(0, 0, 0));
     this->addChild(label);
 
+    auto menu = new ListMenu();
+    auto keyBindings = KeyBindingsPanel::create();
+
     std::vector<ListMenu::Item> items;
     for (int i = 0; i < 10; i++)
-        items.push_back(ListMenu::Item("Hi", [] (ListMenu::Item &i) { },
-            -i, -i * 2, 5, false));
+        items.push_back(ListMenu::Item("Hi", nullptr, -i, -i * 2, 5, false));
     for (int i = 0; i < 10; i++)
         items.push_back(ListMenu::Item("Heya", [] (ListMenu::Item &i) { i._value = 0; },
             i % 3, {"Yes", "Yeah", "Yup"}));
-    //auto menu = ListMenu::createWithItems(items);
-    auto menu = KeyBindingsPanel::create();
+    items.push_back(ListMenu::Item("Key/Gamepad Mappings",
+        [this, menu, keyBindings] (ListMenu::Item &) {
+            menu->moveOut();
+            keyBindings->moveIn();
+        }
+    ));
+    menu->initWithItems(items);
     menu->setContentSize(Size(WIN_W * 0.8, WIN_H * 0.75));
     menu->setPosition(Vec2(WIN_W * 0.1, WIN_H * 0.85));
     this->addChild(menu);
+
+    keyBindings->setContentSize(Size(WIN_W * 0.8, WIN_H * 0.75));
+    keyBindings->setPosition(Vec2(WIN_W * 0.1, WIN_H * 0.85));
+    this->addChild(keyBindings);
+    keyBindings->setCancelCallback([this, menu, keyBindings] () {
+        keyBindings->moveOut();
+        menu->moveIn();
+    });
+    // Needs to be executed after onEnter() so that the listener is not resumed
+    this->scheduleOnce([this, keyBindings] (float dt) {
+        _eventDispatcher->pauseEventListenersForTarget(keyBindings);
+    }, 0, "OvO");
+    keyBindings->moveOut(true);
 
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {

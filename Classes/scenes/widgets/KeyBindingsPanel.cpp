@@ -18,7 +18,12 @@ bool KeyBindingsPanel::init()
 #include "ConfigList.txt"
 
     auto listener = cocos2d::EventListenerKeyboard::create();
-    listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
+    listener->onKeyPressed = [listener, this](EventKeyboard::KeyCode keyCode, Event *event) {
+        if (Config::isKeyCancel(keyCode)) {
+            if (_cancelCallback) _cancelCallback();
+            event->stopPropagation();
+            return;
+        }
         int linearIndex = _selRow * 4 + _selCol;
         if (Config::isKeyArrowUp(keyCode)) linearIndex -= 4;
         else if (Config::isKeyArrowDown(keyCode)) linearIndex += 4;
@@ -107,4 +112,40 @@ void KeyBindingsPanel::setContentSize(const cocos2d::Size &size)
             row[i]->setPositionX(size.width * (0.475 + 0.15 * i));
 
     updateItemPositions();
+}
+
+void KeyBindingsPanel::moveIn()
+{
+    for (int i = 0; i < _labels.size(); i++)
+        for (int j = -1; j < 4; j++) {
+            float t = 0.25 + 0.5 * (i * 5 + j + 1) / (_labels.size() * 5 - 1);
+            auto action = EaseExponentialInOut::create(
+                Spawn::createWithTwoActions(
+                    MoveBy::create(t, Vec2(-20, 0)),
+                    FadeIn::create(t)
+                )
+            );
+            _labels[i][j]->runAction(action);
+            if (_selRow == i && _selCol == j)
+                _marker->runAction(action->clone());
+        }
+    _eventDispatcher->resumeEventListenersForTarget(this);
+}
+
+void KeyBindingsPanel::moveOut(bool instant)
+{
+    for (int i = 0; i < _labels.size(); i++)
+        for (int j = -1; j < 4; j++) {
+            float t = 0.25 + 0.5 * (i * 5 + j + 1) / (_labels.size() * 5 - 1);
+            auto action = EaseExponentialInOut::create(
+                Spawn::createWithTwoActions(
+                    MoveBy::create(t, Vec2(+20, 0)),
+                    FadeOut::create(t)
+                )
+            );
+            _labels[i][j]->runAction(action);
+            if (_selRow == i && _selCol == j)
+                _marker->runAction(action->clone());
+        }
+    _eventDispatcher->pauseEventListenersForTarget(this);
 }

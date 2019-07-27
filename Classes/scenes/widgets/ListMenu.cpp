@@ -62,7 +62,7 @@ bool ListMenu::initWithItems(const std::vector<Item> &items)
                 item._value = (item._doesCycle ? item._minValue : item._maxValue);
             updateText(_selIndex);
         } else if (Config::isKeyConfirm(keyCode)) {
-            item._selectCallback(item);
+            if (item._selectCallback) item._selectCallback(item);
             updateText(_selIndex);
         }
     };
@@ -132,4 +132,42 @@ void ListMenu::setContentSize(const Size &size)
             l2->setPositionX(size.width);
         }
     }
+}
+
+void ListMenu::moveIn()
+{
+    for (int i = 0; i < _items.size(); i++) {
+        Label *l1 = _labels[i].first;
+        Label *l2 = _labels[i].second;
+        float t = 0.25 + 0.5 * i / (_items.size() - 1);
+        auto action = EaseExponentialInOut::create(
+            Spawn::createWithTwoActions(
+                MoveBy::create(t, Vec2(+20, 0)),
+                FadeIn::create(t)
+            )
+        );
+        l1->runAction(action);
+        if (l2 != nullptr) l2->runAction(action->clone());
+        if (i == _selIndex) _marker->runAction(action->clone());
+    }
+    _eventDispatcher->resumeEventListenersForTarget(this);
+}
+
+void ListMenu::moveOut()
+{
+    for (int i = 0; i < _items.size(); i++) {
+        Label *l1 = _labels[i].first;
+        Label *l2 = _labels[i].second;
+        float t = 0.25 + 0.5 * i / (_items.size() - 1);
+        auto action = EaseExponentialInOut::create(
+            Spawn::createWithTwoActions(
+                MoveBy::create(t, Vec2(-20, 0)),
+                FadeOut::create(t)
+            )
+        );
+        l1->runAction(action);
+        if (l2 != nullptr) l2->runAction(action->clone());
+        if (i == _selIndex) _marker->runAction(action->clone());
+    }
+    _eventDispatcher->pauseEventListenersForTarget(this);
 }

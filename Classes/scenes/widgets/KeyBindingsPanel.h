@@ -12,8 +12,16 @@ public:
     CREATE_FUNC(KeyBindingsPanel);
 
     void setContentSize(const cocos2d::Size &size) override;
+    inline void setCancelCallback(const std::function<void ()> &callback) {
+        _cancelCallback = callback;
+    }
+
+    void moveIn();
+    void moveOut(bool instant = false);
 
 protected:
+    std::function<void ()> _cancelCallback;
+
     int _selRow, _selCol;
     cocos2d::Node *_marker;
 
