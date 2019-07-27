@@ -14,6 +14,7 @@ bool AppDelegate::applicationDidFinishLaunching()
         glview = GLViewImpl::createWithRect("Wandering Melody", Rect(0, 0, WIN_W, WIN_H));
         director->setOpenGLView(glview);
     }
+    glview->setDesignResolutionSize(WIN_W, WIN_H, ResolutionPolicy::SHOW_ALL);
     director->setDisplayStats(true);
     director->setAnimationInterval(1.0 / 60);
 
