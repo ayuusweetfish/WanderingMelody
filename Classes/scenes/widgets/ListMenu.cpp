@@ -3,6 +3,12 @@
 using namespace cocos2d;
 
 #include <cstdio>
+#include <cstdlib>
+
+static const int FONT_SZ = 32;
+static const int LINE_HT = 36;
+
+static const int ACTION_MOVE_TAG = 6135;
 
 bool ListMenu::initWithItems(const std::vector<Item> &items)
 {
@@ -14,20 +20,20 @@ bool ListMenu::initWithItems(const std::vector<Item> &items)
     for (int i = 0; i < items.size(); i++) {
         const Item &item = items[i];
 
-        Label *l1 = Label::createWithTTF(item._title, "OpenSans-Light.ttf", 28);
+        Label *l1 = Label::createWithTTF(item._title, "OpenSans-Light.ttf", FONT_SZ);
         Label *l2 = nullptr;
 
         l1->setAlignment(TextHAlignment::LEFT);
         l1->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
-        l1->setPosition(Vec2(0, -i * 28));
+        l1->setPosition(Vec2(0, -i * LINE_HT));
         l1->setColor(Color3B(0, 0, 0));
         this->addChild(l1);
 
         if (item._minValue <= item._maxValue) {
-            l2 = Label::createWithTTF("", "OpenSans-Light.ttf", 28);
+            l2 = Label::createWithTTF("", "OpenSans-Light.ttf", FONT_SZ);
             l2->setAlignment(TextHAlignment::RIGHT);
             l2->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
-            l2->setPosition(Vec2(0, -i * 28));
+            l2->setPosition(Vec2(0, -i * LINE_HT));
             l2->setColor(Color3B(0, 0, 0));
             this->addChild(l2);
         }
@@ -36,7 +42,7 @@ bool ListMenu::initWithItems(const std::vector<Item> &items)
         updateText(i);
     }
 
-    auto markerLabel = Label::createWithTTF(">", "OpenSans-Light.ttf", 28);
+    auto markerLabel = Label::createWithTTF(">", "OpenSans-Light.ttf", FONT_SZ);
     markerLabel->setAlignment(TextHAlignment::RIGHT);
     markerLabel->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
     markerLabel->setPosition(Vec2(-6, 0));
@@ -93,27 +99,27 @@ void ListMenu::updateText(int index)
 
 void ListMenu::updateItemPositions()
 {
-    float extraHeight = _items.size() * 28 - _contentSize.height;
+    float extraHeight = _items.size() * LINE_HT - _contentSize.height;
     float offsetY = (extraHeight < 0 ? 0 : extraHeight * _selIndex / (_items.size() - 1));
 
-    _marker->stopAllActions();
+    _marker->stopAllActionsByTag(ACTION_MOVE_TAG);
     _marker->runAction(EaseQuadraticActionOut::create(
-        MoveTo::create(0.2, Vec2(-6, -_selIndex * 28 + offsetY))
-    ));
+        MoveTo::create(0.2, Vec2(-6, -_selIndex * LINE_HT + offsetY))
+    ))->setTag(ACTION_MOVE_TAG);
 
     for (int i = 0; i < _items.size(); i++) {
         Label *l1 = _labels[i].first;
         Label *l2 = _labels[i].second;
-        float t = 0.5 + 1.0 * i / (_items.size() - 1);
-        l1->stopAllActions();
+        float t = 0.5 + 1.0 * std::abs(i - _selIndex) / (_items.size() - 1);
+        l1->stopAllActionsByTag(ACTION_MOVE_TAG);
         l1->runAction(EaseExponentialOut::create(
-            MoveTo::create(t, Vec2(0, -i * 28 + offsetY))
-        ));
+            MoveTo::create(t, Vec2(0, -i * LINE_HT + offsetY))
+        ))->setTag(ACTION_MOVE_TAG);
         if (l2 != nullptr) {
-            l2->stopAllActions();
+            l2->stopAllActionsByTag(ACTION_MOVE_TAG);
             l2->runAction(EaseExponentialOut::create(
-                MoveTo::create(t, Vec2(_contentSize.width, -i * 28 + offsetY))
-            ));
+                MoveTo::create(t, Vec2(_contentSize.width, -i * LINE_HT + offsetY))
+            ))->setTag(ACTION_MOVE_TAG);
         }
     }
 }
@@ -126,9 +132,9 @@ void ListMenu::setContentSize(const Size &size)
         const Item &item = _items[i];
         Label *l1 = _labels[i].first;
         Label *l2 = _labels[i].second;
-        l1->setContentSize(Size(size.width, 28));
+        l1->setContentSize(Size(size.width, LINE_HT));
         if (l2 != nullptr) {
-            l2->setContentSize(Size(size.width, 28));
+            l2->setContentSize(Size(size.width, LINE_HT));
             l2->setPositionX(size.width);
         }
     }
@@ -140,15 +146,18 @@ void ListMenu::moveIn()
         Label *l1 = _labels[i].first;
         Label *l2 = _labels[i].second;
         float t = 0.25 + 0.5 * i / (_items.size() - 1);
-        auto action = EaseExponentialInOut::create(
-            Spawn::createWithTwoActions(
-                MoveBy::create(t, Vec2(+20, 0)),
-                FadeIn::create(t)
-            )
-        );
-        l1->runAction(action);
-        if (l2 != nullptr) l2->runAction(action->clone());
-        if (i == _selIndex) _marker->runAction(action->clone());
+        auto a1 = EaseExponentialInOut::create(MoveBy::create(t, Vec2(+20, 0)));
+        auto a2 = EaseExponentialInOut::create(FadeIn::create(t));
+        l1->runAction(a1)->setTag(ACTION_MOVE_TAG);
+        l1->runAction(a2);
+        if (l2 != nullptr) {
+            l2->runAction(a1->clone())->setTag(ACTION_MOVE_TAG);
+            l2->runAction(a2->clone());
+        }
+        if (i == _selIndex) {
+            _marker->runAction(a1->clone())->setTag(ACTION_MOVE_TAG);
+            _marker->runAction(a2->clone());
+        }
     }
     _eventDispatcher->resumeEventListenersForTarget(this);
 }
@@ -159,15 +168,18 @@ void ListMenu::moveOut()
         Label *l1 = _labels[i].first;
         Label *l2 = _labels[i].second;
         float t = 0.25 + 0.5 * i / (_items.size() - 1);
-        auto action = EaseExponentialInOut::create(
-            Spawn::createWithTwoActions(
-                MoveBy::create(t, Vec2(-20, 0)),
-                FadeOut::create(t)
-            )
-        );
-        l1->runAction(action);
-        if (l2 != nullptr) l2->runAction(action->clone());
-        if (i == _selIndex) _marker->runAction(action->clone());
+        auto a1 = EaseExponentialInOut::create(MoveBy::create(t, Vec2(-20, 0)));
+        auto a2 = EaseExponentialInOut::create(FadeOut::create(t));
+        l1->runAction(a1)->setTag(ACTION_MOVE_TAG);
+        l1->runAction(a2);
+        if (l2 != nullptr) {
+            l2->runAction(a1->clone())->setTag(ACTION_MOVE_TAG);
+            l2->runAction(a2->clone());
+        }
+        if (i == _selIndex) {
+            _marker->runAction(a1->clone())->setTag(ACTION_MOVE_TAG);
+            _marker->runAction(a2->clone());
+        }
     }
     _eventDispatcher->pauseEventListenersForTarget(this);
 }

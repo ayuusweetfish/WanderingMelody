@@ -2,6 +2,18 @@
 #include "Global.h"
 using namespace cocos2d;
 
+#include <cstdlib>
+
+static const int FONT_SZ = 32;
+static const int LINE_HT = 36;
+
+static const int ACTION_MOVE_TAG = 6135;
+
+float KeyBindingsPanel::getXForCol(float col)
+{
+    return (col == -1 ? 0 : _contentSize.width * (0.475 + 0.15 * col));
+}
+
 bool KeyBindingsPanel::init()
 {
     if (!Node::init()) return false;
@@ -40,7 +52,7 @@ bool KeyBindingsPanel::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     // TODO: DRY? scenes/widgets/ListMenu.cpp
-    auto markerLabel = Label::createWithTTF(">", "OpenSans-Light.ttf", 28);
+    auto markerLabel = Label::createWithTTF(">", "OpenSans-Light.ttf", FONT_SZ);
     markerLabel->setAlignment(TextHAlignment::RIGHT);
     markerLabel->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
     markerLabel->setPosition(Vec2(-6, 0));
@@ -63,19 +75,19 @@ void KeyBindingsPanel::addItem(const char *name)
     };
 
     LabelRow row;
-    row[-1] = Label::createWithTTF(name, "OpenSans-Light.ttf", 28);
+    row[-1] = Label::createWithTTF(name, "OpenSans-Light.ttf", FONT_SZ);
     row[-1]->setAlignment(TextHAlignment::LEFT);
     row[-1]->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
-    row[-1]->setPosition(Vec2(0, -(int)_labels.size() * 28));
+    row[-1]->setPosition(Vec2(0, -(int)_labels.size() * LINE_HT));
     row[-1]->setColor(Color3B(0, 0, 0));
     this->addChild(row[-1]);
 
     for (int i = 0; i < 4; i++) {
-        row[i] = Label::createWithTTF("", "OpenSans-Light.ttf", 28);
+        row[i] = Label::createWithTTF("", "OpenSans-Light.ttf", FONT_SZ);
         row[i]->setAlignment(TextHAlignment::CENTER);
         row[i]->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
         // X will be changed in setContentSize()
-        row[i]->setPosition(Vec2(0, -(int)_labels.size() * 28));
+        row[i]->setPosition(Vec2(0, -(int)_labels.size() * LINE_HT));
         row[i]->setColor(Color3B(playerColors[i]));
         this->addChild(row[i]);
     }
@@ -96,11 +108,27 @@ void KeyBindingsPanel::updateText(int row, int col)
 
 void KeyBindingsPanel::updateItemPositions()
 {
+    float extraHeight = _labels.size() * LINE_HT - _contentSize.height;
+    float offsetY = (extraHeight < 0 ? 0 : extraHeight * _selRow / (_labels.size() - 1));
+
     // Not that many items, only moving the marker is sufficient currently
-    _marker->stopAllActions();
+    _marker->stopAllActionsByTag(ACTION_MOVE_TAG);
     _marker->runAction(EaseQuadraticActionOut::create(
-        MoveTo::create(0.12, Vec2(_contentSize.width * (0.4 + 0.15 * _selCol), -28 * _selRow))
-    ));
+        MoveTo::create(0.12, Vec2(
+            getXForCol(_selCol - 0.5), -_selRow * LINE_HT + offsetY
+        ))
+    ))->setTag(ACTION_MOVE_TAG);
+
+    for (int i = 0; i < _labels.size(); i++)
+        for (int j = -1; j < 4; j++) {
+            float t = 0.5 +
+                1.0 * std::abs(i - _selRow) / (_labels.size() - 1) +
+                0.2 * std::abs(j - _selCol);
+            _labels[i][j]->stopAllActionsByTag(ACTION_MOVE_TAG);
+            _labels[i][j]->runAction(EaseExponentialOut::create(
+                MoveTo::create(t, Vec2(getXForCol(j), -i * LINE_HT + offsetY))
+            ))->setTag(ACTION_MOVE_TAG);
+        }
 }
 
 void KeyBindingsPanel::setContentSize(const cocos2d::Size &size)
@@ -109,7 +137,7 @@ void KeyBindingsPanel::setContentSize(const cocos2d::Size &size)
 
     for (LabelRow &row : _labels)
         for (int i = 0; i < 4; i++)
-            row[i]->setPositionX(size.width * (0.475 + 0.15 * i));
+            row[i]->setPositionX(getXForCol(i));
 
     updateItemPositions();
 }
@@ -119,15 +147,14 @@ void KeyBindingsPanel::moveIn()
     for (int i = 0; i < _labels.size(); i++)
         for (int j = -1; j < 4; j++) {
             float t = 0.25 + 0.5 * (i * 5 + j + 1) / (_labels.size() * 5 - 1);
-            auto action = EaseExponentialInOut::create(
-                Spawn::createWithTwoActions(
-                    MoveBy::create(t, Vec2(-20, 0)),
-                    FadeIn::create(t)
-                )
-            );
-            _labels[i][j]->runAction(action);
-            if (_selRow == i && _selCol == j)
-                _marker->runAction(action->clone());
+            auto a1 = EaseExponentialInOut::create(MoveBy::create(t, Vec2(-20, 0)));
+            auto a2 = EaseExponentialInOut::create(FadeIn::create(t));
+            _labels[i][j]->runAction(a1)->setTag(ACTION_MOVE_TAG);
+            _labels[i][j]->runAction(a2);
+            if (_selRow == i && _selCol == j) {
+                _marker->runAction(a1->clone())->setTag(ACTION_MOVE_TAG);
+                _marker->runAction(a2->clone());
+            }
         }
     _eventDispatcher->resumeEventListenersForTarget(this);
 }
@@ -136,16 +163,16 @@ void KeyBindingsPanel::moveOut(bool instant)
 {
     for (int i = 0; i < _labels.size(); i++)
         for (int j = -1; j < 4; j++) {
-            float t = 0.25 + 0.5 * (i * 5 + j + 1) / (_labels.size() * 5 - 1);
-            auto action = EaseExponentialInOut::create(
-                Spawn::createWithTwoActions(
-                    MoveBy::create(t, Vec2(+20, 0)),
-                    FadeOut::create(t)
-                )
-            );
-            _labels[i][j]->runAction(action);
-            if (_selRow == i && _selCol == j)
-                _marker->runAction(action->clone());
+            float t = (instant ?
+                0 : 0.25 + 0.5 * (i * 5 + j + 1) / (_labels.size() * 5 - 1));
+            auto a1 = EaseExponentialInOut::create(MoveBy::create(t, Vec2(+20, 0)));
+            auto a2 = EaseExponentialInOut::create(FadeOut::create(t));
+            _labels[i][j]->runAction(a1)->setTag(ACTION_MOVE_TAG);
+            _labels[i][j]->runAction(a2);
+            if (_selRow == i && _selCol == j) {
+                _marker->runAction(a1->clone())->setTag(ACTION_MOVE_TAG);
+                _marker->runAction(a2->clone());
+            }
         }
     _eventDispatcher->pauseEventListenersForTarget(this);
 }

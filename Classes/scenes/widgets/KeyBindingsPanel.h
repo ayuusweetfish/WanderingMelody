@@ -37,6 +37,8 @@ protected:
 
     void addItem(const char *name);
 
+    float getXForCol(float col);
+
     void updateText(int row, int col);
     void updateItemPositions();
 };
