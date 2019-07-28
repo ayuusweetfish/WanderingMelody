@@ -20,7 +20,6 @@ static const char *keyboardNames[] = {"=~=","Pause","Scroll Lock","Print","SysRe
 #endif
 "Insert","Home","Pg Up","Delete","End","Pg Down","Left","Right","Up","Down","Num Lock","KP +","KP -","KP *","KP /","KP Enter","KP Home","KP Up","KP Pg Up","KP Left","KP Five","KP Right","KP End","KP Down","KP Pg Down","KP Insert","KP Delete","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","Space","!","\"","Number","$","%","^","&","'","(",")","*","+",",","-",".","/","0","1","2","3","4","5","6","7","8","9",":",";","<","=",">","?","@","Capital A","Capital B","Capital C","Capital D","Capital E","Capital F","Capital G","Capital H","Capital I","Capital J","Capital K","Capital L","Capital M","Capital N","Capital O","Capital P","Capital Q","Capital R","Capital S","Capital T","Capital U","Capital V","Capital W","Capital X","Capital Y","Capital Z","[","\\","]","_","`","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","{","|","}","~","Euro","Pound","Yen","Middle Dot","Search","D-Pad Left","D-Pad Right","D-Pad Up","D-Pad Down","D-Pad Center","Enter","Play"};
 static const char *joystickNames[] = {"Left X","Left Y","Right X","Right Y","A","B","C","X","Y","Z","D-Pad Up","D-Pad Down","D-Pad Left","D-Pad Right","D-Pad Center","Left Shoulder","Right Shoulder","Axis Left Trigger","Axis Right Trigger","Left Thumbstick","Right Thumbstick","Start","Select","Pause"};
-static const int joystickIncrement = (int)Controller::Key::JOYSTICK_LEFT_X;
 
 float KeyBindingsPanel::getXForCol(float col)
 {
@@ -42,48 +41,19 @@ bool KeyBindingsPanel::init()
 
 #include "ConfigList.txt"
 
-    auto listener = cocos2d::EventListenerKeyboard::create();
-    listener->onKeyPressed = [listener, this](EventKeyboard::KeyCode keyCode, Event *event) {
+    auto keyboardListener = EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         event->stopPropagation();
-
-        if (_entering) {
-            _entering = false;
-            _marker->runAction(TintTo::create(0.2, Color3B(255, 128, 0)));
-            this->unschedule("uwu");
-            _stagedSettings[_selRow].val[_selCol] = (int)keyCode;
-            updateText(_selRow, _selCol);
-            return;
-        }
-
-        if (Config::isKeyCancel(keyCode)) {
-            if (_cancelCallback) _cancelCallback();
-            writeBackSettings();
-            return;
-        } else if (Config::isKeyConfirm(keyCode)) {
-            _entering = true;
-            _marker->runAction(TintTo::create(0.2, Color3B(64, 128, 255)));
-            this->scheduleOnce([this] (float dt) {
-                _entering = false;
-                _marker->runAction(TintTo::create(0.2, Color3B(255, 128, 0)));
-                // Clear key binding on timeout
-                _stagedSettings[_selRow].val[_selCol] = 0;
-                updateText(_selRow, _selCol);
-            }, 3, "uwu");
-        }
-        int linearIndex = _selRow * 4 + _selCol;
-        if (Config::isKeyArrowUp(keyCode)) linearIndex -= 4;
-        else if (Config::isKeyArrowDown(keyCode)) linearIndex += 4;
-        else if (Config::isKeyArrowLeft(keyCode)) linearIndex -= 1;
-        else if (Config::isKeyArrowRight(keyCode)) linearIndex += 1;
-        if (linearIndex != _selRow * 4 + _selCol) {
-            int modulus = _labels.size() * 4;
-            linearIndex = (linearIndex + modulus) % modulus;
-            _selRow = linearIndex / 4;
-            _selCol = linearIndex % 4;
-            updateItemPositions();
-        }
+        handleKey((int)keyCode);
     };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+    auto controllerListener = EventListenerController::create();
+    controllerListener->onKeyDown = [this](Controller *controller, int keyCode, Event *event) {
+        event->stopPropagation();
+        handleKey((int)keyCode + controller->getDeviceId() * CONTROLLER_KEY_STEP);
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(controllerListener, this);
 
     // TODO: DRY? scenes/widgets/ListMenu.cpp
     auto markerLabel = Label::createWithTTF(">", "OpenSans-Light.ttf", FONT_SZ);
@@ -141,13 +111,13 @@ void KeyBindingsPanel::updateText(int row, int col)
     int code = _stagedSettings[row].val[col];
     if (code >= 0 && code < sizeof keyboardNames / sizeof keyboardNames[0]) {
         _labels[row][col]->setString(keyboardNames[code]);
-    } else if (code >= joystickIncrement &&
-        code % joystickIncrement < sizeof joystickNames / sizeof joystickNames[0])
+    } else if (code >= CONTROLLER_KEY_STEP &&
+        code % CONTROLLER_KEY_STEP < sizeof joystickNames / sizeof joystickNames[0])
     {
         _labels[row][col]->setString("Pad " +
-            std::string(1, '0' + code / joystickIncrement) +
+            std::string(1, '0' + code / CONTROLLER_KEY_STEP) +
             std::string(1, ' ') +
-            joystickNames[code % joystickIncrement]);
+            joystickNames[code % CONTROLLER_KEY_STEP]);
     }
 }
 
@@ -174,6 +144,46 @@ void KeyBindingsPanel::updateItemPositions()
                 MoveTo::create(t, Vec2(getXForCol(j), -i * LINE_HT + offsetY))
             ))->setTag(ACTION_MOVE_TAG);
         }
+}
+
+void KeyBindingsPanel::handleKey(int keyCode)
+{
+    if (_entering) {
+        _entering = false;
+        _marker->runAction(TintTo::create(0.2, Color3B(255, 128, 0)));
+        this->unschedule("uwu");
+        _stagedSettings[_selRow].val[_selCol] = keyCode;
+        updateText(_selRow, _selCol);
+        return;
+    }
+
+    if (Config::isKeyCancel(keyCode)) {
+        if (_cancelCallback) _cancelCallback();
+        writeBackSettings();
+        return;
+    } else if (Config::isKeyConfirm(keyCode)) {
+        _entering = true;
+        _marker->runAction(TintTo::create(0.2, Color3B(64, 128, 255)));
+        this->scheduleOnce([this] (float dt) {
+            _entering = false;
+            _marker->runAction(TintTo::create(0.2, Color3B(255, 128, 0)));
+            // Clear key binding on timeout
+            _stagedSettings[_selRow].val[_selCol] = 0;
+            updateText(_selRow, _selCol);
+        }, 3, "uwu");
+    }
+    int linearIndex = _selRow * 4 + _selCol;
+    if (Config::isKeyArrowUp(keyCode)) linearIndex -= 4;
+    else if (Config::isKeyArrowDown(keyCode)) linearIndex += 4;
+    else if (Config::isKeyArrowLeft(keyCode)) linearIndex -= 1;
+    else if (Config::isKeyArrowRight(keyCode)) linearIndex += 1;
+    if (linearIndex != _selRow * 4 + _selCol) {
+        int modulus = _labels.size() * 4;
+        linearIndex = (linearIndex + modulus) % modulus;
+        _selRow = linearIndex / 4;
+        _selCol = linearIndex % 4;
+        updateItemPositions();
+    }
 }
 
 void KeyBindingsPanel::setContentSize(const cocos2d::Size &size)

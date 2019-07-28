@@ -70,6 +70,8 @@
 
 #define HIT_LINE_POS    (WIN_H / 3.0)
 
+#define CONTROLLER_KEY_STEP ((int)Controller::Key::JOYSTICK_LEFT_X)
+
 #include "Config.h"
 
 #endif

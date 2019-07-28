@@ -50,29 +50,17 @@ bool ListMenu::initWithItems(const std::vector<Item> &items)
     this->addChild(markerLabel);
     _marker = markerLabel;
 
-    auto listener = cocos2d::EventListenerKeyboard::create();
-    listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
-        auto &item = _items[_selIndex];
-        if (Config::isKeyArrowUp(keyCode)) {
-            _selIndex = (_selIndex - 1 + _items.size()) % _items.size();
-            updateItemPositions();
-        } else if (Config::isKeyArrowDown(keyCode)) {
-            _selIndex = (_selIndex + 1) % _items.size();
-            updateItemPositions();
-        } else if (Config::isKeyArrowLeft(keyCode)) {
-            if ((item._value -= 1) < item._minValue)
-                item._value = (item._doesCycle ? item._maxValue : item._minValue);
-            updateText(_selIndex);
-        } else if (Config::isKeyArrowRight(keyCode)) {
-            if ((item._value += 1) > item._maxValue)
-                item._value = (item._doesCycle ? item._minValue : item._maxValue);
-            updateText(_selIndex);
-        } else if (Config::isKeyConfirm(keyCode)) {
-            if (item._selectCallback) item._selectCallback(item);
-            updateText(_selIndex);
-        }
+    auto keyboardListener = EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
+        handleKey((int)keyCode);
     };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+    auto controllerListener = EventListenerController::create();
+    controllerListener->onKeyDown = [this](Controller *controller, int keyCode, Event *event) {
+        handleKey((int)keyCode + controller->getDeviceId() * CONTROLLER_KEY_STEP);
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(controllerListener, this);
 
     this->setContentSize(WIN_SIZE);
     return true;
@@ -123,6 +111,29 @@ void ListMenu::updateItemPositions()
                 MoveTo::create(t, Vec2(_contentSize.width, -i * LINE_HT + offsetY))
             ))->setTag(ACTION_MOVE_TAG);
         }
+    }
+}
+
+void ListMenu::handleKey(int keyCode)
+{
+    auto &item = _items[_selIndex];
+    if (Config::isKeyArrowUp(keyCode)) {
+        _selIndex = (_selIndex - 1 + _items.size()) % _items.size();
+        updateItemPositions();
+    } else if (Config::isKeyArrowDown(keyCode)) {
+        _selIndex = (_selIndex + 1) % _items.size();
+        updateItemPositions();
+    } else if (Config::isKeyArrowLeft(keyCode)) {
+        if ((item._value -= 1) < item._minValue)
+            item._value = (item._doesCycle ? item._maxValue : item._minValue);
+        updateText(_selIndex);
+    } else if (Config::isKeyArrowRight(keyCode)) {
+        if ((item._value += 1) > item._maxValue)
+            item._value = (item._doesCycle ? item._minValue : item._maxValue);
+        updateText(_selIndex);
+    } else if (Config::isKeyConfirm(keyCode)) {
+        if (item._selectCallback) item._selectCallback(item);
+        updateText(_selIndex);
     }
 }
 

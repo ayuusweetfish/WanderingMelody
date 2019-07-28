@@ -71,6 +71,8 @@ public:
     void moveOut();
 
 protected:
+    void handleKey(int keyCode);    // Handles both keyboard and gamepads
+
     int _selIndex;
     std::vector<Item> _items;
     std::vector<std::pair<cocos2d::Label *, cocos2d::Label *>> _labels;
