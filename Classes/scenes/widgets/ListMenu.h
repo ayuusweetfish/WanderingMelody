@@ -18,6 +18,8 @@ public:
         int _minValue, _maxValue;
         bool _doesCycle;
         std::vector<std::string> _enumText;
+        int _displayMul;
+        std::string _prefix, _suffix;
 
         Item() { }
         Item(std::string title, std::function<void (Item &)> callback)
@@ -28,13 +30,18 @@ public:
           _maxValue(-1)
         { }
         Item(std::string title, std::function<void (Item &)> callback,
-            int value, int minValue, int maxValue, bool doesCycle)
+            int value, int minValue, int maxValue,
+            bool doesCycle = false, int displayMul = 1,
+            std::string prefix = "", std::string suffix = "")
         : _title(title),
           _selectCallback(callback),
           _value(value),
           _minValue(minValue),
           _maxValue(maxValue),
-          _doesCycle(doesCycle)
+          _doesCycle(doesCycle),
+          _displayMul(displayMul),
+          _prefix(prefix),
+          _suffix(suffix)
         { }
         Item(std::string title, std::function<void (Item &)> callback,
             int value, const std::vector<std::string> &enumText)

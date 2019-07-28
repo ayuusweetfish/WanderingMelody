@@ -187,7 +187,9 @@ void Gameplay::load(const std::string &path)
             std::lock_guard<std::mutex> guard(*mutex);
             gig.tick((double)dtNanos / 1e9);
             last = now;
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            std::this_thread::sleep_for(
+                std::chrono::milliseconds(Config::getPlaybackResolution())
+            );
         }
         delete mutex;
         delete signal;

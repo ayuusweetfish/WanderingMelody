@@ -91,7 +91,9 @@ void ListMenu::updateText(int index)
     Label *l2 = _labels[index].second;
     if (l2 != nullptr) {
         if (item._enumText.empty())
-            l2->setString(tostring(item._value));
+            l2->setString(
+                (item._prefix == "+" && item._value < 0 ? "" : item._prefix) +
+                tostring(item._value * item._displayMul) + item._suffix);
         else
             l2->setString(item._enumText[item._value]);
     }

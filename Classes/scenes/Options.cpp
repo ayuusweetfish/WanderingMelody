@@ -27,11 +27,12 @@ bool Options::init()
     ));
     items.push_back(ListMenu::Item("Screen resolution", nullptr, 1,
         {"640 * 360", "960 * 540", "1440 * 810", "1920 * 1080", "2400 * 1350", "Fullscreen"}));
-    items.push_back(ListMenu::Item("Audio offset", nullptr, 0, -1000, 1000, false));
-    items.push_back(ListMenu::Item("Input offset", nullptr, 0, -1000, 1000, false));
+    items.push_back(ListMenu::Item("Audio offset", nullptr, 0, -1000, 1000, false, 1, "+", " ms"));
+    items.push_back(ListMenu::Item("Input offset", nullptr, 0, -1000, 1000, false, 1, "+", " ms"));
     items.push_back(ListMenu::Item("Frame rate", nullptr, 1, {"30", "60", "90", "120", "240"}));
-    items.push_back(ListMenu::Item("Master volume", nullptr, 20, 0, 20, false));
-    items.push_back(ListMenu::Item("Sound effects volume", nullptr, 20, 0, 20, false));
+    items.push_back(ListMenu::Item("Playback resolution", nullptr, 5, 1, 20, false, 1, "", " ms"));
+    items.push_back(ListMenu::Item("Master volume", nullptr, 20, 0, 20, false, 5, "", "%"));
+    items.push_back(ListMenu::Item("Sound effects volume", nullptr, 20, 0, 20, false, 5, "", "%"));
     items.push_back(ListMenu::Item("Scroll speed", nullptr, 9, 1, 20, false));
     items.push_back(ListMenu::Item("Display stats", nullptr, 0, {"Yes", "No"}));
     menu->initWithItems(items);
