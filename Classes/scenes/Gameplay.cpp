@@ -155,19 +155,14 @@ void Gameplay::load(const std::string &path)
         this->addChild(mus[i]);
     }
 
-    // ZXCV
-    // KL;'
-    // QWER
-    // 7890
-    const int keyMapping[4][4] = {
-        {149, 147, 126, 145},
-        {131, 133, 134, 135},
-        {140, 146, 128, 141},
-        {83, 84, 85, 76}
-    };
-
-    for (int i = 0; i < 4 && i < _gig.getMusicianCount(); i++)
-        ((MusicianNKeys<4> *)_gig.getMusician(i))->setKeyMapping(keyMapping[i]);
+    int keyMapping[4];
+    for (int i = 0; i < 4 && i < _gig.getMusicianCount(); i++) {
+        keyMapping[0] = Config::getKey4K_Key1(i);
+        keyMapping[1] = Config::getKey4K_Key2(i);
+        keyMapping[2] = Config::getKey4K_Key3(i);
+        keyMapping[3] = Config::getKey4K_Key4(i);
+        ((MusicianNKeys<4> *)_gig.getMusician(i))->setKeyMapping(keyMapping);
+    }
 
     this->scheduleUpdate();
     _playState = 0;
