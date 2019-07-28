@@ -32,8 +32,13 @@ protected:
         }
     };
     std::vector<LabelRow> _labels;
-    std::vector<std::function<cocos2d::EventKeyboard::KeyCode (int)>> _getters;
-    std::vector<std::function<void (int, cocos2d::EventKeyboard::KeyCode)>> _setters;
+    std::vector<std::function<int (int)>> _getters;
+    std::vector<std::function<void (int, int)>> _setters;
+
+    struct Array4 { int val[4]; };
+    std::vector<Array4> _stagedSettings;
+
+    bool _entering;
 
     void addItem(const char *name);
 
@@ -41,6 +46,8 @@ protected:
 
     void updateText(int row, int col);
     void updateItemPositions();
+
+    void writeBackSettings();
 };
 
 #endif

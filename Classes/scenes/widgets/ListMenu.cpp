@@ -5,8 +5,8 @@ using namespace cocos2d;
 #include <cstdio>
 #include <cstdlib>
 
-static const int FONT_SZ = 32;
-static const int LINE_HT = 36;
+static const int FONT_SZ = 28;
+static const int LINE_HT = 32;
 
 static const int ACTION_MOVE_TAG = 6135;
 

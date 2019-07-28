@@ -16,21 +16,21 @@ private: \
 
 #define KEY_BIND(__name, __p1, __p2, __p3, __p4) \
 public: \
-    static inline void setKey##__name(int index, \
-        cocos2d::EventKeyboard::KeyCode code) \
+    static inline void setKey##__name(int index, int code) \
     { \
         _key##__name[index] = code; \
         save(); \
     } \
-    static inline cocos2d::EventKeyboard::KeyCode getKey##__name(int index) { \
-        return _key##__name[index]; \
-    } \
-    static inline bool isKey##__name(cocos2d::EventKeyboard::KeyCode code) { \
+    static inline int getKey##__name(int index) { return _key##__name[index]; } \
+    static inline bool isKey##__name(int code) { \
         for (int i = 0; i < 4; i++) if (_key##__name[i] == code) return true; \
         return false; \
     } \
+    static inline bool isKey##__name(cocos2d::EventKeyboard::KeyCode code) { \
+        return isKey##__name((int)code); \
+    } \
 private: \
-    static cocos2d::EventKeyboard::KeyCode _key##__name[4];
+    static int _key##__name[4];
 
 #include "ConfigList.txt"
 

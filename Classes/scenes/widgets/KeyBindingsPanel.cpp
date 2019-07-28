@@ -4,10 +4,23 @@ using namespace cocos2d;
 
 #include <cstdlib>
 
-static const int FONT_SZ = 32;
-static const int LINE_HT = 36;
+static const int FONT_SZ = 28;
+static const int LINE_HT = 32;
 
 static const int ACTION_MOVE_TAG = 6135;
+
+// JSON.stringify(a.map((s) => s.replace(/_/g, ' ').split(' ').map((w) => w.charAt(0) + w.substr(1).toLowerCase()).join(' ')))
+static const char *keyboardNames[] = {"=~=","Pause","Scroll Lock","Print","SysReq","Break","Escape","Backspace","Tab","Back Tab","Return","Caps Lock","Left Shift","Right Shift","Left Ctrl","Right Ctrl","Left Alt","Right Alt","Menu",
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+"Windows",
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+"Command",
+#else
+"Super",
+#endif
+"Insert","Home","Pg Up","Delete","End","Pg Down","Left","Right","Up","Down","Num Lock","KP +","KP -","KP *","KP /","KP Enter","KP Home","KP Up","KP Pg Up","KP Left","KP Five","KP Right","KP End","KP Down","KP Pg Down","KP Insert","KP Delete","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","Space","!","\"","Number","$","%","^","&","'","(",")","*","+",",","-",".","/","0","1","2","3","4","5","6","7","8","9",":",";","<","=",">","?","@","Capital A","Capital B","Capital C","Capital D","Capital E","Capital F","Capital G","Capital H","Capital I","Capital J","Capital K","Capital L","Capital M","Capital N","Capital O","Capital P","Capital Q","Capital R","Capital S","Capital T","Capital U","Capital V","Capital W","Capital X","Capital Y","Capital Z","[","\\","]","_","`","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","{","|","}","~","Euro","Pound","Yen","Middle Dot","Search","D-Pad Left","D-Pad Right","D-Pad Up","D-Pad Down","D-Pad Center","Enter","Play"};
+static const char *joystickNames[] = {"Left X","Left Y","Right X","Right Y","A","B","C","X","Y","Z","D-Pad Up","D-Pad Down","D-Pad Left","D-Pad Right","D-Pad Center","Left Shoulder","Right Shoulder","Axis Left Trigger","Axis Right Trigger","Left Thumbstick","Right Thumbstick","Start","Select","Pause"};
+static const int joystickIncrement = (int)Controller::Key::JOYSTICK_LEFT_X;
 
 float KeyBindingsPanel::getXForCol(float col)
 {
@@ -19,7 +32,7 @@ bool KeyBindingsPanel::init()
     if (!Node::init()) return false;
 
     _selRow = _selCol = 0;
-
+    _entering = false;
 
 #define CONFIG_ITEM(...)
 #define KEY_BIND(__name, ...) \
@@ -31,10 +44,31 @@ bool KeyBindingsPanel::init()
 
     auto listener = cocos2d::EventListenerKeyboard::create();
     listener->onKeyPressed = [listener, this](EventKeyboard::KeyCode keyCode, Event *event) {
+        event->stopPropagation();
+
+        if (_entering) {
+            _entering = false;
+            _marker->runAction(TintTo::create(0.2, Color3B(255, 128, 0)));
+            this->unschedule("uwu");
+            _stagedSettings[_selRow].val[_selCol] = (int)keyCode;
+            updateText(_selRow, _selCol);
+            return;
+        }
+
         if (Config::isKeyCancel(keyCode)) {
             if (_cancelCallback) _cancelCallback();
-            event->stopPropagation();
+            writeBackSettings();
             return;
+        } else if (Config::isKeyConfirm(keyCode)) {
+            _entering = true;
+            _marker->runAction(TintTo::create(0.2, Color3B(64, 128, 255)));
+            this->scheduleOnce([this] (float dt) {
+                _entering = false;
+                _marker->runAction(TintTo::create(0.2, Color3B(255, 128, 0)));
+                // Clear key binding on timeout
+                _stagedSettings[_selRow].val[_selCol] = 0;
+                updateText(_selRow, _selCol);
+            }, 3, "uwu");
         }
         int linearIndex = _selRow * 4 + _selCol;
         if (Config::isKeyArrowUp(keyCode)) linearIndex -= 4;
@@ -94,16 +128,27 @@ void KeyBindingsPanel::addItem(const char *name)
 
     _labels.push_back(row);
 
+    Array4 arr;
+    for (int i = 0; i < 4; i++)
+        arr.val[i] = _getters[_stagedSettings.size()](i);
+    _stagedSettings.push_back(arr);
+
     for (int i = 0; i < 4; i++) updateText(_labels.size() - 1, i);
 }
 
 void KeyBindingsPanel::updateText(int row, int col)
 {
-    auto code = _getters[row](col);
-    if (code == EventKeyboard::KeyCode::KEY_NONE)
-        _labels[row][col]->setString("--");
-    else
-        _labels[row][col]->setString("\\('~')/");
+    int code = _stagedSettings[row].val[col];
+    if (code >= 0 && code < sizeof keyboardNames / sizeof keyboardNames[0]) {
+        _labels[row][col]->setString(keyboardNames[code]);
+    } else if (code >= joystickIncrement &&
+        code % joystickIncrement < sizeof joystickNames / sizeof joystickNames[0])
+    {
+        _labels[row][col]->setString("Pad " +
+            std::string(1, '0' + code / joystickIncrement) +
+            std::string(1, ' ') +
+            joystickNames[code % joystickIncrement]);
+    }
 }
 
 void KeyBindingsPanel::updateItemPositions()
@@ -175,4 +220,11 @@ void KeyBindingsPanel::moveOut(bool instant)
             }
         }
     _eventDispatcher->pauseEventListenersForTarget(this);
+}
+
+void KeyBindingsPanel::writeBackSettings()
+{
+    for (int i = 0; i < _labels.size(); i++)
+        for (int j = 0; j < 4; j++)
+            _setters[i](j, _stagedSettings[i].val[j]);
 }
