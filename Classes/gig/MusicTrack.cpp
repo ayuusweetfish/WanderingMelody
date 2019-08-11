@@ -44,6 +44,7 @@ flags_t MusicTrack::triggerNote(int32_t time, int32_t actualTime, char tag)
             _soundbank->sendNote(n);
             flags = updateFlags(flags, n);
             if (n.chained) updateChainedNote(actualTime, &n - _notes.data());
+            else _chainedNote = -1;
         }
     return flags;
 }
