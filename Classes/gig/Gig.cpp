@@ -327,6 +327,7 @@ Gig::FileReadResult Gig::initWithStdioFile(FILE *f, bool isPeek)
                     *((char *)&n + memOffset) = val;
                     gridPos += 2;
                 }
+                n.chained = false;
                 _musicians[t.musicianIdx]->getMusicTrack(t.trackIdx).addNote(n);
             }
         }

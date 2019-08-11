@@ -11,7 +11,7 @@ P2/T1|Vl|MuseScore_General.sf2 Patch=5 Gain=0.2
 P3   |4K
 P3/T1|Vl|MuseScore_General.sf2 Patch=5 Gain=0.2
 P4   |4K
-P4/T1|Vl|MuseScore_General.sf2 Patch=5 Gain=0.25
+P4/T1|Vl|MuseScore_General.sf2 Patch=5 Gain=0.3
 
 1320|1   |    |      |    |      |    |      |    |      
     |2   |    |      |    |      |    |      |    |      
@@ -253,7 +253,9 @@ P4/T1|Vl|MuseScore_General.sf2 Patch=5 Gain=0.25
     |4   |    |      |    |      |    |      | o  |oC#5  
     |5   |o   |oB-2  |    |      |    |      |o   |oB-4  
     |6   |    |      |    |      |    |      |   o|oA-4  
-    |1   |  o |oE-3  |    |      |o   |oE-4  |  o |oG-4  
+    |1   |  o |oE-3  |    |      |o   |oE-4  |  o |oG-440
+    |.300|    |      |    |      |    |      |    |.A-440
+    |.600|    |      |    |      |    |      |    |.G-450
     |2   |    |      |    |      |    |      | o  |oF#4  
     |3   |    |      |o   |oG-3  |    |      |o   |oE-4  
     |4   |    |      |    |      |    |      |    |      
@@ -349,7 +351,9 @@ P4/T1|Vl|MuseScore_General.sf2 Patch=5 Gain=0.25
     |4   |    |      |    |      |    |      | o  |oC#5  
     |5   |o   |oB-2  |    |      |    |      |o   |oB-4  
     |6   |    |      |    |      |    |      |   o|oA-4  
-    |1   |  o |oE-3  |    |      |o   |oE-4  |  o |oG-4  
+    |1   |  o |oE-3  |    |      |o   |oE-4  |  o |oG-440
+    |.300|    |      |    |      |    |      |    |.A-440
+    |.600|    |      |    |      |    |      |    |.G-450
     |2   |    |      |    |      |    |      | o  |oF#4  
     |3   |    |      |o   |oG-3  |    |      |o   |oE-4  
     |4   |    |      |    |      |    |      |    |      
