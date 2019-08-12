@@ -56,6 +56,8 @@ public:
     virtual void startPlay();
     inline void refresh() { if (_display) _display->refresh(); }
     virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
+    void jump(double time);
+    void clearTriggered();
     virtual void sendEvent(int message) = 0;
     double getCurTick() { return _curTick; }
     double getRawTick() { return _rawTick; }

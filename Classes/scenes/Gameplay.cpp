@@ -182,6 +182,10 @@ void Gameplay::load(const std::string &path)
             int64_t dtNanos = dt.count();
             std::lock_guard<std::mutex> guard(*mutex);
             gig->tick((double)dtNanos / 1e9);
+            /*if (gig->getMusician(0)->getCurTick() >= 240 * 32) {
+                gig->jump(240 * 16);
+                gig->clearTriggered();
+            }*/
             last = now;
             std::this_thread::sleep_for(
                 std::chrono::milliseconds(Config::getPlaybackResolution())

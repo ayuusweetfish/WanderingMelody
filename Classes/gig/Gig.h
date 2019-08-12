@@ -32,6 +32,8 @@ public:
 
     void startPlay();
     void tick(float dt);
+    void jump(double time);
+    void clearTriggered();
     void refresh();
 
     void dispatchHit(int idx, double time, int32_t noteTick);

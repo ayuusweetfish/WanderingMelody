@@ -32,6 +32,18 @@ void Musician::tick(double dt, double lcap, double hcap)
     }
 }
 
+void Musician::jump(double time)
+{
+    _curTime = time / this->getOrigTempo();
+    _rawTick = _curTick = time;
+    _beater = Beater(8, this->getOrigTempo());
+}
+
+void Musician::clearTriggered()
+{
+    for (KeyNote &n : _keyNotes) n.triggered = -1;
+}
+
 void Musician::addHit(double time, int32_t noteTick, bool propagateUp)
 {
     if (propagateUp && _isAutoscroll) return;

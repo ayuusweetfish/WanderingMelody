@@ -373,6 +373,18 @@ void Gig::tick(float dt)
     }
 }
 
+void Gig::jump(double time)
+{
+    for (int i = 0; i < _musicians.size(); i++)
+        _musicians[i]->jump(time);
+}
+
+void Gig::clearTriggered()
+{
+    for (int i = 0; i < _musicians.size(); i++)
+        _musicians[i]->clearTriggered();
+}
+
 void Gig::refresh()
 {
     for (int i = 0; i < _musicians.size(); i++)
