@@ -43,6 +43,7 @@ bool Gameplay::init()
     if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255))) return false;
 
     _playState = -1;
+    _gig = new Gig();
 
     auto keyboardListener = EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
@@ -55,19 +56,19 @@ bool Gameplay::init()
                     )
                 ),
                 CallFunc::create([this] () {
-                    for (int i = 0; i < _gig.getMusicianCount(); i++)
-                        _gig.getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
+                    for (int i = 0; i < _gig->getMusicianCount(); i++)
+                        _gig->getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
 
                     ModPanel::SpeedMode mode = _modPanel->getSpeedMode();
                     if (mode >= ModPanel::CONDUCTOR && mode < ModPanel::CONDUCTOR + 4) {
-                        for (int i = 0; i < _gig.getMusicianCount(); i++)
-                            _gig.getMusician(i)->setIsAutoscroll(i != (int)mode - ModPanel::CONDUCTOR);
+                        for (int i = 0; i < _gig->getMusicianCount(); i++)
+                            _gig->getMusician(i)->setIsAutoscroll(i != (int)mode - ModPanel::CONDUCTOR);
                     } else if (mode == ModPanel::METRONOME) {
-                        for (int i = 0; i < _gig.getMusicianCount(); i++)
-                            _gig.getMusician(i)->setIsAutoscroll(true);
+                        for (int i = 0; i < _gig->getMusicianCount(); i++)
+                            _gig->getMusician(i)->setIsAutoscroll(true);
                     }
 
-                    _gig.startPlay();
+                    _gig->startPlay();
                 })
             ));
             _layerStart->runAction(FadeOut::create(0.4));
@@ -110,7 +111,7 @@ Gameplay::~Gameplay()
 
 void Gameplay::load(const std::string &path)
 {
-    Gig::FileReadResult r = _gig.init(path);
+    Gig::FileReadResult r = _gig->init(path);
     if (!r.succeeded) {
         auto label = Label::createWithTTF(r.errMsg, "OpenSans-Light.ttf", 42);
         label->setMaxLineWidth(WIN_W * 2 / 3);
@@ -134,7 +135,7 @@ void Gameplay::load(const std::string &path)
     layerStart->addChild(labelStart);
     _labelStart = labelStart;
 
-    int numMusicians = _gig.getMusicianCount();
+    int numMusicians = _gig->getMusicianCount();
 
     auto modPanel = ModPanel::create();
     modPanel->setNumMusicians(numMusicians);
@@ -148,7 +149,7 @@ void Gameplay::load(const std::string &path)
 
     Musician::Display *mus[4];
     for (int i = 0; i < numMusicians; i++) {
-        mus[i] = _gig.getMusician(i)->createDisplay();
+        mus[i] = _gig->getMusician(i)->createDisplay();
         mus[i]->setContentSize(Size(WIN_W * 0.23, WIN_H));
         mus[i]->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
         mus[i]->setPosition(Vec2(WIN_W * (0.016 + 0.246 * i), 0));
@@ -156,12 +157,12 @@ void Gameplay::load(const std::string &path)
     }
 
     int keyMapping[4];
-    for (int i = 0; i < 4 && i < _gig.getMusicianCount(); i++) {
+    for (int i = 0; i < 4 && i < _gig->getMusicianCount(); i++) {
         keyMapping[0] = Config::getKey4K_Key1(i);
         keyMapping[1] = Config::getKey4K_Key2(i);
         keyMapping[2] = Config::getKey4K_Key3(i);
         keyMapping[3] = Config::getKey4K_Key4(i);
-        ((MusicianNKeys<4> *)_gig.getMusician(i))->setKeyMapping(keyMapping);
+        ((MusicianNKeys<4> *)_gig->getMusician(i))->setKeyMapping(keyMapping);
     }
 
     this->scheduleUpdate();
@@ -171,8 +172,8 @@ void Gameplay::load(const std::string &path)
     _gigStopSignal = new std::atomic<bool>(false);
     auto mutex = _gigMutex;
     auto signal = _gigStopSignal;
-    auto &gig = _gig;
-    auto gigUpdateThread = std::thread([mutex, signal, &gig] {
+    auto gig = _gig;
+    auto gigUpdateThread = std::thread([mutex, signal, gig] {
         std::chrono::steady_clock clock;
         auto last = clock.now();
         while (!signal->load()) {
@@ -180,7 +181,7 @@ void Gameplay::load(const std::string &path)
             auto dt = std::chrono::duration_cast<std::chrono::nanoseconds>(now - last);
             int64_t dtNanos = dt.count();
             std::lock_guard<std::mutex> guard(*mutex);
-            gig.tick((double)dtNanos / 1e9);
+            gig->tick((double)dtNanos / 1e9);
             last = now;
             std::this_thread::sleep_for(
                 std::chrono::milliseconds(Config::getPlaybackResolution())
@@ -188,13 +189,14 @@ void Gameplay::load(const std::string &path)
         }
         delete mutex;
         delete signal;
+        delete gig;
     });
     gigUpdateThread.detach();
 }
 
 void Gameplay::update(float dt)
 {
-    _gig.refresh();
+    _gig->refresh();
 }
 
 

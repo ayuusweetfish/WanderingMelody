@@ -22,7 +22,7 @@ public:
     virtual void update(float dt) override;
 
 protected:
-    Gig _gig;
+    Gig *_gig;
 
     std::mutex *_gigMutex;
     std::atomic<bool> *_gigStopSignal;
