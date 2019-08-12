@@ -55,7 +55,7 @@ public:
         { }
     };
 
-    bool initWithItems(const std::vector<Item> &items);
+    bool initWithItems(const std::vector<Item> &items, int fontSize = 28, bool centred = false);
     static inline ListMenu *createWithItems(const std::vector<Item> &items) {
         ListMenu *ret = new ListMenu();
         if (ret && !ret->initWithItems(items)) {
@@ -72,6 +72,9 @@ public:
 
 protected:
     void handleKey(int keyCode);    // Handles both keyboard and gamepads
+
+    int _fontSize;
+    bool _centred;
 
     int _selIndex;
     std::vector<Item> _items;

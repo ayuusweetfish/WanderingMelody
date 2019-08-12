@@ -28,6 +28,8 @@ protected:
     cocos2d::Node *_songListContainer;
 
     int _selIdx;
+
+    void updateSongListPos();
 };
 
 #endif

@@ -6,6 +6,8 @@ using namespace cocos2d;
 
 #include <algorithm>
 
+static const int ACTION_MOVE_TAG = 6135;
+
 template <typename K1, typename V1, typename K2, typename V2>
 static inline V1 findOrDefault(
     const std::unordered_map<K1, V1> &map, const K2 &key, const V2 &dfault
@@ -96,8 +98,10 @@ bool Select::init()
         );
         if (Config::isKeyArrowDown(keyCode)) {
             _selIdx = (_selIdx + 1) % _songList.size();
+            updateSongListPos();
         } else if (Config::isKeyArrowUp(keyCode)) {
             _selIdx = (_selIdx - 1 + (int)_songList.size()) % _songList.size();
+            updateSongListPos();
         }
         _songList[_selIdx].display->runAction(
             TintTo::create(0.2, Color3B(255, 204, 102))
@@ -111,4 +115,20 @@ bool Select::init()
     cover->runAction(FadeOut::create(0.15f));
 
     return true;
+}
+
+void Select::updateSongListPos()
+{
+    float extraHeight = (int)_songList.size() * WIN_H / 5 - WIN_H;
+    float offsetY = (extraHeight < 0 ? 0 : extraHeight * _selIdx / (_songList.size() - 1));
+
+    for (int i = 0; i < _songList.size(); i++) {
+        float t = 0.5 + 1.0 * std::abs(i - _selIdx) / (_songList.size() - 1);
+        _songList[i].display->stopAllActionsByTag(ACTION_MOVE_TAG);
+        _songList[i].display->runAction(
+            EaseExponentialOut::create(
+                MoveTo::create(t, Vec2(0, -WIN_H / 5 * i + offsetY))
+            )
+        )->setTag(ACTION_MOVE_TAG);
+    }
 }

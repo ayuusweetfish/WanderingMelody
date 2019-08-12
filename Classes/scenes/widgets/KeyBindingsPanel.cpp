@@ -123,7 +123,7 @@ void KeyBindingsPanel::updateText(int row, int col)
 
 void KeyBindingsPanel::updateItemPositions()
 {
-    float extraHeight = _labels.size() * LINE_HT - _contentSize.height;
+    float extraHeight = (float)_labels.size() * LINE_HT - _contentSize.height;
     float offsetY = (extraHeight < 0 ? 0 : extraHeight * _selRow / (_labels.size() - 1));
 
     // Not that many items, only moving the marker is sufficient currently
