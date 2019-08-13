@@ -16,7 +16,8 @@ public:
 
     enum SpeedMode {
         FREESTYLE = 0,
-        CONDUCTOR = 1,
+        COOPERATE = 1,
+        CONDUCTOR = 2,
         METRONOME = 10,
         PAST_THE_END
     };
@@ -60,7 +61,10 @@ bool Gameplay::init()
                         _gig->getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
 
                     ModPanel::SpeedMode mode = _modPanel->getSpeedMode();
-                    if (mode >= ModPanel::CONDUCTOR && mode < ModPanel::CONDUCTOR + 4) {
+                    if (mode == ModPanel::COOPERATE) {
+                        for (int i = 0; i < _gig->getMusicianCount(); i++)
+                            _gig->getMusician(i)->setIsCooperative(true);
+                    } if (mode >= ModPanel::CONDUCTOR && mode < ModPanel::CONDUCTOR + 4) {
                         for (int i = 0; i < _gig->getMusicianCount(); i++)
                             _gig->getMusician(i)->setIsAutoscroll(i != (int)mode - ModPanel::CONDUCTOR);
                     } else if (mode == ModPanel::METRONOME) {
@@ -304,6 +308,7 @@ const char *Gameplay::ModPanel::getSpeedModeName(SpeedMode mode)
 {
     static char s[16];
     if (mode == FREESTYLE) return "Freestyle";
+    if (mode == COOPERATE) return "Co-operative";
     if (mode >= CONDUCTOR && mode < CONDUCTOR + 4) {
         sprintf(s, "Conductor P%d", (int)mode - CONDUCTOR + 1);
         return s;
@@ -315,6 +320,7 @@ const char *Gameplay::ModPanel::getSpeedModeName(SpeedMode mode)
 Color3B Gameplay::ModPanel::getSpeedModeColor(SpeedMode mode)
 {
     if (mode == FREESTYLE) return Color3B(128, 128, 128);
+    if (mode == COOPERATE) return Color3B(64, 192, 128);
     if (mode >= CONDUCTOR && mode < CONDUCTOR + 4) return Color3B(255, 128, 128);
     if (mode == METRONOME) return Color3B(128, 128, 255);
     return Color3B(128, 128, 128);

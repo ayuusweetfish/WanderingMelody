@@ -52,6 +52,8 @@ public:
     inline Gig *getGig() { return _gig; }
     inline void setIsAutoplay(bool isAutoplay) { _isAutoplay = isAutoplay; }
     inline void setIsAutoscroll(bool isAutoscroll) { _isAutoscroll = isAutoscroll; }
+    inline void setIsCooperative(bool isCooperative) { _isCooperative = isCooperative; }
+    inline bool isCooperative() { return _isCooperative; }
 
     virtual void startPlay();
     inline void refresh() { if (_display) _display->refresh(); }
@@ -72,6 +74,7 @@ protected:
 
     bool _isAutoplay;
     bool _isAutoscroll;
+    bool _isCooperative;
 
     // Fields used during playback
     bool _isPlaying;

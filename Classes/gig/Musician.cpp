@@ -47,7 +47,8 @@ void Musician::clearTriggered()
 void Musician::addHit(double time, int32_t noteTick, bool propagateUp)
 {
     if (propagateUp && _isAutoscroll) return;
-    _beater.update({time, (double)noteTick}, _beater.getK(_curTime));
+    if (!propagateUp || !_isCooperative)
+        _beater.update({time, (double)noteTick}, _beater.getK(_curTime));
     if (propagateUp && _gig) _gig->dispatchHit(_tag, _curTime, noteTick);
 }
 

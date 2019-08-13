@@ -394,7 +394,8 @@ void Gig::refresh()
 void Gig::dispatchHit(int idx, double time, int32_t noteTick)
 {
     for (auto &mus : _musicians)
-        if (mus->isInBreak()) mus->addHit(time, noteTick, false);
+        if (mus->isInBreak() || mus->isCooperative())
+            mus->addHit(time, noteTick, false);
 }
 
 Gig::~Gig()
