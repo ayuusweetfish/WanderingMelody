@@ -49,6 +49,7 @@ endif()
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
+     Classes/Global.cpp
      Classes/Config.cpp
      Classes/scenes/Startup.cpp
      Classes/scenes/Options.cpp
@@ -56,6 +57,7 @@ list(APPEND GAME_SOURCE
      Classes/scenes/Gameplay.cpp
      Classes/scenes/widgets/ListMenu.cpp
      Classes/scenes/widgets/KeyBindingsPanel.cpp
+     Classes/scenes/widgets/KeyHintLabel.cpp
      Classes/audio/AudioOutput.cpp
      Classes/audio/SoundbankPureSine.cpp
      Classes/audio/SoundbankSoundFont.cpp

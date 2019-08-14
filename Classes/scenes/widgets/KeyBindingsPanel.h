@@ -20,7 +20,7 @@ public:
     void moveOut(bool instant = false);
 
 protected:
-    void handleKey(int keyCode);    // Handles both keyboard and gamepads
+    void handleButton(int keyCode); // Handles both keyboard and gamepads
 
     std::function<void ()> _cancelCallback;
 

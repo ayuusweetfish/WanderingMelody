@@ -1,6 +1,9 @@
 #ifndef __WanderingMelody__Global_h__
 #define __WanderingMelody__Global_h__
 
+#include "cocos2d.h"
+#include <string>
+
 #define SCENE_FUNC(__type__) \
     static cocos2d::Scene* createScene() \
     { \
@@ -70,7 +73,22 @@
 
 #define HIT_LINE_POS    (WIN_H / 3.0)
 
-#define CONTROLLER_KEY_STEP ((int)Controller::Key::JOYSTICK_LEFT_X)
+#define CONTROLLER_KEY_STEP ((int)cocos2d::Controller::Key::JOYSTICK_LEFT_X)
+
+extern const char *keyboardNames[];
+extern const char *joystickNames[];
+
+inline int gamepadCode(int index, int code) { return code + index * CONTROLLER_KEY_STEP; }
+inline int gamepadIndex(int code) { return code / CONTROLLER_KEY_STEP; }
+inline std::string buttonName(int code)
+{
+    // Assuming input code is valid
+    return code < CONTROLLER_KEY_STEP ?
+        keyboardNames[code] :
+        "Pad " +
+            std::string(1, gamepadIndex(code)) + std::string(1, ' ') +
+            joystickNames[code % CONTROLLER_KEY_STEP];
+}
 
 #include "Config.h"
 

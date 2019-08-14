@@ -3,6 +3,7 @@
 
 #include "gig/Musician.h"
 #include "gig/MusicianNKeys.h"
+#include "scenes/widgets/KeyHintLabel.h"
 using namespace cocos2d;
 
 #include <atomic>
@@ -50,13 +51,13 @@ bool Gameplay::init()
     keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         if (_playState == 0 && keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
             _playState = 1;
-            _labelStart->runAction(Sequence::createWithTwoActions(
+            _layerStart->runAction(Sequence::createWithTwoActions(
                 EaseQuadraticActionIn::create(
-                    Spawn::createWithTwoActions(
-                        ScaleTo::create(0.4, 2), FadeOut::create(0.4)
-                    )
+                    MoveBy::create(0.3, Vec2(0, WIN_H / 10))
                 ),
                 CallFunc::create([this] () {
+                    _layerStart->removeFromParent();
+
                     for (int i = 0; i < _gig->getMusicianCount(); i++)
                         _gig->getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
 
@@ -75,7 +76,6 @@ bool Gameplay::init()
                     _gig->startPlay();
                 })
             ));
-            _layerStart->runAction(FadeOut::create(0.4));
         } else if (_playState == 0 && keyCode == EventKeyboard::KeyCode::KEY_TAB) {
             this->addChild(_modPanel, 9999);
             _modPanel->runAction(EaseQuadraticActionOut::create(
@@ -127,14 +127,18 @@ void Gameplay::load(const std::string &path)
         return;
     }
 
-    auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W / 2, WIN_H / 8);
-    layerStart->setPosition((WIN_SIZE - Size(WIN_W / 2, WIN_H / 8)) / 2);
+    auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W, WIN_H / 10);
+    layerStart->setPosition(Vec2(0, WIN_H * 9 / 10));
     this->addChild(layerStart, 9998);
     _layerStart = layerStart;
 
-    auto labelStart = Label::createWithTTF("Press Enter", "OpenSans-Light.ttf", 42);
+    auto labelStart = KeyHintLabel::create(Color4B(240, 235, 230, 192), {
+        {Config::getKeyConfirm(0), "Start"},
+        {Config::getKeyConfirm(0), "Edit/Rehearse"}
+    });
+    //Label::createWithTTF("Press Enter", "OpenSans-Light.ttf", 42);
     labelStart->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-    labelStart->setPosition(Size(WIN_W / 2, WIN_H / 8) / 2);
+    labelStart->setPosition(Size(WIN_W, WIN_H / 10) / 2);
     labelStart->setColor(Color3B(64, 64, 64));
     layerStart->addChild(labelStart);
     _labelStart = labelStart;
