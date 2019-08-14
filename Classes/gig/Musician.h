@@ -23,7 +23,7 @@ public:
     Musician()
       : _isAutoplay(false), _isAutoscroll(false),
         _curTime(0), _curTick(0), _isPlaying(false),
-        _display(nullptr), _gig(nullptr) { }
+        _isRehearsal(false), _display(nullptr), _gig(nullptr) { }
     virtual ~Musician();
 
     inline void allocateMusicTrack(int idx) {
@@ -66,6 +66,9 @@ public:
     double getOrigTempo() { return _tempoChanges.front().second; }
     bool isInBreak() { return _isInBreak || _isAutoscroll; }
 
+    inline void setIsRehearsal(bool isRehearsal) { _isRehearsal = isRehearsal; }
+    inline bool isRehearsal() { return _isRehearsal; }
+
 protected:
     std::vector<KeyNote> _keyNotes;
     std::vector<std::pair<int32_t, uint16_t>> _tempoChanges;
@@ -86,6 +89,8 @@ protected:
 
     Beater _beater;
     void addHit(double time, int32_t noteTick, bool propagateUp = true);
+
+    bool _isRehearsal;
 
     Display *_display;
     Gig *_gig;

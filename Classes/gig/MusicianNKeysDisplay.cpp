@@ -34,6 +34,18 @@ template <int N> bool MusicianNKeys<N>::Display::init(MusicianNKeys<N> *mus)
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
+    for (int i = 0; i < _mus->_barlines.size(); i++) {
+        char s[8];
+        snprintf(s, sizeof s, "%d", i + 1);
+        auto label = Label::createWithTTF(s, "OpenSans-Light.ttf", 32);
+        label->setHeight(40);
+        label->setColor(Color3B(179, 179, 179));
+        label->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+        label->setPosition(Vec2(6, 0));
+        _drawNode->addChild(label);
+        _labels.push_back(label);
+    }
+
     return true;
 }
 
@@ -64,11 +76,14 @@ template <int N> void MusicianNKeys<N>::Display::refresh()
             Color4F(0.8, 0.8, 0.8, 1));
 
     // Bar lines
-    for (int32_t barline : _mus->_barlines) {
-        float posY = HIT_LINE_POS + size.height * speed * (barline - _mus->getCurTick());
+    for (int i = 0; i < _mus->_barlines.size(); i++) {
+        float posY = HIT_LINE_POS +
+            size.height * speed * (_mus->_barlines[i] - _mus->getCurTick());
         _drawNode->drawSegment(
             Vec2(0, posY), Vec2(size.width, posY), 2, Color4F(0.7, 0.7, 0.7, 0.5)
         );
+        _labels[i]->setVisible(_mus->_isRehearsal);
+        _labels[i]->setPositionY(posY);
     }
 
     // Progress indicators

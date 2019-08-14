@@ -26,8 +26,10 @@ public:
         virtual void refresh() override;
 
     protected:
-        cocos2d::DrawNode *_drawNode;
         MusicianNKeys *_mus;
+
+        cocos2d::DrawNode *_drawNode;
+        std::vector<cocos2d::Label *> _labels;
     };
 
     virtual Musician::Display *createDisplay() override {

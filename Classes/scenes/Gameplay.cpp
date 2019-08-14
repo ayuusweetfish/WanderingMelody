@@ -49,7 +49,7 @@ bool Gameplay::init()
 
     auto keyboardListener = EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
-        if (_playState == 0 && keyCode == EventKeyboard::KeyCode::KEY_ENTER) {
+        if (_playState == 0 && Config::isKeyConfirm(keyCode)) {
             _playState = 1;
             _layerStart->runAction(Sequence::createWithTwoActions(
                 EaseQuadraticActionIn::create(
@@ -76,7 +76,11 @@ bool Gameplay::init()
                     _gig->startPlay();
                 })
             ));
-        } else if (_playState == 0 && keyCode == EventKeyboard::KeyCode::KEY_TAB) {
+        } else if (_playState == 0 && Config::isKeySelect(keyCode)) {
+            bool b = _gig->getMusician(0)->isRehearsal();
+            for (int i = 0; i < _gig->getMusicianCount(); i++)
+                _gig->getMusician(i)->setIsRehearsal(!b);
+        } else if (_playState == 0 && Config::isKeyOptions(keyCode)) {
             this->addChild(_modPanel, 9999);
             _modPanel->runAction(EaseQuadraticActionOut::create(
                 Spawn::createWithTwoActions(
@@ -85,7 +89,7 @@ bool Gameplay::init()
                 )
             ));
             event->stopPropagation();
-        } else if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
+        } else if (Config::isKeyCancel(keyCode)) {
             GO_BACK_SCENE();
         }
     };
@@ -134,7 +138,8 @@ void Gameplay::load(const std::string &path)
 
     auto labelStart = KeyHintLabel::create(Color4B(240, 235, 230, 192), {
         {Config::getKeyConfirm(0), "Start"},
-        {Config::getKeySelect(0), "Edit/Rehearse"}
+        {Config::getKeyOptions(0), "Options"},
+        {Config::getKeySelect(0), "Rehearse"}
     });
     //Label::createWithTTF("Press Enter", "OpenSans-Light.ttf", 42);
     labelStart->setAnchorPoint(Vec2::ANCHOR_MIDDLE);

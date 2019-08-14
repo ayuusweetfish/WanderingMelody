@@ -9,7 +9,6 @@ void Musician::startPlay()
 
     _curTime = _curTick = 0;
     _isPlaying = true;
-    _barlines.push_back(0);
     _barlinePtr = 0;
     _isInBreak = false;
 
