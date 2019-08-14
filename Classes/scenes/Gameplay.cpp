@@ -134,7 +134,7 @@ void Gameplay::load(const std::string &path)
 
     auto labelStart = KeyHintLabel::create(Color4B(240, 235, 230, 192), {
         {Config::getKeyConfirm(0), "Start"},
-        {Config::getKeyConfirm(0), "Edit/Rehearse"}
+        {Config::getKeySelect(0), "Edit/Rehearse"}
     });
     //Label::createWithTTF("Press Enter", "OpenSans-Light.ttf", 42);
     labelStart->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
