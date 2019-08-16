@@ -32,6 +32,7 @@ public:
 
     void startPlay();
     void stopPlay();
+    void resumePlay();
     void tick(float dt);
     void jump(double time);
     void clearTriggered();

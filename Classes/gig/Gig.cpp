@@ -357,6 +357,11 @@ void Gig::stopPlay()
     for (auto &mus : _musicians) mus->stopPlay();
 }
 
+void Gig::resumePlay()
+{
+    for (auto &mus : _musicians) mus->resumePlay();
+}
+
 void Gig::tick(float dt)
 {
     std::pair<double, int>

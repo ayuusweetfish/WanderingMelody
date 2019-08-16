@@ -19,6 +19,11 @@ void Musician::stopPlay()
     _isInBreak = false;
 }
 
+void Musician::resumePlay()
+{
+    _isPlaying = true;
+}
+
 void Musician::tick(double dt, double lcap, double hcap)
 {
     if (!_isPlaying) return;

@@ -57,6 +57,7 @@ public:
 
     virtual void startPlay();
     virtual void stopPlay();
+    virtual void resumePlay();
     inline void refresh() { if (_display) _display->refresh(); }
     virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
     void jump(double time);
