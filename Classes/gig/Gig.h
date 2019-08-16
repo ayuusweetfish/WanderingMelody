@@ -31,6 +31,7 @@ public:
     inline Musician *getMusician(int idx) { return _musicians[idx]; }
 
     void startPlay();
+    void stopPlay();
     void tick(float dt);
     void jump(double time);
     void clearTriggered();

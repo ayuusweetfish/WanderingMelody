@@ -56,6 +56,7 @@ public:
     inline bool isCooperative() { return _isCooperative; }
 
     virtual void startPlay();
+    virtual void stopPlay();
     inline void refresh() { if (_display) _display->refresh(); }
     virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
     void jump(double time);
@@ -64,7 +65,7 @@ public:
     double getCurTick() { return _curTick; }
     double getRawTick() { return _rawTick; }
     double getOrigTempo() { return _tempoChanges.front().second; }
-    bool isInBreak() { return _isInBreak || _isAutoscroll; }
+    bool isInBreak() { return _isInBreak || _isAutoscroll || _isAutoplay; }
 
     inline void setIsRehearsal(bool isRehearsal) { _isRehearsal = isRehearsal; }
     inline bool isRehearsal() { return _isRehearsal; }

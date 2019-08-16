@@ -14,7 +14,7 @@ public:
 
     void setKeyMapping(const int keyCodes[N]);
 
-    virtual void startPlay() override;
+    virtual void stopPlay() override;
     virtual void sendEvent(int message) override;
 
     class Display : public Musician::Display {

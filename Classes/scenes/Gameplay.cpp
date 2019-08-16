@@ -187,15 +187,13 @@ void Gameplay::load(const std::string &path)
 
 bool Gameplay::onButtonPress(int code)
 {
-    if (Config::isKeyConfirm(code)) {
+    if (Config::isKeyConfirm(code) && _playState == 0) {
         _playState = 1;
         _layerHint->runAction(Sequence::createWithTwoActions(
             EaseQuadraticActionIn::create(
-                MoveBy::create(0.3, Vec2(0, HINT_LABEL_H))
+                MoveTo::create(0.3, Vec2(0, WIN_H))
             ),
             CallFunc::create([this] () {
-                _layerHint->removeFromParent();
-
                 for (int i = 0; i < _gig->getMusicianCount(); i++)
                     _gig->getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
 
@@ -271,8 +269,12 @@ bool Gameplay::onButtonPress(int code)
                     )
                 ));
             } else {
-                // TODO: Pause musicians instead of exit gameplay
-                GO_BACK_SCENE();
+                _gig->stopPlay();
+                _layerHint->runAction(EaseQuadraticActionOut::create(
+                    MoveTo::create(0.3, Vec2(0, WIN_H - HINT_LABEL_H))
+                ));
+                _playState = 0;
+                return true;
             }
         } else if (Config::isKeySelect(code)) {
         }

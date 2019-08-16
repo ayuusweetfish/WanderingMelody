@@ -20,9 +20,9 @@ template <int N> void MusicianNKeys<N>::setKeyMapping(const int keyCodes[N])
     for (int i = 0; i < N; i++) _keyMapping[i] = keyCodes[i];
 }
 
-template <int N> void MusicianNKeys<N>::startPlay()
+template <int N> void MusicianNKeys<N>::stopPlay()
 {
-    Musician::startPlay();
+    Musician::stopPlay();
     for (int i = 0; i < N; i++) _isKeyDown[i] = false;
 }
 
