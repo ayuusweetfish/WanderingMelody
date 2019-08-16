@@ -27,14 +27,16 @@ protected:
     std::mutex *_gigMutex;
     std::atomic<bool> *_gigStopSignal;
 
-    cocos2d::LayerColor *_layerStart;
-    cocos2d::Label *_labelStart;
+    cocos2d::LayerColor *_layerHint;
+    cocos2d::Label *_labelHintPlay, *_labelHintRehearse;
 
     // -1 - not loaded, 0 - not started, 1 - playing, 2 - paused
     char _playState;
 
     class ModPanel;
     ModPanel *_modPanel;
+
+    bool onButtonPress(int code);
 };
 
 #endif

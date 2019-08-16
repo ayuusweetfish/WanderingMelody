@@ -9,6 +9,8 @@ using namespace cocos2d;
 #include <atomic>
 #include <chrono>
 
+static const int HINT_LABEL_H = WIN_H / 10;
+
 class Gameplay::ModPanel : public cocos2d::LayerColor
 {
 public:
@@ -49,49 +51,8 @@ bool Gameplay::init()
 
     auto keyboardListener = EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
-        if (_playState == 0 && Config::isKeyConfirm(keyCode)) {
-            _playState = 1;
-            _layerStart->runAction(Sequence::createWithTwoActions(
-                EaseQuadraticActionIn::create(
-                    MoveBy::create(0.3, Vec2(0, WIN_H / 10))
-                ),
-                CallFunc::create([this] () {
-                    _layerStart->removeFromParent();
-
-                    for (int i = 0; i < _gig->getMusicianCount(); i++)
-                        _gig->getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
-
-                    ModPanel::SpeedMode mode = _modPanel->getSpeedMode();
-                    if (mode == ModPanel::COOPERATE) {
-                        for (int i = 0; i < _gig->getMusicianCount(); i++)
-                            _gig->getMusician(i)->setIsCooperative(true);
-                    } if (mode >= ModPanel::CONDUCTOR && mode < ModPanel::CONDUCTOR + 4) {
-                        for (int i = 0; i < _gig->getMusicianCount(); i++)
-                            _gig->getMusician(i)->setIsAutoscroll(i != (int)mode - ModPanel::CONDUCTOR);
-                    } else if (mode == ModPanel::METRONOME) {
-                        for (int i = 0; i < _gig->getMusicianCount(); i++)
-                            _gig->getMusician(i)->setIsAutoscroll(true);
-                    }
-
-                    _gig->startPlay();
-                })
-            ));
-        } else if (_playState == 0 && Config::isKeySelect(keyCode)) {
-            bool b = _gig->getMusician(0)->isRehearsal();
-            for (int i = 0; i < _gig->getMusicianCount(); i++)
-                _gig->getMusician(i)->setIsRehearsal(!b);
-        } else if (_playState == 0 && Config::isKeyOptions(keyCode)) {
-            this->addChild(_modPanel, 9999);
-            _modPanel->runAction(EaseQuadraticActionOut::create(
-                Spawn::createWithTwoActions(
-                    MoveTo::create(0.3, Vec2(0, 0)),
-                    FadeIn::create(0.3)
-                )
-            ));
+        if (this->onButtonPress((int)keyCode))
             event->stopPropagation();
-        } else if (Config::isKeyCancel(keyCode)) {
-            GO_BACK_SCENE();
-        }
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
@@ -99,8 +60,10 @@ bool Gameplay::init()
     controllerListener->onConnected = [](Controller *controller, Event *event) {
         printf("connected %s\n", controller->getDeviceName().c_str());
     };
-    controllerListener->onKeyDown = [](Controller *controller, int keyCode, Event *event) {
+    controllerListener->onKeyDown = [this](Controller *controller, int keyCode, Event *event) {
         printf("down %d\n", keyCode);
+        if (this->onButtonPress(gamepadCode(controller->getDeviceId(), keyCode)))
+            event->stopPropagation();
     };
     controllerListener->onKeyUp = [](Controller *controller, int keyCode, Event *event) {
         printf("up %d\n", keyCode);
@@ -131,22 +94,33 @@ void Gameplay::load(const std::string &path)
         return;
     }
 
-    auto layerStart = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W, WIN_H / 10);
-    layerStart->setPosition(Vec2(0, WIN_H * 9 / 10));
-    this->addChild(layerStart, 9998);
-    _layerStart = layerStart;
+    auto layerHint = LayerColor::create(Color4B(240, 235, 230, 192), WIN_W, HINT_LABEL_H);
+    layerHint->setPosition(Vec2(0, WIN_H - HINT_LABEL_H));
+    this->addChild(layerHint, 9998);
+    _layerHint = layerHint;
 
-    auto labelStart = KeyHintLabel::create(Color4B(240, 235, 230, 192), {
+    auto labelHintPlay = KeyHintLabel::create(Color4B(240, 235, 230, 192), {
         {Config::getKeyConfirm(0), "Start"},
         {Config::getKeyOptions(0), "Options"},
         {Config::getKeySelect(0), "Rehearse"}
     });
-    //Label::createWithTTF("Press Enter", "OpenSans-Light.ttf", 42);
-    labelStart->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-    labelStart->setPosition(Size(WIN_W, WIN_H / 10) / 2);
-    labelStart->setColor(Color3B(64, 64, 64));
-    layerStart->addChild(labelStart);
-    _labelStart = labelStart;
+    labelHintPlay->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+    labelHintPlay->setPosition(Vec2(WIN_W / 2, HINT_LABEL_H / 2));
+    labelHintPlay->setColor(Color3B(64, 64, 64));
+    layerHint->addChild(labelHintPlay);
+    _labelHintPlay = labelHintPlay;
+
+    auto labelHintRehearse = KeyHintLabel::create(Color4B(240, 235, 230, 192), {
+        {Config::getKeyCancel(0), "Exit rehearsal"},
+        {Config::getKeyConfirm(0), "Start"},
+        {Config::getKeyOptions(0), "Options"},
+        {Config::getKeySelect(0), "Set marker"}
+    });
+    labelHintRehearse->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+    labelHintRehearse->setPosition(Vec2(WIN_W / 2, HINT_LABEL_H * 3 / 2));
+    labelHintRehearse->setColor(Color3B(64, 64, 64));
+    layerHint->addChild(labelHintRehearse);
+    _labelHintRehearse = labelHintRehearse;
 
     int numMusicians = _gig->getMusicianCount();
 
@@ -209,6 +183,102 @@ void Gameplay::load(const std::string &path)
         delete gig;
     });
     gigUpdateThread.detach();
+}
+
+bool Gameplay::onButtonPress(int code)
+{
+    if (Config::isKeyConfirm(code)) {
+        _playState = 1;
+        _layerHint->runAction(Sequence::createWithTwoActions(
+            EaseQuadraticActionIn::create(
+                MoveBy::create(0.3, Vec2(0, HINT_LABEL_H))
+            ),
+            CallFunc::create([this] () {
+                _layerHint->removeFromParent();
+
+                for (int i = 0; i < _gig->getMusicianCount(); i++)
+                    _gig->getMusician(i)->setIsAutoplay(_modPanel->isAutoplay(i));
+
+                ModPanel::SpeedMode mode = _modPanel->getSpeedMode();
+                if (mode == ModPanel::COOPERATE) {
+                    for (int i = 0; i < _gig->getMusicianCount(); i++)
+                        _gig->getMusician(i)->setIsCooperative(true);
+                } if (mode >= ModPanel::CONDUCTOR && mode < ModPanel::CONDUCTOR + 4) {
+                    for (int i = 0; i < _gig->getMusicianCount(); i++)
+                        _gig->getMusician(i)->setIsAutoscroll(i != (int)mode - ModPanel::CONDUCTOR);
+                } else if (mode == ModPanel::METRONOME) {
+                    for (int i = 0; i < _gig->getMusicianCount(); i++)
+                        _gig->getMusician(i)->setIsAutoscroll(true);
+                }
+
+                _gig->startPlay();
+            })
+        ));
+        return true;
+    } else if (Config::isKeyOptions(code) && _playState == 0) {
+        this->addChild(_modPanel, 9999);
+        _modPanel->runAction(EaseQuadraticActionOut::create(
+            Spawn::createWithTwoActions(
+                MoveTo::create(0.3, Vec2(0, 0)),
+                FadeIn::create(0.3)
+            )
+        ));
+        return true;
+    }
+
+    bool isRehearsal = _gig->getMusician(0)->isRehearsal();
+
+    if (!isRehearsal) {
+        // Play mode
+        if (Config::isKeySelect(code)) {
+            for (int i = 0; i < _gig->getMusicianCount(); i++)
+                _gig->getMusician(i)->setIsRehearsal(true);
+            _labelHintPlay->stopAllActions();
+            _labelHintRehearse->stopAllActions();
+            _labelHintPlay->runAction(EaseQuadraticActionIn::create(
+                Spawn::createWithTwoActions(
+                    MoveTo::create(0.3, Vec2(WIN_W / 2, HINT_LABEL_H * 3 / 2)),
+                    FadeOut::create(0.3)
+                )
+            ));
+            _labelHintRehearse->runAction(EaseQuadraticActionOut::create(
+                Spawn::createWithTwoActions(
+                    MoveTo::create(0.3, Vec2(WIN_W / 2, HINT_LABEL_H / 2)),
+                    FadeIn::create(0.3)
+                )
+            ));
+        } else if (Config::isKeyCancel(code)) {
+            GO_BACK_SCENE();
+        }
+    } else {
+        // Rehearse mode
+        if (Config::isKeyCancel(code)) {
+            if (_playState == 0) {
+                for (int i = 0; i < _gig->getMusicianCount(); i++)
+                    _gig->getMusician(i)->setIsRehearsal(false);
+                _labelHintPlay->stopAllActions();
+                _labelHintRehearse->stopAllActions();
+                _labelHintRehearse->runAction(EaseQuadraticActionIn::create(
+                    Spawn::createWithTwoActions(
+                        MoveTo::create(0.3, Vec2(WIN_W / 2, HINT_LABEL_H * 3 / 2)),
+                        FadeOut::create(0.3)
+                    )
+                ));
+                _labelHintPlay->runAction(EaseQuadraticActionOut::create(
+                    Spawn::createWithTwoActions(
+                        MoveTo::create(0.3, Vec2(WIN_W / 2, HINT_LABEL_H / 2)),
+                        FadeIn::create(0.3)
+                    )
+                ));
+            } else {
+                // TODO: Pause musicians instead of exit gameplay
+                GO_BACK_SCENE();
+            }
+        } else if (Config::isKeySelect(code)) {
+        }
+    }
+    
+    return false;
 }
 
 void Gameplay::update(float dt)
