@@ -31,7 +31,7 @@ P4/T1|Vl|MuseScore_General.sf2 Patch=5 Gain=0.3
     |4   |    |      |    |      |    |      |    |      
     |5   |    |      |    |      |   o|oF#4  |  o |oD-5  
     |6   |    |      |    |      |    |      |    |      
-    |1   |o   |oE-3  |    |      | o  |oB-3  |   o|oG-5  
+ 960|1   |o   |oE-3  |    |      | o  |oB-3  |   o|oG-5  
     |2   |    |      |    |      |    |      |    |      
     |3   |    |      |  o |oB-3  |o   |oG-4  |    |      
     |4   |    |      |    |      |    |      |    |      

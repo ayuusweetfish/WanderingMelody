@@ -26,12 +26,22 @@ void Musician::resumePlay()
 
 double Musician::tickToTime(double tick)
 {
-    return tick / this->getOrigTempo();
+    auto it = std::upper_bound(_tempoChanges.begin(), _tempoChanges.end(),
+        tick,
+        [] (const double a, const tempoChange &b) { return a < b.ticks; }
+    );
+    it--;
+    return it->time + (double)(tick - it->ticks) / it->tempo;
 }
 
 double Musician::timeToTick(double time)
 {
-    return time * this->getOrigTempo();
+    auto it = std::upper_bound(_tempoChanges.begin(), _tempoChanges.end(),
+        time,
+        [] (const double a, const tempoChange &b) { return a < b.time; }
+    );
+    it--;
+    return it->ticks + (double)(time - it->time) * it->tempo;
 }
 
 void Musician::tick(double dt, double lcap, double hcap)

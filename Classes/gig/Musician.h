@@ -30,8 +30,11 @@ public:
         if (_musicTracks.size() <= idx)
             _musicTracks.resize(idx + 1);
     }
-    inline void addTempoChange(int32_t time, uint16_t tempo) {
-        _tempoChanges.push_back({time, tempo});
+    inline void addTempoChange(int32_t ticks, uint16_t tempo) {
+        int32_t lastTicks = (_tempoChanges.empty() ? 0 : _tempoChanges.back().ticks);
+        double lastTime = (_tempoChanges.empty() ? 0 : _tempoChanges.back().time);
+        uint16_t lastTempo = (_tempoChanges.empty() ? 1 : _tempoChanges.back().tempo);
+        _tempoChanges.push_back({ticks, lastTime + (double)(ticks - lastTicks) / lastTempo, tempo});
     }
     inline void addBarline(int32_t time) { _barlines.push_back(time); }
     inline MusicTrack &getMusicTrack(int idx) { return _musicTracks[idx]; }
@@ -65,7 +68,7 @@ public:
     virtual void sendEvent(int message) = 0;
     double getCurTick() { return _curTick; }
     double getRawTick() { return _rawTick; }
-    double getOrigTempo() { return _tempoChanges.front().second; }
+    double getOrigTempo() { return _tempoChanges.front().tempo; }
     double tickToTime(double tick);
     double timeToTick(double time);
     bool isInBreak() { return _isInBreak || _isAutoscroll || _isAutoplay; }
@@ -75,7 +78,12 @@ public:
 
 protected:
     std::vector<KeyNote> _keyNotes;
-    std::vector<std::pair<int32_t, uint16_t>> _tempoChanges;
+    struct tempoChange {
+        int32_t ticks;
+        double time;
+        uint16_t tempo; // Ticks per second
+    };
+    std::vector<tempoChange> _tempoChanges;
     std::vector<int32_t> _barlines;
     std::vector<MusicTrack> _musicTracks;
 
