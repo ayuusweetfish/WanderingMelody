@@ -10,7 +10,7 @@ void Musician::startPlay()
     _barlinePtr = 0;
     _isInBreak = false;
 
-    _beater = Beater(8, this->getOrigTempo());
+    _beater = Beater(8, 1);
 }
 
 void Musician::stopPlay()
@@ -24,13 +24,23 @@ void Musician::resumePlay()
     _isPlaying = true;
 }
 
+double Musician::tickToTime(double tick)
+{
+    return tick / this->getOrigTempo();
+}
+
+double Musician::timeToTick(double time)
+{
+    return time * this->getOrigTempo();
+}
+
 void Musician::tick(double dt, double lcap, double hcap)
 {
     if (!_isPlaying) return;
     int32_t lastTick = (int32_t)_curTick;
 
     _curTime += dt;
-    _rawTick = _beater.getY(_curTime);
+    _rawTick = timeToTick(_beater.getY(_curTime));
     _curTick = std::min(std::max(_rawTick, lcap), hcap);
 
     for (auto &mt : _musicTracks) {
@@ -40,11 +50,11 @@ void Musician::tick(double dt, double lcap, double hcap)
     }
 }
 
-void Musician::jump(double time)
+void Musician::jump(double tick)
 {
-    _curTime = time / this->getOrigTempo();
-    _rawTick = _curTick = time;
-    _beater = Beater(8, this->getOrigTempo());
+    _curTime = tickToTime(tick);
+    _rawTick = _curTick = tick;
+    _beater = Beater(8, 1);
 }
 
 void Musician::clearTriggered()
@@ -56,7 +66,7 @@ void Musician::addHit(double time, int32_t noteTick, bool propagateUp)
 {
     if (propagateUp && (_isAutoscroll || _isAutoplay)) return;
     if (!propagateUp || !_isCooperative)
-        _beater.update({time, (double)noteTick}, _beater.getK(_curTime));
+        _beater.update({time, tickToTime(noteTick)}, _beater.getK(_curTime));
     if (propagateUp && _gig) _gig->dispatchHit(_tag, _curTime, noteTick);
 }
 

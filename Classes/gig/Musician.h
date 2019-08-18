@@ -60,12 +60,14 @@ public:
     virtual void resumePlay();
     inline void refresh() { if (_display) _display->refresh(); }
     virtual void tick(double dt, double lcap = 0, double hcap = INFINITY);
-    void jump(double time);
+    void jump(double tick);
     void clearTriggered();
     virtual void sendEvent(int message) = 0;
     double getCurTick() { return _curTick; }
     double getRawTick() { return _rawTick; }
     double getOrigTempo() { return _tempoChanges.front().second; }
+    double tickToTime(double tick);
+    double timeToTick(double time);
     bool isInBreak() { return _isInBreak || _isAutoscroll || _isAutoplay; }
 
     inline void setIsRehearsal(bool isRehearsal) { _isRehearsal = isRehearsal; }
