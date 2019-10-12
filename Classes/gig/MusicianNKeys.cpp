@@ -32,7 +32,7 @@ template <int N> void MusicianNKeys<N>::sendEvent(int message)
         if (_keyMapping[i] == message) {
             _isKeyDown[i] = true;
             triggerNote(i);
-        } else if (_keyMapping[i] + 1024 == message) {
+        } else if (_keyMapping[i] + 1048576 == message) {
             _isKeyDown[i] = false;
         }
 }

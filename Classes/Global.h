@@ -86,7 +86,7 @@ inline std::string buttonName(int code)
     return code < CONTROLLER_KEY_STEP ?
         keyboardNames[code] :
         "Pad " +
-            std::string(1, gamepadIndex(code)) + std::string(1, ' ') +
+            std::string(1, '0' + gamepadIndex(code)) + std::string(1, ' ') +
             joystickNames[code % CONTROLLER_KEY_STEP];
 }
 

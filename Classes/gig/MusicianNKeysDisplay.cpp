@@ -25,14 +25,28 @@ template <int N> bool MusicianNKeys<N>::Display::init(MusicianNKeys<N> *mus)
     if (!_drawNode) return false;
     this->addChild(_drawNode);
 
-    auto listener = cocos2d::EventListenerKeyboard::create();
-    listener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
+    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event *event) {
         _mus->sendEvent((int)keyCode);
     };
-    listener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, Event *event) {
-        _mus->sendEvent((int)keyCode + 1024);
+    keyboardListener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, Event *event) {
+        _mus->sendEvent((int)keyCode + 1048576);
     };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+    auto controllerListener = EventListenerController::create();
+    controllerListener->onConnected = [](Controller *controller, Event *event) {
+        printf("!connected %s\n", controller->getDeviceName().c_str());
+    };
+    controllerListener->onKeyDown = [this](Controller *controller, int keyCode, Event *event) {
+        printf("!down %d %d\n", keyCode, gamepadCode(controller->getDeviceId(), keyCode));
+        _mus->sendEvent(gamepadCode(controller->getDeviceId(), keyCode));
+    };
+    controllerListener->onKeyUp = [this](Controller *controller, int keyCode, Event *event) {
+        printf("!up %d\n", keyCode);
+        _mus->sendEvent(gamepadCode(controller->getDeviceId(), keyCode) + 1048576);
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(controllerListener, this);
 
     for (int i = 0; i < _mus->_barlines.size(); i++) {
         char s[8];
